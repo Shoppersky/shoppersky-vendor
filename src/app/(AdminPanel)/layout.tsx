@@ -12,7 +12,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const checkMobile = () => {
-      const mobile = window.innerWidth < 768;
+      const mobile = window.innerWidth < 930;
       setIsMobile(mobile);
       setCollapsed(mobile); // hide on mobile initially
     };

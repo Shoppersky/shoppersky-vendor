@@ -11,7 +11,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-
 import { toast } from 'sonner';
 import {
   useReactTable,
@@ -33,51 +32,65 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
+
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
 type User = {
   id: number;
   username: string;
   email: string;
   role: string;
-  status: boolean;
 };
 
-const columns: ColumnDef<User>[] = [
+// Schema for validation
+const userSchema = z.object({
+  username: z
+    .string()
+    .min(2, 'Username must be at least 2 characters')
+    .max(30, 'Username must not exceed 30 characters')
+    .regex(/^[A-Za-z\s]+$/, 'Only letters and spaces allowed'),
+  email: z.string().email('Invalid email address'),
+  role: z.string().min(1, 'Role is required'),
+});
 
-  { accessorKey: 'id', header: 'ID' },
-  { accessorKey: 'username', header: 'Username' },
-  { accessorKey: 'email', header: 'Email' },
-  { accessorKey: 'role', header: 'Role' },
-  {
-    accessorKey: 'status',
-    header: 'Status',
-    cell: ({ row }) =>
-      row.getValue('status') ? (
-        <span className="text-green-600">Active</span>
-      ) : (
-        <span className="text-gray-400">Inactive</span>
-      ),
-  },
-];
+type FormData = z.infer<typeof userSchema>;
 
 const roles = [
-  { label: "Admin", value: "admin" },
-  { label: "Editor", value: "editor" },
-  { label: "Viewer", value: "viewer" },
-  { label: "HR Manager", value: "hr" },
+  { label: 'Admin', value: 'admin' },
+  { label: 'Editor', value: 'editor' },
+  { label: 'Viewer', value: 'viewer' },
+  { label: 'HR Manager', value: 'hr' },
 ];
+
+const columns: ColumnDef<User>[] = [
+  { accessorKey: 'id', header: 'ID' },
+  { accessorKey: 'username', header: 'User Name' },
+  { accessorKey: 'email', header: 'Email' },
+  { accessorKey: 'role', header: 'Role' },
+];
+
 export default function UsersPage() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    role: '',
-    status: true,
-  });
-
   const [users, setUsers] = useState<User[]>([]);
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    reset,
+  } = useForm<FormData>({
+    resolver: zodResolver(userSchema),
+    defaultValues: {
+      username: '',
+      email: '',
+      role: '',
+    },
+  });
 
   const table = useReactTable({
     data: users,
@@ -85,31 +98,20 @@ export default function UsersPage() {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: FormData) => {
     setLoading(true);
-
     try {
       await new Promise((res) => setTimeout(res, 1000));
-
       const newUser = {
         id: Date.now(),
-        ...formData,
+        ...data,
       };
-
       setUsers((prev) => [...prev, newUser]);
       toast.success('User added successfully');
       setOpen(false);
-
-      // Reset
-      setFormData({
-        username: '',
-        email: '',
-        role: '',
-        status: true,
-      });
+      reset();
     } catch (error: any) {
-      toast.error(error);
+      toast.error('Failed to add user');
     } finally {
       setLoading(false);
     }
@@ -130,59 +132,50 @@ export default function UsersPage() {
               <DialogTitle>Add New User</DialogTitle>
             </DialogHeader>
 
-            <form onSubmit={handleSubmit} className="space-y-4 mt-4 pb-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4 pb-6">
               <div>
-                <Label htmlFor="username" className="mb-2">
-                  Username
+                <Label htmlFor="username" className="mb-2 block">
+                  User Name
                 </Label>
-                <Input
-                  id="username"
-                  value={formData.username}
-                  onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
-                  }
-                  required
-                />
+                <Input id="username" {...register('username')} />
+                {errors.username && (
+                  <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
+                )}
               </div>
 
               <div>
-                <Label htmlFor="email" className="mb-2">
+                <Label htmlFor="email" className="mb-2 block">
                   Email
                 </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  required
-                />
+                <Input id="email" type="email" {...register('email')} />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                )}
               </div>
 
-             <div>
-  <Label htmlFor="role" className="mb-2 block">
-    Role
-  </Label>
-  <Select
-    value={formData.role}
-    onValueChange={(value) =>
-      setFormData({ ...formData, role: value })
-    }
-  >
-    <SelectTrigger className="w-full">
-      <SelectValue placeholder="Select a role" />
-    </SelectTrigger>
-    <SelectContent>
-      {roles.map((role) => (
-        <SelectItem key={role.value} value={role.value}>
-          {role.label}
-        </SelectItem>
-      ))}
-    </SelectContent>
-  </Select>
-</div>
-
+              <div>
+                <Label htmlFor="role" className="mb-2 block">
+                  Role
+                </Label>
+                <Select
+                  onValueChange={(val) => setValue('role', val)}
+                  defaultValue=""
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {roles.map((role) => (
+                      <SelectItem key={role.value} value={role.value}>
+                        {role.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.role && (
+                  <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>
+                )}
+              </div>
 
               <Button type="submit" disabled={loading} className="w-full mt-4">
                 {loading ? 'Submitting...' : 'Add User'}
@@ -192,7 +185,6 @@ export default function UsersPage() {
         </Dialog>
       </div>
 
-      {/* Table */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -200,10 +192,7 @@ export default function UsersPage() {
               <TableRow key={group.id}>
                 {group.headers.map((header) => (
                   <TableHead key={header.id}>
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
+                    {flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
               </TableRow>
@@ -216,10 +205,7 @@ export default function UsersPage() {
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>

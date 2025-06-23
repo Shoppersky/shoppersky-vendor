@@ -294,6 +294,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "@/components/ui/input";
 
 // Schema
 const categorySchema = z.object({
@@ -301,7 +302,10 @@ const categorySchema = z.object({
     .string()
     .min(3, "Category name must be at least 3 characters")
     .max(50, "Category name must not exceed 50 characters")
-    .regex(/^[A-Za-z0-9\s-]+$/, "Only letters, numbers, spaces, and hyphens allowed"),
+    .regex(/^[A-Za-z0-9\s-]+$/, "Only letters, numbers, spaces, and hyphens allowed")
+     .refine((val) => val.trim().length > 0, {
+    message: "Category name cannot be just spaces",
+  }),
   slug: z
     .string()
     .min(1, "Slug is required")
@@ -484,11 +488,12 @@ const CategoryCreation = () => {
               {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
 
               <label className="block mt-3 mb-1 font-medium text-gray-700">Slug</label>
-              <input
+              <Input
                 type="text"
                 {...register("slug")}
                 className="w-full px-3 py-2 border rounded-md"
                 placeholder="Slug"
+                disabled
               />
               {errors.slug && <p className="text-red-500 text-sm mt-1">{errors.slug.message}</p>}
 
@@ -496,8 +501,9 @@ const CategoryCreation = () => {
               <textarea
                 {...register("description")}
                 rows={4}
-                className="w-full px-3 py-2 border rounded-md"
+                className="w-full px-3 py-2 border rounded-md max-h-50 min-h-10"
                 placeholder="Description"
+                maxLength={501}
               />
               {errors.description && (
                 <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
@@ -548,8 +554,9 @@ const CategoryCreation = () => {
             <textarea
               {...register("metaDescription")}
               rows={3}
-              className="w-full px-3 py-2 border rounded-md"
+              className="w-full px-3 py-2 border rounded-md  max-h-40 min-h-10"
               placeholder="Short SEO description"
+              maxLength={161}
             />
             {errors.metaDescription && (
               <p className="text-red-500 text-sm mt-1">{errors.metaDescription.message}</p>

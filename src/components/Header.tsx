@@ -23,7 +23,7 @@ export default function AppHeader({ toggleSidebar }: AppHeaderProps) {
     const [open, setOpen] = useState(false);
     const router=useRouter()
   return (
-    <header className="border-b border-gray-200 px-8 py-3 h-16 flex items-center justify-between shadow-sm sticky top-0 z-40 bg-white dark:bg-neutral-900 ">
+    <header className="border-b border-gray-200 px-8 py-3 h-20 flex items-center justify-between shadow-sm sticky top-0 z-40 bg-white dark:bg-neutral-900 ">
       {/* Left section */}
       <div className="flex items-center gap-3 min-w-0">
         <button
@@ -68,8 +68,7 @@ export default function AppHeader({ toggleSidebar }: AppHeaderProps) {
             <span className="text-xs text-gray-400">Admin</span>
           </div>
              <div
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+     
       className="relative inline-block"
     >
       <DropdownMenu open={open} onOpenChange={setOpen}>

@@ -51,22 +51,18 @@ export default function Home() {
         initial={{ opacity: 0, x: 0 }}
         animate={{ opacity: 1, x: 10 }}
         transition={{ duration: 0.6 }}
-        className="hidden md:flex items-center justify-center border-r border-gray-200 bg-blue-50"
+        className="hidden md:flex  justify-center border-r border-gray-200 min-h-screen "
       >
-        <Card className="shadow-none border-none bg-transparent">
-          <CardHeader className="text-center text-lg font-semibold text-gray-700">
-            Welcome to Our Platform
-          </CardHeader>
-          <CardContent className="p-0">
-            <Image
-              src="/login-illustration.svg"
-              alt="Illustration"
-              width={500}
-              height={300}
-              className="w-full h-auto object-contain"
-            />
-          </CardContent>
-        </Card>
+        
+          
+             <Image
+    src="/loginprofile.webp"
+    alt="Illustration"
+fill
+    className="object-contain"
+  />
+        
+    
       </motion.div>
 
       {/* Right Side: Login Form */}

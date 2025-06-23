@@ -76,7 +76,7 @@ const isLinkActive = (item: NavItem) => {
       >
         {/* Header */}
         <div className="flex items-center justify-center py-4 border-b border-gray-700 gap-4">
-          <Image src="/logo.webp" alt="Events2Go" width={20} height={20} />
+          <Image src="/logo.png" alt="Events2Go" height={40} width={40} />
           <h1
             className={`text-xl font-bold text-purple-400 transition-all ${
               collapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
