@@ -106,6 +106,7 @@ const CategoriesTable = () => {
                   variant="ghost"
                   size="icon"
                   onClick={() => toggleRow(row.original.id)}
+                  className='cursor-pointer'
                 >
                   {expandedRows[row.original.id] ? (
                     <ChevronDown className="w-4 h-4" />
@@ -167,7 +168,7 @@ const CategoriesTable = () => {
     <div>
 <div className='flex justify-between p-4 items-center '>
   <h1 className='text-3xl font-medium'>Categories</h1>
-  <Button onClick={()=>{router.push('/Categories/AddCategory')}}>Add Category</Button>
+  <Button onClick={()=>{router.push('/Categories/AddCategory')}} className='cursor-pointer'>Add Category</Button>
 </div>
     <Card className="mt-6 shadow-xl">
       

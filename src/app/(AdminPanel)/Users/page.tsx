@@ -124,7 +124,7 @@ export default function UsersPage() {
 
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button>Add User</Button>
+            <Button className='cursor-pointer'>Add User</Button>
           </DialogTrigger>
 
           <DialogContent className="sm:max-w-[400px] max-h-[90vh] overflow-y-auto">
@@ -177,7 +177,7 @@ export default function UsersPage() {
                 )}
               </div>
 
-              <Button type="submit" disabled={loading} className="w-full mt-4">
+              <Button type="submit" disabled={loading} className="w-full mt-4 cursor-pointer">
                 {loading ? 'Submitting...' : 'Add User'}
               </Button>
             </form>

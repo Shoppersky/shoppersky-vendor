@@ -75,10 +75,10 @@ const columns: ColumnDef<Role>[] = [
     header: 'Actions',
     cell: ({ row }) => (
       <div className="flex space-x-2">
-        <Button size="sm" variant="outline" onClick={() => handleEdit(row.original)}>
+        <Button size="sm" variant="outline" onClick={() => handleEdit(row.original)} className='cursor-pointer'>
           Edit
         </Button>
-        <Button size="sm" variant="destructive" onClick={() => handleDelete(row.original.id)}>
+        <Button size="sm" variant="destructive" onClick={() => handleDelete(row.original.id)} className='cursor-pointer'>
           Delete
         </Button>
       </div>
@@ -173,7 +173,7 @@ export default function RolesPage() {
         <h2 className="text-2xl font-semibold">Roles</h2>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button>{editingRole ? 'Edit Role' : 'Add Role'}</Button>
+            <Button className='cursor-pointer'>{editingRole ? 'Edit Role' : 'Add Role'}</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[400px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
@@ -203,7 +203,7 @@ export default function RolesPage() {
                   <p className="text-red-500 text-sm mt-1">{errors.permissions.message}</p>
                 )}
               </div>
-              <Button type="submit" disabled={loading} className="w-full">
+              <Button type="submit" disabled={loading} className="w-full cursor-pointer">
                 {loading ? 'Submitting...' : editingRole ? 'Update Role' : 'Add Role'}
               </Button>
             </form>

@@ -399,7 +399,7 @@ const CategoryCreation = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <button
             onClick={handleBack}
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 cursor-pointer"
           >
             ← Back
           </button>
@@ -407,13 +407,13 @@ const CategoryCreation = () => {
             <button
               type="submit"
               form="category-form"
-              className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+              className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 cursor-pointer"
             >
               Save Category
             </button>
             <button
               onClick={handleBack}
-              className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-100"
+              className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded hover:bg-gray-100 cursor-pointer"
             >
               Cancel
             </button>
@@ -439,7 +439,7 @@ const CategoryCreation = () => {
                   <button
                     type="button"
                     onClick={handleImageRemove}
-                    className="absolute top-2 right-2 text-sm bg-red-500 text-white rounded px-2 py-1"
+                    className="absolute top-2 right-2 text-sm bg-red-500 text-white rounded px-2 py-1 cursor-pointer"
                   >
                     Remove
                   </button>

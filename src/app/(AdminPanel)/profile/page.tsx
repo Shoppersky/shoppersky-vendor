@@ -45,7 +45,7 @@ export default function ProfilePage() {
           alt="Profile"
           className="w-40 h-40 rounded-full object-cover border border-gray-300"
         />
-        <Button variant="outline" size="sm" onClick={triggerFileInput}>
+        <Button variant="outline" size="sm" onClick={triggerFileInput} className="cursor-pointer">
           Change Photo
         </Button>
         <Input

@@ -52,7 +52,7 @@ export default function AppHeader({ toggleSidebar }: AppHeaderProps) {
 
         {/* Bell Icon */}
         <button
-          className="text-gray-600 hover:text-purple-500 transition"
+          className="text-gray-600 hover:text-purple-500 transition cursor-pointer"
           aria-label="Notifications"
         >
           <Bell  className='text-5xl  '/>
@@ -69,7 +69,7 @@ export default function AppHeader({ toggleSidebar }: AppHeaderProps) {
           </div>
              <div
      
-      className="relative inline-block"
+      className="relative inline-block cursor-pointer"
     >
       <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
@@ -79,13 +79,13 @@ export default function AppHeader({ toggleSidebar }: AppHeaderProps) {
       </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-40" align="end">
-          <DropdownMenuItem onClick={() => router.push('/profile')}>
+          <DropdownMenuItem onClick={() => router.push('/profile')} className='cursor-pointer'>
             Profile
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push('/Settings')}>
+          <DropdownMenuItem onClick={() => router.push('/Settings')} className='cursor-pointer'>
             Settings
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push('/')}>
+          <DropdownMenuItem onClick={() => router.push('/')} className='cursor-pointer'>
             Logout
           </DropdownMenuItem>
         </DropdownMenuContent>
