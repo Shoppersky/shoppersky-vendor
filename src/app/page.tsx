@@ -11,7 +11,9 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import axiosInstance from "@/lib/axiosInstance";
+import useStore from "@/lib/Zustand";
+import { toast } from "sonner";
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email format"),
   password: z
@@ -28,7 +30,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
-
+  const { login } = useStore();
   const {
     register,
     handleSubmit,
@@ -37,9 +39,49 @@ export default function Home() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log("Login data:", data);
-    router.push("/Dashboard");
+  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+    try {
+      const response = await axiosInstance.post("/api/v1/admin-auth/login", {
+        email: data.email,
+        password: data.password,
+      });
+ 
+      const statusCode = response.data.statusCode;
+      const userId = response.data.user_id;
+ 
+      if (statusCode === 200) {
+        const { access_token, user_id } = response.data.data;
+        console.log(response.data.data)
+        login(access_token);
+        localStorage.setItem('id', user_id);
+        router.push('/Dashboard');
+        toast.success('Login Successful.');
+      } else if (statusCode === 201) {
+        router.push(`/ResetPassword?email=${encodeURIComponent(data.email)}`);
+        toast.success('Login Success. Please reset your password.');
+      }
+    } catch (error: any) {
+      console.log(error.response)
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 401) {
+          toast(data.detail.message === "User not found." ? 'User Not Found.' : 'Invalid credentials or account issues.');
+        } else if (status === 403) {
+          toast(data.detail.message);
+          
+        }
+         else if (status === 423) {
+          toast(data.detail.message);
+          
+        }  else if (status === 404) {
+          toast('Account not found.');
+        } else {
+          toast('Unexpected error: ' + (data.detail.message || 'An error occurred.'));
+        }
+      } else {
+        toast('An error occurred: ' + (error.message || 'Unknown error.'));
+      }
+    }
   };
 
   return (

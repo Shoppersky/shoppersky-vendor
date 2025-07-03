@@ -40,10 +40,11 @@ const useStore = create<StoreState>()(
       login: (token: string) => {
         try {
           const decoded: any = jwt.decode(token);
-          if (decoded?.userId && decoded?.role) {
+      console.log(decoded)
+          if (decoded?.user_id && decoded?.role_id) {
             set({
-              userId: decoded.userId,
-              role: decoded.role,
+              userId: decoded.user_id,
+              role: decoded.role_id,
               exp: decoded.exp,
               isAuthenticated: true,
             });
@@ -66,10 +67,10 @@ const useStore = create<StoreState>()(
         if (token) {
           try {
             const decoded: any = jwt.decode(token);
-            if (decoded?.userId && decoded?.role) {
+            if (decoded?.user_id && decoded?.role_id) {
               set({
-                userId: decoded.userId,
-                role: decoded.role,
+                userId: decoded.user_id,
+                role: decoded.role_id,
                 exp: decoded.exp,
                 isAuthenticated: true,
               });

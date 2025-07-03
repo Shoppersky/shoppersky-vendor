@@ -7,16 +7,34 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff } from "lucide-react";
-
+import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+import axiosInstance from "@/lib/axiosInstance";
+import { useRouter } from "next/navigation";
 export default function ResetPasswordPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
+  const router=useRouter()
+ 
+  const validatePassword = (password: string): string | null => {
+    if (password.length < 8) return "Password must be at least 8 characters.";
+    if (!/[A-Z]/.test(password)) return "Password must include at least one uppercase letter.";
+    if (!/[a-z]/.test(password)) return "Password must include at least one lowercase letter.";
+    if (!/[0-9]/.test(password)) return "Password must include at least one number.";
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password))
+      return "Password must include at least one special character.";
+    return null;
+  };
 
-  const handleReset = () => {
-    if (newPassword.length < 6) {
-      setError("Password must be at least 6 characters.");
+  const handleReset =async () => {
+
+    const passwordError = validatePassword(newPassword);
+    if (passwordError) {
+      setError(passwordError);
       return;
     }
 
@@ -26,10 +44,21 @@ export default function ResetPasswordPage() {
     }
 
     setError("");
-    console.log("Password reset successfully!");
-    // TODO: send API call here
-  };
-
+    try{
+      const response= await axiosInstance.patch('/api/v1/admin-auth/reset-password',{
+        email:email,
+        new_password:newPassword
+      })
+    
+    if(response.data.statusCode=200){
+      toast.success('password resetted successfully')
+      router.push('/')
+    }
+  }
+  catch(error){
+    toast.error('failed to reset the password')
+  }
+  }
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -50,7 +79,9 @@ export default function ResetPasswordPage() {
         <div className="space-y-4">
           {/* New Password Field */}
           <div className="relative">
-            <Label htmlFor="new-password" className="mb-2">New Password</Label>
+            <Label htmlFor="new-password" className="mb-2">
+              New Password
+            </Label>
             <Input
               type={showPassword ? "text" : "password"}
               id="new-password"
@@ -70,7 +101,9 @@ export default function ResetPasswordPage() {
 
           {/* Confirm Password Field */}
           <div className="relative">
-            <Label htmlFor="confirm-password" className="mb-2">Confirm Password</Label>
+            <Label htmlFor="confirm-password" className="mb-2">
+              Confirm Password
+            </Label>
             <Input
               type={showPassword ? "text" : "password"}
               id="confirm-password"
