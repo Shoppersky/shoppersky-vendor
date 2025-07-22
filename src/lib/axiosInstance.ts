@@ -4,7 +4,7 @@ import axios from 'axios';
 
 
 const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL, // Ensure this is set in your .env.local file
+  baseURL: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1`, // Ensure this is set in your .env.local file
   headers: {
     'Content-Type': 'application/json',
     'api-key': process.env.NEXT_PUBLIC_API_GATEWAY_KEY, // Add the API key here

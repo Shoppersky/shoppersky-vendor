@@ -1,464 +1,210 @@
-'use client';
+"use client";
+import Link from "next/link";
+import { FormEvent, useState } from "react";
+import { Eye, EyeOff, Store } from "lucide-react";
 
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { Lock, User, Eye, EyeOff } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import axiosInstance from "@/lib/axiosInstance";
-import useStore from "@/lib/Zustand";
+import { Card, CardContent } from "@/components/ui/card";
+import VendorLoginComponent from "@/components/vendor/auth/login";
 import { toast } from "sonner";
-const loginSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Invalid email format"),
-  password: z
-    .string()
-    .min(6, "Password must be at least 6 characters")
-    .regex(/[A-Z]/, "Must include at least one uppercase letter")
-    .regex(/[a-z]/, "Must include at least one lowercase letter")
-    .regex(/[0-9]/, "Must include at least one number")
-    .regex(/[^A-Za-z0-9]/, "Must include at least one special character"),
-});
+import axiosInstance from "@/lib/axiosInstance";
+import { useRouter } from "next/navigation";
+import useStore from "../lib/Zustand";
 
-type LoginFormData = z.infer<typeof loginSchema>;
-
-export default function Home() {
-  const [showPassword, setShowPassword] = useState(false);
-  const router = useRouter();
+export default function VendorLogin() {
   const { login } = useStore();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
-  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [emailValid, setEmailValid] = useState<boolean>(false);
+  const router = useRouter();
 
-  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    setEmailValid(emailRegex.test(email));
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!emailValid) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
+    setLoading(true);
     try {
-      const response = await axiosInstance.post("/api/v1/admin-auth/login", {
-        email: data.email,
-        password: data.password,
+      const response = await axiosInstance.post("/vendor/login", {
+        email,
+        password,
       });
- 
-      const statusCode = response.data.statusCode;
-      const userId = response.data.user_id;
- 
-      if (statusCode === 200) {
-        const { access_token, user_id } = response.data.data;
-        console.log(response.data.data)
-        login(access_token);
-        localStorage.setItem('id', user_id);
-        router.push('/Dashboard');
-        toast.success('Login Successful.');
-      } else if (statusCode === 201) {
-        router.push(`/ResetPassword?email=${encodeURIComponent(data.email)}`);
-        toast.success('Login Success. Please reset your password.');
+
+      if (response.status === 200) {
+        const { access_token, user } = response.data;
+
+        if (!access_token) {
+          throw new Error("Invalid response: Missing access token");
+        }
+
+        login(access_token, user || null); // Safe to pass even if user is null
+
+        toast.success("Login successful.");
+
+        if (!user) {
+          // No business profile yet — go to onboarding
+          router.push("/onboarding");
+        } else if (user.is_approved === false) {
+          router.push("/verification");
+        } else {
+          router.push("/dashboard");
+        }
       }
     } catch (error: any) {
-      console.log(error.response)
-      if (error.response) {
-        const { status, data } = error.response;
-        if (status === 401) {
-          toast(data.detail.message === "User not found." ? 'User Not Found.' : 'Invalid credentials or account issues.');
-        } else if (status === 403) {
-          toast(data.detail.message);
-          
-        }
-         else if (status === 423) {
-          toast(data.detail.message);
-          
-        }  else if (status === 404) {
-          toast('Account not found.');
-        } else {
-          toast('Unexpected error: ' + (data.detail.message || 'An error occurred.'));
-        }
-      } else {
-        toast('An error occurred: ' + (error.message || 'Unknown error.'));
-      }
+      const errorMessage =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        "Something went wrong. Please try again.";
+
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="relative min-h-screen w-full">
-      {/* Fullscreen background image */}
-      <Image
-        src="/loginprofile.webp"
-        alt="Background"
-        fill
-        priority
-        className="object-cover z-0"
-      />
+    <div className="min-h-screen w-full lg:grid lg:grid-cols-2 bg-gradient-to-br from-blue-50 via-white to-blue-50">
+      <VendorLoginComponent />
+      <div className="flex items-center justify-center p-6 lg:p-8 relative">
+        {/* Floating elements for visual interest */}
+        <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-r from-blue-400 to-blue-400 rounded-full opacity-10 animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-16 h-16 bg-gradient-to-r from-green-400 to-blue-400 rounded-full opacity-10 animate-pulse delay-1000"></div>
 
-      {/* Overlay to dim image for readability */}
-      <div className="absolute inset-0 bg-black/40 z-10" />
-
-      {/* Login form on top of image */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="absolute inset-0 flex items-center justify-center z-20"
-      >
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="bg-white/90 backdrop-blur-md rounded-2xl p-10 w-full max-w-sm shadow-lg"
-        >
-            <div className="flex justify-center mb-4">
-    <Image
-      src="/logo.png" // Replace with your actual logo path
-      alt="Logo"
-      width={80}
-      height={80}
-      className="object-contain"
-    />
-  </div>
-          <h2 className="text-3xl font-bold mb-6 text-center">Login</h2>
-
-          {/* Email */}
-          <div className="mb-4">
-            <Label htmlFor="email" className="text-sm mb-1 block">
-              Email
-            </Label>
-            <div className="relative">
-              <Input
-                id="email"
-                type="email"
-                {...register("email")}
-                className="pl-10"
-              />
-              <User className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+        <div className="mx-auto w-full max-w-md space-y-8 relative z-10">
+          <div className="text-center space-y-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-2xl mb-4 shadow-lg">
+              <Store className="w-8 h-8 text-white" />
             </div>
-            {errors.email && (
-              <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-            )}
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+              Welcome Back!
+            </h1>
+            <p className="text-lg text-gray-600">
+              Ready to grow your business? Let's get you signed in to your
+              vendor dashboard.
+            </p>
           </div>
+          <form onSubmit={handleSubmit}>
+            <Card className="border-0 shadow-2xl bg-white/80 backdrop-blur-sm">
+              <CardContent className="p-8 space-y-6">
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl font-semibold text-gray-800">
+                    Sign In
+                  </h2>
+                  <p className="text-gray-500 mt-1">
+                    Access your vendor control center
+                  </p>
+                </div>
 
-          {/* Password */}
-          <div className="mb-4">
-            <Label htmlFor="password" className="text-sm mb-1 block">
-              Password
-            </Label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                {...register("password")}
-                className="pl-10 pr-10"
-              />
-              <Lock className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500"
-              >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4" />
-                ) : (
-                  <Eye className="h-4 w-4" />
-                )}
-              </button>
-            </div>
-            {errors.password && (
-              <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-            )}
+                <div className="space-y-5">
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="email"
+                      className="text-sm font-medium text-gray-700"
+                    >
+                      Email Address
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setEmail(val);
+                        validateEmail(val);
+                      }}
+                      placeholder="your.business@example.com"
+                      className="h-12 border-2 border-gray-200 focus:border-emerald-500 transition-colors duration-200"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label
+                        htmlFor="password"
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        Password
+                      </Label>
+                      <Link
+                        href="/vendor/forgot-password"
+                        className="text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                      >
+                        Forgot password?
+                      </Link>
+                    </div>
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setPassword(val);
+                        }}
+                        placeholder="Create a strong password"
+                        className="h-12 border-2 border-gray-200 focus:border-emerald-500 transition-colors duration-200 pr-12"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="w-5 h-5" />
+                        ) : (
+                          <Eye className="w-5 h-5" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full h-12 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
+                  >
+                    Sign In
+                  </Button>
+                </div>
+
+                <div className="text-center pt-4">
+                  <p className="text-gray-600">
+                    New to our marketplace?{" "}
+                    <Link
+                      href="/signup"
+                      className="text-blue-600 hover:text-blue-800 font-semibold transition-colors"
+                    >
+                      Start Selling Today
+                    </Link>
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </form>
+
+          <div className="text-center">
+            <Link
+              href="/login"
+              className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              Shopping as a customer? Customer login →
+            </Link>
           </div>
-
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-full"
-          >
-            Login
-          </Button>
-        </form>
-      </motion.div>
+        </div>
+      </div>
     </div>
   );
 }
-
-
-// 'use client';
-
-// import { useState } from "react";
-// import { Card, CardContent, CardHeader } from "@/components/ui/card";
-// import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button";
-// import { Label } from "@/components/ui/label";
-// import { motion } from "framer-motion";
-// import Image from "next/image";
-// import { Lock, User, Eye, EyeOff } from "lucide-react";
-// import { useRouter } from "next/navigation";
-// import { useForm } from "react-hook-form";
-// import { z } from "zod";
-// import { zodResolver } from "@hookform/resolvers/zod";
-
-// const loginSchema = z.object({
-//   email: z.string().min(1, "Email is required").email("Invalid email format"),
-//   password: z
-//     .string()
-//     .min(6, "Password must be at least 6 characters")
-//     .regex(/[A-Z]/, "Must include at least one uppercase letter")
-//     .regex(/[a-z]/, "Must include at least one lowercase letter")
-//     .regex(/[0-9]/, "Must include at least one number")
-//     .regex(/[^A-Za-z0-9]/, "Must include at least one special character"),
-// });
-
-
-// type LoginFormData = z.infer<typeof loginSchema>;
-
-// export default function Home() {
-//   const [showPassword, setShowPassword] = useState(false);
-//   const router = useRouter();
-
-//   const {
-//     register,
-//     handleSubmit,
-//     formState: { errors },
-//   } = useForm<LoginFormData>({
-//     resolver: zodResolver(loginSchema),
-//   });
-
-//   const onSubmit = (data: LoginFormData) => {
-//     console.log("Login data:", data);
-//     router.push("/Dashboard");
-//   };
-
-//   return (
-//     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white font-sans">
-//       {/* Left Side: Image */}
-//     <motion.div
-//   initial={{ opacity: 0, x: 0 }}
-//   animate={{ opacity: 1, x: 10 }}
-//   transition={{ duration: 0.6 }}
-//   className="hidden md:flex justify-center items-center border-r border-gray-200 min-h-screen relative"
-// >
-//   <div className="w-full h-full relative">
-//     <Image
-//       src="/loginprofile.webp"
-//       alt="Illustration"
-//       fill
-//       className="object-cover"
-//       priority
-//     />
-//   </div>
-// </motion.div>
-
-
-//       {/* Right Side: Login Form */}
-//       <motion.div
-//         initial={{ opacity: 0, x: 30 }}
-//         animate={{ opacity: 1, x: 0 }}
-//         transition={{ duration: 0.6 }}
-//         className="flex items-center justify-center px-4 sm:px-8 py-12"
-//       >
-//         <div className="w-full max-w-sm rounded-2xl">
-//           <form
-//             onSubmit={handleSubmit(onSubmit)}
-//             className="p-10 flex flex-col justify-center z-10"
-//           >
-//             <h2 className="text-3xl font-bold mb-6 text-center">Login</h2>
-
-//             {/* Email */}
-//             <div className="mb-4">
-//               <Label htmlFor="email" className="text-sm mb-1 block">
-//                 Email
-//               </Label>
-//               <div className="relative">
-//                 <Input
-//                   id="email"
-//                   type="email"
-//                   {...register("email")}
-//                   className="pl-10 focus-visible:ring-0 focus-visible:border-purple-500"
-//                 />
-//                 <User className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-//               </div>
-//               {errors.email && (
-//                 <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-//               )}
-//             </div>
-
-//             {/* Password */}
-//             <div className="mb-4">
-//               <Label htmlFor="password" className="text-sm mb-1 block">
-//                 Password
-//               </Label>
-//               <div className="relative">
-//                 <Input
-//                   id="password"
-//                   type={showPassword ? "text" : "password"}
-//                   {...register("password")}
-//                   className="pl-10 pr-10 bg-transparent border-b focus-visible:ring-0 focus-visible:border-purple-500"
-//                 />
-//                 <Lock className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-//                 <button
-//                   type="button"
-//                   onClick={() => setShowPassword(!showPassword)}
-//                   className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
-//                 >
-//                   {showPassword ? (
-//                     <EyeOff className="h-4 w-4" />
-//                   ) : (
-//                     <Eye className="h-4 w-4" />
-//                   )}
-//                 </button>
-//               </div>
-//               {errors.password && (
-//                 <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-//               )}
-//             </div>
-
-//             {/* Submit Button */}
-//             <Button
-//               type="submit"
-//               className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-full cursor-pointer"
-//             >
-//               Login
-//             </Button>
-//           </form>
-//         </div>
-//       </motion.div>
-//     </div>
-//   );
-// }
-
-// 'use client';
-
-// import { useForm } from "react-hook-form";
-// import { z } from "zod";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button";
-// import { Label } from "@/components/ui/label";
-// import { Card, CardContent } from "@/components/ui/card";
-// import { motion } from "framer-motion";
-// import Image from "next/image";
-// import { User, Lock, Eye, EyeOff } from "lucide-react";
-// import { useState } from "react";
-
-// const formSchema = z.object({
-//   email: z.string().email("Invalid email"),
-//   password: z.string().min(6, "Password must be at least 6 characters"),
-// });
-
-// type FormValues = z.infer<typeof formSchema>;
-
-// export default function Home() {
-//   const [loading, setLoading] = useState(false);
-//   const [showPassword, setShowPassword] = useState(false);
-
-//   const {
-//     register,
-//     handleSubmit,
-//     formState: { errors },
-//   } = useForm<FormValues>({
-//     resolver: zodResolver(formSchema),
-//   });
-
-//   const onSubmit = async (data: FormValues) => {
-//     setLoading(true);
-//     try {
-//       await new Promise((resolve) => setTimeout(resolve, 1500));
-//       alert(`Login success for ${data.email}`);
-//     } catch (error) {
-//       alert("Login failed");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] px-4 font-sans">
-//       <motion.div
-//         initial={{ opacity: 0, scale: 0.95 }}
-//         animate={{ opacity: 1, scale: 1 }}
-//         transition={{ duration: 0.6 }}
-//         className="w-full max-w-4xl"
-//       >
-//         <Card className="grid grid-cols-1 md:grid-cols-2 rounded-2xl shadow-2xl overflow-hidden">
-//           {/* Left */}
-//           <div className="hidden md:flex flex-col items-center justify-center bg-blue-50 p-8">
-//             <Image
-//               src="/login-illustration.svg"
-//               alt="Illustration"
-//               width={300}
-//               height={300}
-//               className="object-contain"
-//             />
-//             <h2 className="text-2xl font-bold text-gray-700 mt-4 text-center">
-//               Welcome to Our Platform
-//             </h2>
-//           </div>
-
-//           {/* Right */}
-//           <CardContent className="p-8 bg-white flex flex-col justify-center">
-//             <h2 className="text-2xl font-semibold mb-6 text-center">Login</h2>
-
-//             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-//               <div>
-//                 <Label htmlFor="email" className="text-sm block">
-//                   Email
-//                 </Label>
-//                 <div className="relative">
-//                   <Input
-//                     id="email"
-//                     type="email"
-//                     {...register("email")}
-//                     className="pl-10"
-//                     placeholder="you@example.com"
-//                   />
-//                   <User className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-//                 </div>
-//                 {errors.email && (
-//                   <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
-//                 )}
-//               </div>
-
-//               <div>
-//                 <Label htmlFor="password" className="text-sm block">
-//                   Password
-//                 </Label>
-//                 <div className="relative">
-//                   <Input
-//                     id="password"
-//                     type={showPassword ? "text" : "password"}
-//                     {...register("password")}
-//                     className="pl-10 pr-10"
-//                     placeholder=""
-//                   />
-//                   <Lock className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-//                   <button
-//                     type="button"
-//                     onClick={() => setShowPassword(!showPassword)}
-//                     className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
-//                     aria-label={showPassword ? "Hide password" : "Show password"}
-//                   >
-//                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-//                   </button>
-//                 </div>
-//                 {errors.password && (
-//                   <p className="text-sm text-red-500 mt-1">{errors.password.message}</p>
-//                 )}
-//               </div>
-
-//               <Button
-//                 type="submit"
-//                 className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full hover:opacity-90"
-//                 disabled={loading}
-//               >
-//                 {loading ? "Logging in..." : "Login"}
-//               </Button>
-//             </form>
-
-           
-//           </CardContent>
-//         </Card>
-//       </motion.div>
-//     </div>
-//   );
-// }
