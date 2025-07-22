@@ -272,7 +272,7 @@ export default function ProductsPage({ vendorId }: { vendorId: string }) {
         setProducts(mappedProducts);
         setError(null);
       } catch (err) {
-        setError("Failed to fetch products. Please try again later.");
+        setError("Failed to fetch products.");
         console.error(err);
       } finally {
         setLoading(false);
