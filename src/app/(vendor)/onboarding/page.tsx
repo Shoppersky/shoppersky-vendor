@@ -62,6 +62,7 @@ export default function VendorOnboarding() {
         store_name: storeDetails.storeName,
         store_url: `https://shoppersky.com.au/${storeDetails.storeUrl}`,
         industry: storeDetails.industry,
+        location: storeDetails.location,
       };
 
       const response = await axiosInstance.post(
