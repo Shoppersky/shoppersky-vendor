@@ -828,12 +828,11 @@ export default function ProductsPage() {
               Export CSV
             </Button>
             <Button
-              onClick={() => setOpen(true)}
-              className="group relative overflow-hidden bg-gradient-to-r from-cyan-600 to-blue-600 shadow-lg transition-all hover:from-cyan-700 hover:to-blue-700 hover:shadow-xl hover:shadow-cyan-500/25"
+              onClick={() => router.push("/add-product")} // Replace with your desired route
+              className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 transition-all hover:scale-105"
             >
-              <Plus className="mr-2 h-4 w-4 transition-transform group-hover:rotate-90" />
+              <Plus className="mr-2 h-4 w-4" />
               Add Product
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
             </Button>
           </div>
         </div>
@@ -1240,7 +1239,7 @@ export default function ProductsPage() {
                     Clear Filters
                   </Button>
                   <Button
-                    onClick={() => setOpen(true)}
+                    onClick={() => router.push("/add-product")} // Replace with your desired route
                     className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 transition-all hover:scale-105"
                   >
                     <Plus className="mr-2 h-4 w-4" />
