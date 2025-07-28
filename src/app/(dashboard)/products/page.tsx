@@ -342,7 +342,7 @@ export default function ProductsPage() {
       setLoading(true);
       try {
         const response = await axiosInstance.get<ProductResponse[]>(
-          `/products/by-vendor/${userId}`
+          `/products/by-vendor/I1vSQR`
         );
         const mappedProducts: Product[] = response.data.map((product) => ({
           id: product.product_id,

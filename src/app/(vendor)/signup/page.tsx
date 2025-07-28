@@ -238,7 +238,7 @@ export default function VendorSignup() {
                   <p className="text-gray-600">
                     Already have an account?{" "}
                     <Link
-                      href="/login"
+                      href="/"
                       className="text-cyan-600 hover:text-cyan-800 font-semibold transition-colors"
                     >
                       Sign In Here

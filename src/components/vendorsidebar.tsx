@@ -21,6 +21,8 @@ export default function Sidebar() {
     { label: "Affiliates", icon: Megaphone, path: "/affiliates" },
     { label: "Payments", icon: CreditCard, path: "/payments" },
     { label: "Settings", icon: Settings, path: "/settings" },
+    { label: "Onlinestore", icon: Settings, path: "/online-store" },
+
   ];
 
   return (

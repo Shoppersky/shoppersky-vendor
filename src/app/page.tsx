@@ -197,7 +197,7 @@ export default function VendorLogin() {
 
           <div className="text-center">
             <Link
-              href="/login"
+              href="/"
               className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
             >
               Shopping as a customer? Customer login →

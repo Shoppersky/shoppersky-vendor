@@ -17,6 +17,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import axiosInstance from "@/lib/axiosInstance";
 import useStore from "../../../lib/Zustand";
+import { useRouter } from "next/navigation";
 
 interface Subcategory {
   subcategory_id: string;
@@ -69,6 +70,7 @@ export default function AddProductPage() {
   const [activeTab, setActiveTab] = useState("basic");
   const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const fetchVendorCategories = async () => {
@@ -212,6 +214,7 @@ export default function AddProductPage() {
 
       toast.success("Product added successfully!");
       resetForm();
+      router.push("/products")
     } catch (error) {
       toast.error(`Failed to add product: ${error.message}`);
     }

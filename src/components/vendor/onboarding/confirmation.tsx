@@ -19,7 +19,7 @@ export default function Step5VerificationConfirmation({
       <div className="hidden lg:flex items-center justify-center p-12 bg-gradient-to-br from-emerald-50 to-green-50 h-full">
         <div className="text-center space-y-6 max-w-md">
           <Image
-            src="/images/5.jpg"
+            src="/images/verificationpage.jpg"
             alt="Onboarding completion illustration"
             width={400}
             height={400}

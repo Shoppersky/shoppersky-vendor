@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { ShoppingCart, Star, Heart, User, Search, Menu, X, Filter, Edit3, Save, Camera, Settings, Eye, EyeOff, ArrowLeft, BoxIcon, Home } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
+import axiosInstance from '@/lib/axiosInstance';
+import useStore from '@/lib/Zustand';
+import { toast } from 'sonner';
 interface Product {
   id: number;
   name: string;
@@ -40,8 +42,15 @@ const OnlineStorePage: React.FC = () => {
   const [editingBanner, setEditingBanner] = useState(false);
   const [editingProfile, setEditingProfile] = useState(false);
   const [editingStore, setEditingStore] = useState(false);
-  
+  //category state
+
+  const [categories,setCategories]=useState([])
+  const[productss,SetProducts]=useState([])
+
+
   // Store Settings
+
+  const{userId}=useStore()
   const [storeSettings, setStoreSettings] = useState<StoreSettings>({
     storeName: "ShopHub",
     storeTagline: "Your Premium Shopping Destination",
@@ -185,23 +194,40 @@ const OnlineStorePage: React.FC = () => {
 
   ];
 
-  const categories = [
-  { id: 'all', name: 'All Products' },
-  { id: 'electronics', name: 'Electronics' },
-  { id: 'clothing', name: 'Clothing' },
-  { id: 'accessories', name: 'Accessories' },
-  { id: 'home', name: 'Home & Living' }
-];
 
 
-  const filteredProducts = selectedCategory === 'all' 
-    ? products 
-    : products.filter(product => product.category === selectedCategory);
+const fetchCategories=async()=>{
+  try{
+    const response=await axiosInstance.get(`/mapping/?vendor_ref_id=I1vSQR&&status_filter=false`)
+    setCategories(response.data.data)
+  }
+  catch(error){
+    toast.error('failed to load event data')
+  }
+}
+
+
+const fetchProducts=async()=>{
+  try{
+    const response=await axiosInstance.get(`/products/by-vendor/I1vSQR`)
+    SetProducts(response.data)
+
+  }
+  catch(error){
+    toast.error('failed to load event data')
+  }
+}
+console.log(productss)
+const filteredProducts = selectedCategory.toLowerCase() === 'all' 
+  ? productss 
+  : productss.filter(product => 
+      product.category_name?.toLowerCase() === selectedCategory.toLowerCase()
+    );
 
   const addToCart = (productId: number) => {
     setCartItems(prev => prev + 1);
   };
-
+console.log(filteredProducts)
   const toggleWishlist = (productId: number) => {
     setWishlistItems(prev => 
       prev.includes(productId)
@@ -224,6 +250,12 @@ const OnlineStorePage: React.FC = () => {
     }
   };
 
+
+  useEffect(()=>{
+    fetchCategories()
+    fetchProducts()
+  },[])
+console.log(productss)
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Admin Dashboard Header */}
@@ -325,27 +357,26 @@ const OnlineStorePage: React.FC = () => {
   <div className="mb-8">
     <h2 className="text-2xl font-bold text-gray-900 mb-6">Shop by Category</h2>
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {categories.filter(cat => cat.id !== 'all').map((category) => (
+      {categories.filter(cat => cat.category_id !== 'all').map((category) => (
         <div 
-          key={category.id}
-          onClick={() => setSelectedCategory(category.id)}
+          key={category.category_id}
+          onClick={() => setSelectedCategory(category.category_name)}
           className={`cursor-pointer rounded-lg p-6 text-center transition-all hover:shadow-md ${
-            selectedCategory === category.id 
+            selectedCategory === category.category_name 
               ? 'bg-indigo-100 border-2 border-indigo-500' 
               : 'bg-white border border-gray-200'
           }`}
         >
           <div className="flex flex-col items-center">
-            <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center mb-4">
-              {category.id === 'electronics' && <ShoppingCart className="h-6 w-6 text-indigo-600" />}
-              {category.id === 'clothing' && <User className="h-6 w-6 text-indigo-600" />}
-              {category.id === 'accessories' && <Heart className="h-6 w-6 text-indigo-600" />}
-              {category.id === 'Home & Living' && <Home className="h-6 w-6 text-indigo-600" />}
-            </div>
+     
             
-            <h3 className="font-medium text-lg">{category.name}</h3>
+            <h3 className="font-medium text-lg">{category.category_name}</h3>
             <p className="text-sm text-gray-500 mt-1">
-              {products.filter(p => p.category === category.id).length} Products
+{
+  productss.filter(
+    p => p.category_name?.toLowerCase() === category.category_name?.toLowerCase()
+  ).length
+} Products
             </p>
           </div>
         </div>
@@ -371,10 +402,13 @@ const OnlineStorePage: React.FC = () => {
                 className="border border-gray-300 rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
               >
                 {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
+                  <option key={category.category_id} value={category.category_id}>
+                    {category.category_name}
                   </option>
                 ))}
+                  <option  value='all'>
+             All
+                  </option>
               </select>
             </div>
             <div className="text-sm text-gray-500">
@@ -386,13 +420,13 @@ const OnlineStorePage: React.FC = () => {
         {/* Products Grid - Responsive layout with consistent card design */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6">
           {filteredProducts.map((product) => (
-            <Card key={product.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-0 shadow-md bg-white rounded-xl">
+            <Card key={product.product_id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-0 shadow-md bg-white rounded-xl">
               {/* Product Image Container */}
               <div className="relative overflow-hidden">
                 <div className="aspect-square w-full bg-gray-100 relative">
                   <Image
-                    src={product.image}
-                    alt={product.name}
+                    src={product.images || 'placeholder.svg'}
+                    alt={product.identification?.product_name}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />
@@ -407,21 +441,21 @@ const OnlineStorePage: React.FC = () => {
                       Featured
                     </span>
                   )}
-                  {product.originalPrice && (
+                  {product.price && (
                     <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-2 py-1 text-xs font-bold rounded-full shadow-lg">
-                      -{(((product.originalPrice - product.price) / product.originalPrice) * 100).toFixed(0)}% OFF
+                      -{(((product.pricing.actual_price- product.pricing.selling_price) / product.pricing.actual_price) * 100).toFixed(0)}% OFF
                     </span>
                   )}
                 </div>
                 
                 {/* Wishlist Button */}
                 <button
-                  onClick={() => toggleWishlist(product.id)}
+                  onClick={() => toggleWishlist(product.product_id)}
                   className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all duration-300"
                 >
                   <Heart
                     className={`h-4 w-4 ${
-                      wishlistItems.includes(product.id)
+                      wishlistItems.includes(product.product_id)
                         ? 'text-red-500 fill-current'
                         : 'text-gray-600'
                     }`}
@@ -436,13 +470,13 @@ const OnlineStorePage: React.FC = () => {
                 {/* Product Category */}
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                    {product.category}
+                    {product.category_name}
                   </span>
                 </div>
 
                 {/* Product Name */}
                 <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 min-h-[2.5rem] leading-tight">
-                  {product.name}
+                  {product.identification?.product_name}
                 </h3>
                 
                 {/* Rating */}
@@ -459,20 +493,20 @@ const OnlineStorePage: React.FC = () => {
                       />
                     ))}
                   </div>
-                  <span className="text-xs text-gray-600">
+                  {/* <span className="text-xs text-gray-600">
                     {product.rating} ({product.reviews.toLocaleString()})
-                  </span>
+                  </span> */}
                 </div>
                 
                 {/* Price Section */}
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col">
                     <span className="text-lg font-bold text-indigo-600">
-                      ${product.price}
+                      ${product.pricing.actual_price}
                     </span>
-                    {product.originalPrice && (
+                    {product.pricing && (
                       <span className="text-sm text-gray-500 line-through">
-                        ${product.originalPrice}
+                        ${product.pricing.selling_price}
                       </span>
                     )}
                   </div>
@@ -481,7 +515,7 @@ const OnlineStorePage: React.FC = () => {
                 {/* Action Buttons */}
                 <div className="flex gap-2 pt-2">
                   <Button
-                    onClick={() => addToCart(product.id)}
+                    onClick={() => addToCart(product.product_id)}
                     className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 rounded-lg transition-colors duration-200"
                     size="sm"
                   >

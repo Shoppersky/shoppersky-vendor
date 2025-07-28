@@ -668,7 +668,7 @@ export default function CategoriesPage() {
     const fetchData = async () => {
       try {
         setIsLoading(true)
-        const categoriesResponse = await axiosInstance.get("/industries/by-industry/bygkgj?status_filter=false")
+        const categoriesResponse = await axiosInstance.get("/industries/by-industry/vahhnv?status_filter=false")
         const categoriesResult = categoriesResponse.data
         const mappedCategories: Category[] = categoriesResult.data.map((item: any) => ({
           category_id: item.category_id,
@@ -797,7 +797,7 @@ export default function CategoriesPage() {
             Organize and manage your product categories and subcategories
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        {/* <div className="flex items-center gap-3">
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button className="flex items-center gap-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-300 rounded-lg">
@@ -877,7 +877,7 @@ export default function CategoriesPage() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-        </div>
+        </div> */}
       </div>
       {/* Filters and Search */}
       <div className="transition-all duration-300 p-6">

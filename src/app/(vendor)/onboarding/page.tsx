@@ -15,7 +15,7 @@ export default function VendorOnboarding() {
   const [storeDetails, setStoreDetails] = useState({
     storeName: "",
     storeUrl: "",
-    industry:"",
+    industry_id:"",
     location: "",
   });
   const [generalQuestions, setGeneralQuestions] = useState({
@@ -45,6 +45,8 @@ export default function VendorOnboarding() {
   });
   const [referenceNumber, setReferenceNumber] = useState("");
 
+  console.log(storeDetails)
+
   // Function to submit onboarding data to the backend
   const submitOnboarding = async () => {
     try {
@@ -61,7 +63,7 @@ export default function VendorOnboarding() {
         ),
         store_name: storeDetails.storeName,
         store_url: `https://shoppersky.com.au/${storeDetails.storeUrl}`,
-        industry: storeDetails.industry,
+        industry_id: storeDetails.industry_id,
         location: storeDetails.location,
       };
 

@@ -72,7 +72,7 @@ import { useEffect } from "react";
 export default function Verification() {
   const { user } = useStore();
   const router = useRouter();
-
+console.log(user)
   useEffect(() => {
     console.log("Verification page - User data:", user);
   }, [user]);
@@ -85,12 +85,12 @@ export default function Verification() {
     router.push("/onboarding");
   };
 
-  // If no user data, redirect to login
-  if (!user) {
-    console.log("No user data, redirecting to /login");
-    router.push("/login");
-    return null;
-  }
+  // // If no user data, redirect to login
+  // if (!user) {
+  //   console.log("No user data, redirecting to /login");
+  //   router.push("/login");
+  //   return null;
+  // }
 
   // If approved, redirect to dashboard
   if (user.is_approved) {

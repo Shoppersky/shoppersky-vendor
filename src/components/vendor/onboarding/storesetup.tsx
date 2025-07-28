@@ -28,14 +28,14 @@ interface Step1Props {
     storeName: string;
     storeUrl: string;
     location: string;
-    industry: string; 
+    industry_id: string; 
   };
   setStoreDetails: React.Dispatch<
     React.SetStateAction<{
       storeName: string;
       storeUrl: string;
       location: string;
-      industry: string;
+      industry_id: string;
     }>
   >;
   onNext: () => void;
@@ -51,7 +51,7 @@ export default function Step1StoreSetup({
     if (
       storeDetails.storeName &&
       storeDetails.storeUrl &&
-      storeDetails.industry &&
+      storeDetails.industry_id &&
       storeDetails.location
     ) {
       onNext();
@@ -159,9 +159,9 @@ export default function Step1StoreSetup({
           <div className="space-y-2">
             <Label htmlFor="industry">Select Industry</Label>
             <Select
-              value={storeDetails.industry}
+              value={storeDetails.industry_id}
               onValueChange={(value) =>
-                setStoreDetails({ ...storeDetails, industry: value })
+                setStoreDetails({ ...storeDetails, industry_id: value })
               }
             >
               <SelectTrigger className="h-12 w-full border-2 border-gray-200 focus:border-blue-500 transition-colors duration-200">
@@ -180,7 +180,7 @@ export default function Step1StoreSetup({
   industries.map((industry) => (
     <SelectItem
       key={industry.industry_id}
-      value={industry.industry_slug}
+      value={industry.industry_id}
     >
       {industry.industry_name}
     </SelectItem>

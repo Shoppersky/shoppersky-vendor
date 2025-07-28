@@ -107,8 +107,8 @@ export default function DashboardHome() {
         </div>
         <div className="flex items-center gap-4 mt-4 sm:mt-0">
           <div className="relative group">
-            <Avatar src="/user.png" />
-            <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full opacity-0 group-hover:opacity-20 blur transition-opacity duration-300" />
+            <Avatar src="/placeholder.svg" />
+            <div className="absolute -inset-1 rounded-full opacity-0 group-hover:opacity-20 blur transition-opacity duration-300" />
           </div>
           <div>
             <h3 className="font-semibold text-gray-800 dark:text-gray-200">John Doe</h3>
