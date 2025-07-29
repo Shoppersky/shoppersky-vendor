@@ -82,14 +82,18 @@ export default function VendorSignup() {
       if (response.status === 201) {
         toast.success("Registration successful! Please check your email.");
         setTimeout(() => {
-          router.push("/login");
+          router.push("/");
         }, 2000);
       }
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.detail ||
+        error.response?.data?.detail.message ||
         error.response?.data?.message ||
         "Something went wrong. Please try again.";
+
+         console.log(errorMessage)
+
+       
 
       toast.error(errorMessage);
     } finally {

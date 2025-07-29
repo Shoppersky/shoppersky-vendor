@@ -12,22 +12,28 @@ import ResendConfirmationInfo from "@/components/vendor/auth/resend-confirmation
 export default function ResendConfirmation() {
   const [loading, setLoading] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
+  const [email, setEmail] = useState("")
 
   const handleResendEmail = async () => {
+    if (!email) {
+      toast.error("Please enter your email address.")
+      return
+    }
+
     setLoading(true)
     try {
-      // Replace with your actual API endpoint
-      const response = await axiosInstance.post("/vendor/resend-confirmation")
+      const response = await axiosInstance.post("/vendor/resend-verification", {
+        email,
+      })
 
       if (response.status === 200) {
         setEmailSent(true)
-        toast.success("Confirmation email sent successfully!")
+        toast.success(response.data.message || "Verification email has been resent successfully!")
       }
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.detail ||
         error.response?.data?.message ||
-        "Failed to send confirmation email. Please try again."
+        "Failed to send verification email. Please try again."
       toast.error(errorMessage)
     } finally {
       setLoading(false)
@@ -66,8 +72,15 @@ export default function ResendConfirmation() {
               {!emailSent ? (
                 <>
                   <div className="text-center space-y-4">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email address"
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    />
                     <p className="text-gray-600 leading-relaxed">
-                      Please check your email for a confirmation link. Didn't receive the email? We'll send you another.
+                      Please enter your email and we'll send another confirmation link.
                     </p>
                   </div>
 
@@ -83,7 +96,7 @@ export default function ResendConfirmation() {
                 <div className="text-center space-y-4">
                   <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white p-4 rounded-lg">
                     <p className="text-sm font-medium">
-                      Confirmation email sent successfully! Please check your inbox.
+                      Verification email sent successfully! Please check your inbox.
                     </p>
                   </div>
                   <p className="text-gray-600">If you still don't see the email, please check your spam folder.</p>
