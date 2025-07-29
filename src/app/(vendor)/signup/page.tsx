@@ -253,14 +253,14 @@ export default function VendorSignup() {
             </Card>
           </form>
 
-          <div className="text-center">
+          {/* <div className="text-center">
             <Link
               href="/signup"
               className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
             >
               Looking to shop? Customer signup →
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

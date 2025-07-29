@@ -2,7 +2,7 @@
 import Image from "next/image";
 import type React from "react";
 
-import { Store } from "lucide-react";
+import { CheckCircle, XCircle, Loader2, Store } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,7 +28,7 @@ interface Step1Props {
     storeName: string;
     storeUrl: string;
     location: string;
-    industry_id: string; 
+    industry_id: string;
   };
   setStoreDetails: React.Dispatch<
     React.SetStateAction<{
@@ -40,7 +40,6 @@ interface Step1Props {
   >;
   onNext: () => void;
 }
-
 
 export default function Step1StoreSetup({
   storeDetails,
@@ -63,6 +62,9 @@ export default function Step1StoreSetup({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [industries, setIndustries] = useState<Industry[]>([]);
+  const [storeNameStatus, setStoreNameStatus] = useState<
+    "available" | "unavailable" | "checking" | null
+  >(null);
 
   useEffect(() => {
     const fetchIndustries = async () => {
@@ -81,6 +83,38 @@ export default function Step1StoreSetup({
 
     fetchIndustries();
   }, []);
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (storeDetails.storeName.trim()) {
+        checkStoreNameAvailability(storeDetails.storeName);
+      } else {
+        setStoreNameStatus(null);
+      }
+    }, 500); // Debounce by 500ms
+
+    return () => clearTimeout(delayDebounce);
+  }, [storeDetails.storeName]);
+
+  const checkStoreNameAvailability = async (name: string) => {
+    try {
+      setStoreNameStatus("checking");
+      const response = await axiosInstance.post(
+        "/vendor/check-store-name-availability",
+        {
+          store_name: name,
+        }
+      );
+
+      if (response.data.status_code === 200) {
+        setStoreNameStatus("available");
+      } else {
+        setStoreNameStatus("unavailable");
+      }
+    } catch (error) {
+      setStoreNameStatus("unavailable");
+    }
+  };
 
   return (
     <div className="w-full h-full lg:grid lg:grid-cols-2">
@@ -116,8 +150,7 @@ export default function Step1StoreSetup({
             <p className="text-lg text-gray-600">Now, create your store.</p>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="storeName">Store name</Label>
+          <div className="relative">
             <Input
               id="storeName"
               placeholder="My Awesome Store"
@@ -128,10 +161,35 @@ export default function Step1StoreSetup({
                   storeName: e.target.value,
                 })
               }
-              className="h-12 border-2 border-gray-200 focus:border-blue-500 transition-colors duration-200"
+              className={`h-12 border-2 pr-10 ${
+                storeNameStatus === "available"
+                  ? "border-green-500 focus:border-green-500"
+                  : storeNameStatus === "unavailable"
+                  ? "border-red-500 focus:border-red-500"
+                  : "border-gray-200 focus:border-blue-500"
+              } transition-colors duration-200`}
               required
             />
+
+            {storeNameStatus === "checking" && (
+              <Loader2 className="absolute right-3 top-3 w-5 h-5 text-blue-500 animate-spin" />
+            )}
+
+            {storeNameStatus === "available" && (
+              <CheckCircle className="absolute right-3 top-3 w-5 h-5 text-green-500" />
+            )}
+
+            {storeNameStatus === "unavailable" && (
+              <XCircle className="absolute right-3 top-3 w-5 h-5 text-red-500" />
+            )}
           </div>
+
+          {storeNameStatus === "unavailable" && (
+            <p className="mt-1 text-sm text-red-500 flex items-center gap-1">
+              <XCircle className="w-4 h-4" />
+              Store name not available. Try something else.
+            </p>
+          )}
 
           <div className="space-y-2 w-full">
             <Label htmlFor="storeUrl">Store URL</Label>
@@ -169,24 +227,23 @@ export default function Step1StoreSetup({
               </SelectTrigger>
               <SelectContent>
                 {loading ? (
-  <SelectItem value="__loading" disabled>
-    Loading industries...
-  </SelectItem>
-) : error ? (
-  <SelectItem value="__error" disabled>
-    {error}
-  </SelectItem>
-) : (
-  industries.map((industry) => (
-    <SelectItem
-      key={industry.industry_id}
-      value={industry.industry_id}
-    >
-      {industry.industry_name}
-    </SelectItem>
-  ))
-)}
-
+                  <SelectItem value="__loading" disabled>
+                    Loading industries...
+                  </SelectItem>
+                ) : error ? (
+                  <SelectItem value="__error" disabled>
+                    {error}
+                  </SelectItem>
+                ) : (
+                  industries.map((industry) => (
+                    <SelectItem
+                      key={industry.industry_id}
+                      value={industry.industry_id}
+                    >
+                      {industry.industry_name}
+                    </SelectItem>
+                  ))
+                )}
               </SelectContent>
             </Select>
           </div>
@@ -200,7 +257,7 @@ export default function Step1StoreSetup({
                 setStoreDetails({ ...storeDetails, location: value })
               }
             >
-               <SelectTrigger className="h-12 w-full border-2 border-gray-200 focus:border-blue-500 transition-colors duration-200">
+              <SelectTrigger className="h-12 w-full border-2 border-gray-200 focus:border-blue-500 transition-colors duration-200">
                 <SelectValue placeholder="Select your country" />
               </SelectTrigger>
               <SelectContent>
@@ -215,8 +272,8 @@ export default function Step1StoreSetup({
               </SelectContent>
             </Select>
             <p className="text-sm text-muted-foreground mt-1">
-              The location where you or your business is legally registered (e.g.
-              where your bank account is).
+              The location where you or your business is legally registered
+              (e.g. where your bank account is).
             </p>
           </div>
 

@@ -144,10 +144,10 @@ export default function EmailConfirmation() {
 
           <div className="text-center">
             <Link
-              href="/"
+              href="/signup"
               className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
             >
-              ← Back to Home
+              ← Back to Signup
             </Link>
           </div>
         </div>

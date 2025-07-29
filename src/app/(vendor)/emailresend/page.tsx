@@ -1,44 +1,47 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useState } from "react"
-import { Mail, ArrowLeft } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { toast } from "sonner"
-import axiosInstance from "@/lib/axiosInstance"
-import ResendConfirmationInfo from "@/components/vendor/auth/resend-confirmation-info"
+import Link from "next/link";
+import { useState } from "react";
+import { Mail, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { toast } from "sonner";
+import axiosInstance from "@/lib/axiosInstance";
+import ResendConfirmationInfo from "@/components/vendor/auth/resend-confirmation-info";
 
 export default function ResendConfirmation() {
-  const [loading, setLoading] = useState(false)
-  const [emailSent, setEmailSent] = useState(false)
-  const [email, setEmail] = useState("")
+  const [loading, setLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+  const [email, setEmail] = useState("");
 
   const handleResendEmail = async () => {
     if (!email) {
-      toast.error("Please enter your email address.")
-      return
+      toast.error("Please enter your email address.");
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
     try {
       const response = await axiosInstance.post("/vendor/resend-verification", {
         email,
-      })
+      });
 
       if (response.status === 200) {
-        setEmailSent(true)
-        toast.success(response.data.message || "Verification email has been resent successfully!")
+        setEmailSent(true);
+        toast.success(
+          response.data.message ||
+            "Verification email has been resent successfully!"
+        );
       }
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message ||
-        "Failed to send verification email. Please try again."
-      toast.error(errorMessage)
+        "Failed to send verification email. Please try again.";
+      toast.error(errorMessage);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
@@ -59,14 +62,20 @@ export default function ResendConfirmation() {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
               Need Another Email?
             </h1>
-            <p className="text-lg text-gray-600">No worries! We'll send you a fresh confirmation link right away.</p>
+            <p className="text-lg text-gray-600">
+              No worries! We'll send you a fresh confirmation link right away.
+            </p>
           </div>
 
           <Card className="border-0 shadow-2xl bg-white/80 backdrop-blur-sm">
             <CardContent className="p-8 space-y-6">
               <div className="text-center mb-6">
-                <h2 className="text-2xl font-semibold text-gray-800">Confirm your email address</h2>
-                <p className="text-gray-500 mt-1">We'll help you get that confirmation email</p>
+                <h2 className="text-2xl font-semibold text-gray-800">
+                  Confirm your email address
+                </h2>
+                <p className="text-gray-500 mt-1">
+                  We'll help you get that confirmation email
+                </p>
               </div>
 
               {!emailSent ? (
@@ -80,7 +89,8 @@ export default function ResendConfirmation() {
                       className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
                     <p className="text-gray-600 leading-relaxed">
-                      Please enter your email and we'll send another confirmation link.
+                      Please enter your email and we'll send another
+                      confirmation link.
                     </p>
                   </div>
 
@@ -96,10 +106,14 @@ export default function ResendConfirmation() {
                 <div className="text-center space-y-4">
                   <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white p-4 rounded-lg">
                     <p className="text-sm font-medium">
-                      Verification email sent successfully! Please check your inbox.
+                      Verification email sent successfully! Please check your
+                      inbox.
                     </p>
                   </div>
-                  <p className="text-gray-600">If you still don't see the email, please check your spam folder.</p>
+                  <p className="text-gray-600">
+                    If you still don't see the email, please check your spam
+                    folder.
+                  </p>
                 </div>
               )}
 
@@ -107,7 +121,7 @@ export default function ResendConfirmation() {
                 <p className="text-gray-600">
                   Remember your login details?{" "}
                   <Link
-                    href="/vendor/login"
+                    href="/"
                     className="text-emerald-600 hover:text-emerald-800 font-semibold transition-colors"
                   >
                     Sign In Here
@@ -126,7 +140,10 @@ export default function ResendConfirmation() {
               Back to Email Confirmation
             </Link>
             <div>
-              <Link href="/" className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+              <Link
+                href="/emailconfirmation"
+                className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+              >
                 ← Back to Home
               </Link>
             </div>
@@ -134,5 +151,5 @@ export default function ResendConfirmation() {
         </div>
       </div>
     </div>
-  )
+  );
 }

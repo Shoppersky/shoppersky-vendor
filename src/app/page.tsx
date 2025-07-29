@@ -36,39 +36,40 @@ export default function VendorLogin() {
     }
 
     setLoading(true);
+
     try {
       const response = await axiosInstance.post("/vendor/login", {
         email,
         password,
       });
 
-      if (response.status === 200) {
-        const { access_token, user } = response.data;
+      const { access_token, user } = response.data;
 
-        if (!access_token) {
-          throw new Error("Invalid response: Missing access token");
-        }
+      if (access_token) {
+        login(access_token, user || null);
 
-        login(access_token, user || null); // Safe to pass even if user is null
+        // Handle based on onboarding status
+        switch (user?.onboarding_status) {
+          case "approved":
+            router.push("/home");
+            break;
+          case "not_started":
+            router.push("/onboarding");
+            break;
+          case "under_review":
+            router.push("/verification");
+            break;
+          case "rejected":
+            router.push(
+              `/rejected?ref=${encodeURIComponent(user?.ref_number || "N/A")}`
+            );
 
-        toast.success("Login successful.");
-
-        if (!user) {
-          // No business profile yet — go to onboarding
-          router.push("/onboarding");
-        } else if (user.is_approved === false) {
-          router.push("/verification");
-        } else {
-          router.push("/dashboard");
+            break;
+          default:
+            router.push("/error");
+            break;
         }
       }
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.detail ||
-        error.response?.data?.message ||
-        "Something went wrong. Please try again.";
-
-      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -195,14 +196,14 @@ export default function VendorLogin() {
             </Card>
           </form>
 
-          <div className="text-center">
+          {/* <div className="text-center">
             <Link
               href="/"
               className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
             >
               Shopping as a customer? Customer login →
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
