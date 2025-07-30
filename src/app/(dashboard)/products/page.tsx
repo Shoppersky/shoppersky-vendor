@@ -97,9 +97,8 @@ interface ProductResponse {
     };
   };
   images: {
-    primary_image?: string;
-    additional_images?: string[];
-  } | null;
+    urls: string[];
+  } | null; // Updated to match API response
   tags_and_relationships?: {
     product_tags?: string[];
     linkedproductid?: string;
@@ -113,12 +112,12 @@ interface ProductResponse {
   category_name?: string;
   subcategory_name?: string;
 }
-
 interface Product {
   id: string;
   name: string;
   price: string;
-  image: string;
+  image: string; // Primary image
+  images?: string[]; // All image URLs
   purchases: number;
   sold: number;
   status: "Active" | "Inactive";
@@ -342,7 +341,7 @@ export default function ProductsPage() {
       setLoading(true);
       try {
         const response = await axiosInstance.get<ProductResponse[]>(
-          `/products/by-vendor/I1vSQR`
+          `/products/by-vendor/FyEeiE`
         );
         const mappedProducts: Product[] = response.data.map((product) => ({
           id: product.product_id,
@@ -351,8 +350,10 @@ export default function ProductsPage() {
             2
           )}`,
           image:
-            product.images?.primary_image ||
-            "/placeholder.svg?height=56&width=56",
+            product.images?.urls?.[0]?.replace(/\\/g, "/") ||
+            "/placeholder.svg?height=56&width=56", // Normalize backslashes
+          images:
+            product.images?.urls?.map((url) => url.replace(/\\/g, "/")) || [], // Store all images
           purchases: Math.floor(Math.random() * 100),
           sold: Math.floor(Math.random() * 50),
           status: product.status_flags.product_status ? "Inactive" : "Active",
@@ -620,7 +621,7 @@ export default function ProductsPage() {
       const payload = {
         identification: {
           product_name: formData.name,
-          product_sku: `SKU-${Date.now()}`, // Generate a unique SKU or adjust as needed
+          product_sku: `SKU-${Date.now()}`,
         },
         pricing: {
           actual_price: formData.price,
@@ -630,8 +631,7 @@ export default function ProductsPage() {
           quantity: formData.stock.toString(),
         },
         images: {
-          primary_image:
-            formData.image || "/placeholder.svg?height=56&width=56",
+          urls: [formData.image || "/placeholder.svg?height=56&width=56"], // Use urls array
         },
         descriptions: {
           short_description: formData.shortDescription,
@@ -655,7 +655,13 @@ export default function ProductsPage() {
                   category: formData.category,
                   stock: formData.stock,
                   status: formData.status,
-                  image: formData.image,
+                  image:
+                    formData.image?.replace(/\\/g, "/") ||
+                    "/placeholder.svg?height=56&width=56",
+                  images: [
+                    formData.image?.replace(/\\/g, "/") ||
+                      "/placeholder.svg?height=56&width=56",
+                  ],
                   shortDescription: formData.shortDescription,
                 }
               : p
@@ -674,13 +680,16 @@ export default function ProductsPage() {
             response.data.pricing.selling_price
           ).toFixed(2)}`,
           image:
-            response.data.images?.primary_image ||
+            response.data.images?.urls?.[0]?.replace(/\\/g, "/") ||
             "/placeholder.svg?height=56&width=56",
+          images:
+            response.data.images?.urls?.map((url) => url.replace(/\\/g, "/")) ||
+            [],
           purchases: 0,
           sold: 0,
           status: response.data.status_flags.product_status
-            ? "Active"
-            : "Inactive",
+            ? "Inactive"
+            : "Active",
           category: response.data.category_name,
           subcategory: response.data.subcategory_name,
           createdDate: response.data.timestamp.split("T")[0],
@@ -1074,21 +1083,56 @@ export default function ProductsPage() {
                   >
                     <TableCell className="py-4">
                       <div className="flex items-center gap-4">
-                        <div className="relative overflow-hidden rounded-xl shadow-sm">
-                          <img
-                            src={product.image || "/placeholder.svg"}
-                            alt={product.name}
-                            className="h-14 w-14 object-cover transition-transform duration-300 group-hover:scale-110"
-                          />
-                          {(product.stock || 0) <= 5 &&
-                            product.status === "Active" && (
-                              <div className="absolute -right-1 -top-1 h-4 w-4 animate-pulse rounded-full bg-red-500 shadow-lg">
-                                <div className="absolute inset-0 rounded-full bg-red-500 animate-ping" />
-                              </div>
-                            )}
+                        <div className="flex space-x-2">
+                          {product.images?.length > 0 ? (
+                            product.images.slice(0, 3).map(
+                              (
+                                imgUrl,
+                                index // Limit to 3 images for brevity
+                              ) => (
+                                <div
+                                  key={index}
+                                  className="relative overflow-hidden rounded-xl shadow-sm"
+                                >
+                                  <img
+                                    src={
+                                      imgUrl ||
+                                      "/placeholder.svg?height=56&width=56"
+                                    }
+                                    alt={`${product.name} image ${index + 1}`}
+                                    className="h-14 w-14 object-cover transition-transform duration-300 group-hover:scale-110"
+                                  />
+                                  {(product.stock || 0) <= 5 &&
+                                    product.status === "Active" &&
+                                    index === 0 && (
+                                      <div className="absolute -right-1 -top-1 h-4 w-4 animate-pulse rounded-full bg-red-500 shadow-lg">
+                                        <div className="absolute inset-0 rounded-full bg-red-500 animate-ping" />
+                                      </div>
+                                    )}
+                                </div>
+                              )
+                            )
+                          ) : (
+                            <div className="relative overflow-hidden rounded-xl shadow-sm">
+                              <img
+                                src={
+                                  product.image ||
+                                  "/placeholder.svg?height=56&width=56"
+                                }
+                                alt={product.name}
+                                className="h-14 w-14 object-cover transition-transform duration-300 group-hover:scale-110"
+                              />
+                              {(product.stock || 0) <= 5 &&
+                                product.status === "Active" && (
+                                  <div className="absolute -right-1 -top-1 h-4 w-4 animate-pulse rounded-full bg-red-500 shadow-lg">
+                                    <div className="absolute inset-0 rounded-full bg-red-500 animate-ping" />
+                                  </div>
+                                )}
+                            </div>
+                          )}
                         </div>
                         <div className="space-y-1">
-                          <div className="font-semibold transition-colors group-hover:text-cyan-600">
+                          <div className="font-semibold transition-colors group-hover:text-cyan-600 dark:group-hover:text-cyan-400">
                             {product.name}
                           </div>
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">

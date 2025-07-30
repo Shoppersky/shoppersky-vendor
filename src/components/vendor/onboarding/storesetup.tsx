@@ -66,6 +66,14 @@ export default function Step1StoreSetup({
     "available" | "unavailable" | "checking" | null
   >(null);
 
+  const slugify = (text: string) =>
+    text
+      .toLowerCase()
+      .replace(/\s+/g, "-") // Replace spaces with -
+      .replace(/[^a-z0-9-]/g, "") // Remove all non-alphanumeric and non-dash
+      .replace(/--+/g, "-") // Replace multiple dashes with single
+      .replace(/^-+|-+$/g, ""); // Trim dashes from start and end
+
   useEffect(() => {
     const fetchIndustries = async () => {
       try {
@@ -87,7 +95,7 @@ export default function Step1StoreSetup({
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       if (storeDetails.storeName.trim()) {
-        checkStoreNameAvailability(storeDetails.storeName);
+        checkStoreNameAvailability(storeDetails.storeName.trim());
       } else {
         setStoreNameStatus(null);
       }
@@ -101,13 +109,16 @@ export default function Step1StoreSetup({
       setStoreNameStatus("checking");
       const response = await axiosInstance.post(
         "/vendor/check-store-name-availability",
-        {
-          store_name: name,
-        }
+        { store_name: name }
       );
 
       if (response.data.status_code === 200) {
         setStoreNameStatus("available");
+        const slug = slugify(name);
+        setStoreDetails((prev) => ({
+          ...prev,
+          storeUrl: slug,
+        }));
       } else {
         setStoreNameStatus("unavailable");
       }
@@ -208,7 +219,7 @@ export default function Step1StoreSetup({
                   })
                 }
                 className="h-12 w-full border-2 border-gray-200 focus:border-blue-500 transition-colors duration-200 rounded-r-md rounded-l-none"
-                required
+                disabled
               />
             </div>
           </div>

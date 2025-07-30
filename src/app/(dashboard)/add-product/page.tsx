@@ -117,108 +117,109 @@ export default function AddProductPage() {
   };
 
   const handleAddProduct = async () => {
-    if (!productName.trim() || !category.trim() || !price.trim() || !stock.trim()) {
-      toast.error("Please fill in all required fields: Product Name, Category, Price, and Stock.");
-      return;
-    }
+  if (!productName.trim() || !category.trim() || !price.trim() || !stock.trim()) {
+    toast.error("Please fill in all required fields: Product Name, Category, Price, and Stock.");
+    return;
+  }
 
-    if (!userId) {
-      toast.error("Vendor ID is required");
-      return;
-    }
+  if (!userId) {
+    toast.error("Vendor ID is required");
+    return;
+  }
 
-    try {
-      const formData = new FormData();
-      formData.append("cat_id", category);
-      if (subcategory) {
-        formData.append("subcat_id", subcategory);
+  try {
+    const formData = new FormData();
+    formData.append("cat_id", category);
+    if (subcategory) {
+      formData.append("subcat_id", subcategory);
+    }
+    formData.append("vendor_id", userId);
+    formData.append(
+      "identification",
+      JSON.stringify({
+        product_name: productName,
+        product_sku: sku,
+      })
+    );
+    formData.append(
+      "descriptions",
+      JSON.stringify({
+        short_description: shortDescription,
+        full_description: description,
+      })
+    );
+    formData.append(
+      "pricing",
+      JSON.stringify({
+        actual_price: price,
+        selling_price: salePrice,
+      })
+    );
+    formData.append(
+      "inventory",
+      JSON.stringify({
+        stock_quantity: stock,
+        stock_alert_status: stock ? "instock" : "outofstock",
+      })
+    );
+    formData.append(
+      "physical_attributes",
+      JSON.stringify({
+        weight,
+        dimensions: { length, width, height },
+        shipping_class: "standard",
+      })
+    );
+    formData.append(
+      "seo",
+      JSON.stringify({
+        keywords: seo,
+        title: seoTitle,
+      })
+    );
+    formData.append(
+      "tags_and_relationships",
+      JSON.stringify({
+        product_tags: tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter((tag) => tag),
+        linkedproductid: "",
+      })
+    );
+    formData.append(
+      "status_flags",
+      JSON.stringify({
+        featured_product: featured,
+        published_product: isActive,
+        product_status: false,
+      })
+    );
+
+    // Append images as a list under the 'files' key
+    images.forEach((image) => {
+      if (image) {
+        formData.append("files", image); // Use 'files' as the key for all images
       }
-      formData.append("vendor_id", userId);
-      formData.append(
-        "identification",
-        JSON.stringify({
-          product_name: productName,
-          product_sku: sku,
-        })
-      );
-      formData.append(
-        "descriptions",
-        JSON.stringify({
-          short_description: shortDescription,
-          full_description: description,
-        })
-      );
-      formData.append(
-        "pricing",
-        JSON.stringify({
-          actual_price: price,
-          selling_price: salePrice,
-        })
-      );
-      formData.append(
-        "inventory",
-        JSON.stringify({
-          stock_quantity: stock,
-          stock_alert_status: stock ? "instock" : "outofstock",
-        })
-      );
-      formData.append(
-        "physical_attributes",
-        JSON.stringify({
-          weight,
-          dimensions: { length, width, height },
-          shipping_class: "standard",
-        })
-      );
-      formData.append(
-        "seo",
-        JSON.stringify({
-          keywords: seo,
-          title: seoTitle,
-        })
-      );
-      formData.append(
-        "tags_and_relationships",
-        JSON.stringify({
-          product_tags: tags
-            .split(",")
-            .map((tag) => tag.trim())
-            .filter((tag) => tag),
-          linkedproductid: "",
-        })
-      );
-      formData.append(
-        "status_flags",
-        JSON.stringify({
-          featured_product: featured,
-          published_product: isActive,
-          product_status: false,
-        })
-      );
+    });
 
-      images.forEach((image, index) => {
-        if (image) {
-          formData.append(`files[${index}]`, image);
-        }
-      });
+    const response = await axiosInstance.post("/products/create-product/", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
-      const response = await axiosInstance.post("/products/create-product/", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      if (response.status !== 201) {
-        throw new Error("Failed to create product");
-      }
-
-      toast.success("Product added successfully!");
-      resetForm();
-      router.push("/products")
-    } catch (error) {
-      toast.error(`Failed to add product: ${error.message}`);
+    if (response.status !== 201) {
+      throw new Error("Failed to create product");
     }
-  };
+
+    toast.success("Product added successfully!");
+    resetForm();
+    router.push("/products");
+  } catch (error) {
+    toast.error(`Failed to add product: ${error.message}`);
+  }
+};
 
   const resetForm = () => {
     setProductName("");
