@@ -41,6 +41,7 @@ import {
   DollarSign,
 } from "lucide-react"
 import axiosInstance from "@/lib/axiosInstance"
+import useStore from '@/lib/Zustand';
 
 
 // Enhanced StatCard Component with better responsive design
@@ -194,6 +195,7 @@ interface UserInterface {
 }
 
 export default function UsersPage() {
+  const { userId } = useStore();
   const [users, setUsers] = useState<UserInterface[]>([])
   const [open, setOpen] = useState(false)
   const [editingUser, setEditingUser] = useState<any | null>(null)
@@ -212,7 +214,7 @@ export default function UsersPage() {
     status: "Active",
   })
 
-  const VENDOR_ID = "FyEeiE" // Replace with actual vendor ID
+
 
   // Fetch users from API
   useEffect(() => {
@@ -285,7 +287,7 @@ export default function UsersPage() {
         role_id: formData.role_id,
       }
 
-      const response = await axiosInstance.post(`/vendor/employee/create?vendor_id=${VENDOR_ID}`, payload)
+      const response = await axiosInstance.post(`/vendor/employee/create?vendor_id=${userId}`, payload)
       
       const newUser: UserInterface = {
         user_id: response.data.data.user_id,

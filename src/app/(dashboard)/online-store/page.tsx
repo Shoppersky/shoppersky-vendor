@@ -198,7 +198,7 @@ const OnlineStorePage: React.FC = () => {
 
 const fetchCategories=async()=>{
   try{
-    const response=await axiosInstance.get(`/mapping/?vendor_ref_id=FyEeiE&&status_filter=false`)
+    const response=await axiosInstance.get(`/mapping/?vendor_ref_id=${userId}&&status_filter=false`)
     setCategories(response.data.data)
   }
   catch(error){
@@ -209,7 +209,7 @@ const fetchCategories=async()=>{
 
 const fetchProducts=async()=>{
   try{
-    const response=await axiosInstance.get(`/products/by-vendor/FyEeiE`)
+    const response=await axiosInstance.get(`/products/by-vendor/${userId}`)
     SetProducts(response.data)
 
   }

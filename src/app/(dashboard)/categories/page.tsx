@@ -480,7 +480,8 @@ interface Category {
 }
 
 export default function CategoriesPage() {
-  const { userId } = useStore();
+  const { userId, user } = useStore(); 
+  const industry = user?.industry; 
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
@@ -492,12 +493,13 @@ export default function CategoriesPage() {
   // Fetch categories
   useEffect(() => {
     const fetchData = async () => {
+      if (!industry || !userId) return; 
       try {
         setIsLoading(true);
 
         const [industryRes, mappedRes] = await Promise.all([
           axiosInstance.get(
-            "/industries/by-industry/vahhnv?status_filter=false"
+            `/industries/by-industry/${industry}?status_filter=false`
           ),
           axiosInstance.get(
             `/mapping/?vendor_ref_id=${userId}&status_filter=false`

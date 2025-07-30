@@ -46,7 +46,7 @@ export default function VendorLogin() {
       const { access_token, user } = response.data;
 
       if (access_token) {
-        login(access_token, user || null);
+        login({ access_token, user });
 
         // Handle based on onboarding status
         switch (user?.onboarding_status) {

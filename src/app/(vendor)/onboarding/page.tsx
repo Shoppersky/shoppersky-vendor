@@ -10,7 +10,7 @@ import axiosInstance from "@/lib/axiosInstance";
 import useStore from "../../../lib/Zustand";
 
 export default function VendorOnboarding() {
-  const { bprofileId } = useStore();
+  const { userId } = useStore();
   const [currentStep, setCurrentStep] = useState(1);
   const [storeDetails, setStoreDetails] = useState({
     storeName: "",
@@ -55,7 +55,7 @@ export default function VendorOnboarding() {
         orders: "Payments for Orders",
       };
       const payload = {
-        profile_ref_id: bprofileId,
+        vendor_id: userId,
         purpose: generalQuestions.mainGoals,
         abn_id: abnDetails.abn,
         payment_preference: paymentPreferences.paymentType.map(
