@@ -133,7 +133,7 @@ export default function ResendConfirmation() {
 
           <div className="text-center space-y-2">
             <Link
-              href="/vendor/email-confirmation"
+              href="/email-confirmation"
               className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 transition-colors"
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
