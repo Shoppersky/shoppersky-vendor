@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import clsx from "clsx";
+import Logo from "./logo";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -43,7 +44,7 @@ export default function Sidebar() {
       <aside className="fixed top-0 left-0 h-screen w-16 md:w-64 bg-gradient-to-b from-white to-gray-50 dark:from-white-900 dark:to-white-950 border-r backdrop-blur-xl z-50 transition-all duration-300 flex flex-col">
         {/* Logo */}
         <div className="flex items-center justify-center md:justify-start gap-2 h-16 px-4 border-b">
-          <span className="text-2xl">🛒</span>
+          <span className="text-2xl"><Logo/></span>
           <span className="text-lg font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent hidden md:inline">
             SHOPPERSKY
           </span>
