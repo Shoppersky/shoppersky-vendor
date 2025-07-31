@@ -122,6 +122,12 @@ export default function AddProductPage() {
     return;
   }
 
+//   if (parseFloat(salePrice) > parseFloat(price)) {
+//   toast.error("Sale Price cannot be greater than Actual Price.");
+//   return;
+// }
+
+
   if (!userId) {
     toast.error("Vendor ID is required");
     return;

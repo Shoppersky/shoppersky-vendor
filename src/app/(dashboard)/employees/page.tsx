@@ -95,9 +95,8 @@ function StatCard({
               <p className="text-2xl sm:text-3xl font-bold">{value}</p>
               {trend && trendValue && (
                 <div
-                  className={`flex items-center text-xs font-medium ${
-                    trend === "up" ? "text-emerald-600" : "text-red-600"
-                  }`}
+                  className={`flex items-center text-xs font-medium ${trend === "up" ? "text-emerald-600" : "text-red-600"
+                    }`}
                 >
                   <TrendingUp className={`w-3 h-3 mr-1 ${trend === "down" ? "rotate-180" : ""}`} />
                   {trendValue}
@@ -214,6 +213,34 @@ export default function UsersPage() {
     status: "Active",
   })
 
+  interface RoleInterface {
+    id: string;
+    name: string;
+  }
+
+  const [isLoadingRoles, setIsLoadingRoles] = useState(false);
+  const [roles, setRoles] = useState<RoleInterface[]>([]);
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      setIsLoadingRoles(true);
+      try {
+        const response = await axiosInstance.get("/roles/?is_active=false");
+        setRoles(
+          response.data.data.map((role: any) => ({
+            id: role.role_id,
+            name: role.role_name,
+          }))
+        );
+      } catch (err) {
+        setError("Failed to fetch roles");
+      } finally {
+        setIsLoadingRoles(false);
+      }
+    };
+    fetchRoles();
+  }, []);
+
 
 
   // Fetch users from API
@@ -288,7 +315,7 @@ export default function UsersPage() {
       }
 
       const response = await axiosInstance.post(`/vendor/employee/create?vendor_id=${userId}`, payload)
-      
+
       const newUser: UserInterface = {
         user_id: response.data.data.user_id,
         username: response.data.data.username,
@@ -460,7 +487,6 @@ export default function UsersPage() {
                         </div>
                       </div>
                     </TabsContent>
-
                     <TabsContent value="role" className="space-y-4 mt-6">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
@@ -476,30 +502,31 @@ export default function UsersPage() {
                               <SelectValue placeholder="Select role" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="289z3f">
-                                <div className="flex items-center gap-2">
-                                  <Crown className="w-4 h-4 text-amber-600" />
-                                  Admin
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="manager">
-                                <div className="flex items-center gap-2">
-                                  <Shield className="w-4 h-4 text-blue-600" />
-                                  Manager
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="employee">
-                                <div className="flex items-center gap-2">
-                                  <User className="w-4 h-4 text-emerald-600" />
-                                  Employee
-                                </div>
-                              </SelectItem>
-                              <SelectItem value="vendor">
-                                <div className="flex items-center gap-2">
-                                  <Store className="w-4 h-4 text-violet-600" />
-                                  Vendor
-                                </div>
-                              </SelectItem>
+                              {isLoadingRoles ? (
+                                <SelectItem value="loading" disabled>
+                                  Loading roles...
+                                </SelectItem>
+                              ) : roles.length === 0 ? (
+                                <SelectItem value="no-roles" disabled>
+                                  No roles available
+                                </SelectItem>
+                              ) : (
+                                roles.map((role) => (
+                                  <SelectItem key={role.id} value={role.id}>
+                                    <div className="flex items-center gap-2">
+                                      {role.name.toUpperCase() === "ADMIN" && <Crown className="w-4 h-4 text-amber-600" />}
+                                      {role.name.toUpperCase() === "MANAGER" && <Shield className="w-4 h-4 text-blue-600" />}
+                                      {role.name.toUpperCase() === "EMPLOYEE" && <User className="w-4 h-4 text-emerald-600" />}
+                                      {role.name.toUpperCase() === "VENDOR" && <Store className="w-4 h-4 text-violet-600" />}
+                                      {role.name.toUpperCase() !== "ADMIN" &&
+                                        role.name.toUpperCase() !== "MANAGER" &&
+                                        role.name.toUpperCase() !== "EMPLOYEE" &&
+                                        role.name.toUpperCase() !== "VENDOR" && <User className="w-4 h-4 text-gray-600" />}
+                                      {role.name}
+                                    </div>
+                                  </SelectItem>
+                                ))
+                              )}
                             </SelectContent>
                           </Select>
                         </div>
