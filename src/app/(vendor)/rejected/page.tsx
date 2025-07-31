@@ -3,11 +3,20 @@ import Image from "next/image";
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function VerificationRejected() {
   const searchParams = useSearchParams();
   const referenceNumber = searchParams.get("ref") || "N/A";
+  const router = useRouter();
+
+   const handleLogout = () => {
+    localStorage.clear();
+    console.log("User logged out!");
+
+    router.push("/");
+  };
 
   
   return (
@@ -33,6 +42,12 @@ export default function VerificationRejected() {
       </div>
       {/* Rejection Side */}
       <div className="flex items-center justify-center p-6 lg:p-12 relative h-full">
+        <Button
+                  onClick={handleLogout}
+                  className="absolute top-4 right-4 text-sm bg-red-700 hover:bg-red-800 text-white font-medium px-3 py-1.5 rounded-full shadow transition-all duration-200"
+                >
+                  Logout
+                </Button>
         <div className="w-full max-w-md bg-white/80 p-8 space-y-6">
           <div className="text-center space-y-4">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-red-500 to-rose-500 rounded-full mb-4 shadow-lg mx-auto">
@@ -62,7 +77,7 @@ export default function VerificationRejected() {
               <li>
                 Contact support if you need assistance with your application.
               </li>
-              <li>Resubmit your onboarding wednesday for verification.</li>
+              <li>Resubmit your onboarding for verification.</li>
             </ul>
           </div>
 

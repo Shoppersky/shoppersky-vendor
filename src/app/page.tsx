@@ -48,6 +48,8 @@ export default function VendorLogin() {
       if (access_token) {
         login({ access_token, user });
 
+        toast.success("Login successful!");
+
         // Handle based on onboarding status
         switch (user?.onboarding_status) {
           case "approved":
