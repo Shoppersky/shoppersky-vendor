@@ -12,6 +12,7 @@ import { ArrowLeft, Send } from "lucide-react";
 
 import useStore from "@/lib/Zustand";
 import { toast } from "sonner";
+import axiosInstance from "@/lib/axiosInstance"; // Assuming axiosInstance is set up in this file
 
 interface NewQuery {
   title: string;
@@ -21,7 +22,7 @@ interface NewQuery {
 
 const NewQueryPage = () => {
   const router = useRouter();
-  const { user } = useStore();
+  const { userId } = useStore();
   const [loading, setLoading] = useState(false);
   const [newQuery, setNewQuery] = useState<NewQuery>({
     title: "",
@@ -50,14 +51,12 @@ const NewQueryPage = () => {
     try {
       setLoading(true);
       
-      // Replace with actual API call
-      // const response = await axiosInstance.post('/api/v1/queries', {
-      //   ...newQuery,
-      //   vendor_id: user?.id
-      // });
-      
-      // Mock creation for now
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await axiosInstance.post('/users/vendor_admin_queries', {
+        user_id: "WpMCvQ",
+        title: newQuery.title,
+        category: newQuery.category,
+        message: newQuery.description
+      });
       
       toast.success("Query submitted successfully");
       router.push("/queries");
