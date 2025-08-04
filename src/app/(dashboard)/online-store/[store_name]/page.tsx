@@ -1,23 +1,52 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { ShoppingCart, Star, Heart, User, Search, Menu, X, Filter, Edit3, Save, Camera, Settings, Eye, EyeOff, ArrowLeft, BoxIcon, Home } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import {
+  ShoppingCart,
+  Star,
+  Heart,
+  User,
+  Search,
+  Menu,
+  X,
+  Filter,
+  Edit3,
+  Save,
+  Camera,
+  Settings,
+  Eye,
+  EyeOff,
+  ArrowLeft,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import axiosInstance from '@/lib/axiosInstance';
-import useStore from '@/lib/Zustand';
-import { toast } from 'sonner';
+import { Card, CardContent } from "@/components/ui/card";
+import axiosInstance from "@/lib/axiosInstance";
+import useStore from "@/lib/Zustand";
+import { toast } from "sonner";
+import { useParams } from "next/navigation";
+
 interface Product {
-  id: number;
-  name: string;
-  price: number;
-  originalPrice?: number;
-  image: string;
-  rating: number;
-  reviews: number;
-  category: string;
-  featured: boolean;
+  product_id: number;
+  identification?: {
+    product_name?: string;
+  };
+  pricing?: {
+    actual_price?: string;
+    selling_price?: string;
+  };
+  images?: {
+    urls?: string[];
+  };
+  rating?: number;
+  reviews?: number;
+  category_name?: string;
+  featured?: boolean;
+}
+
+interface Category {
+  category_id: string;
+  category_name: string;
 }
 
 interface StoreSettings {
@@ -33,24 +62,25 @@ interface StoreSettings {
 const OnlineStorePage: React.FC = () => {
   // UI States
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [cartItems, setCartItems] = useState(0);
   const [wishlistItems, setWishlistItems] = useState<number[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Admin States
   const [isAdminMode, setIsAdminMode] = useState(true);
   const [editingBanner, setEditingBanner] = useState(false);
   const [editingProfile, setEditingProfile] = useState(false);
   const [editingStore, setEditingStore] = useState(false);
-  //category state
 
-  const [categories, setCategories] = useState([])
-  const [productss, SetProducts] = useState([])
-
+  // Data States
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [productss, setProductss] = useState<Product[]>([]);
+  const { userId } = useStore();
+  const params = useParams(); // Get URL parameters
+  const store_name = params.store_name as string;
 
   // Store Settings
-
-  const { userId } = useStore()
   const [storeSettings, setStoreSettings] = useState<StoreSettings>({
     storeName: "ShopHub",
     storeTagline: "Your Premium Shopping Destination",
@@ -58,224 +88,85 @@ const OnlineStorePage: React.FC = () => {
     bannerSubtitle: "Shop the latest trends with unbeatable prices and quality",
     bannerImage: "/api/placeholder/1200/600",
     ownerName: "John Doe",
-    ownerImage: "/api/placeholder/150/150"
+    ownerImage: "/api/placeholder/150/150",
   });
-
-  // Sample product data
-  const products: Product[] = [
-    {
-      id: 1,
-      name: "Premium Wireless Headphones",
-      price: 199.99,
-      originalPrice: 299.99,
-      image: "/api/placeholder/300/300",
-      rating: 4.8,
-      reviews: 2847,
-      category: "electronics",
-      featured: true
-    },
-    {
-      id: 2,
-      name: "Smart Fitness Watch",
-      price: 149.99,
-      originalPrice: 199.99,
-      image: "/api/placeholder/300/300",
-      rating: 4.6,
-      reviews: 1523,
-      category: "electronics",
-      featured: true
-    },
-    {
-      id: 3,
-      name: "Organic Cotton T-Shirt",
-      price: 29.99,
-      image: "/api/placeholder/300/300",
-      rating: 4.5,
-      reviews: 892,
-      category: "clothing",
-      featured: false
-    },
-    {
-      id: 4,
-      name: "Leather Crossbody Bag",
-      price: 89.99,
-      originalPrice: 120.00,
-      image: "/api/placeholder/300/300",
-      rating: 4.7,
-      reviews: 634,
-      category: "accessories",
-      featured: true
-    },
-    {
-      id: 5,
-      name: "Bluetooth Speaker",
-      price: 79.99,
-      image: "/api/placeholder/300/300",
-      rating: 4.4,
-      reviews: 1205,
-      category: "electronics",
-      featured: false
-    },
-    {
-      id: 6,
-      name: "Designer Sunglasses",
-      price: 159.99,
-      originalPrice: 220.00,
-      image: "/api/placeholder/300/300",
-      rating: 4.9,
-      reviews: 445,
-      category: "accessories",
-      featured: true
-    },
-    {
-      id: 7,
-      name: "Wireless Gaming Mouse",
-      price: 69.99,
-      originalPrice: 89.99,
-      image: "/api/placeholder/300/300",
-      rating: 4.6,
-      reviews: 892,
-      category: "electronics",
-      featured: false
-    },
-    {
-      id: 8,
-      name: "Premium Denim Jacket",
-      price: 89.99,
-      image: "/api/placeholder/300/300",
-      rating: 4.4,
-      reviews: 567,
-      category: "clothing",
-      featured: false
-    },
-    {
-      id: 9,
-      name: "Minimalist Watch",
-      price: 199.99,
-      originalPrice: 249.99,
-      image: "/api/placeholder/300/300",
-      rating: 4.8,
-      reviews: 1234,
-      category: "accessories",
-      featured: true
-    },
-    {
-      id: 10,
-      name: "Portable Charger",
-      price: 39.99,
-      image: "/api/placeholder/300/300",
-      rating: 4.3,
-      reviews: 678,
-      category: "electronics",
-      featured: false
-    },
-    // Add these to your products array
-    {
-      id: 11,
-      name: "Modern Coffee Table",
-      price: 249.99,
-      originalPrice: 349.99,
-      image: "/api/placeholder/300/300",
-      rating: 4.7,
-      reviews: 423,
-      category: "home",
-      featured: true
-    },
-    {
-      id: 12,
-      name: "Decorative Throw Pillows",
-      price: 39.99,
-      image: "/api/placeholder/300/300",
-      rating: 4.5,
-      reviews: 287,
-      category: "home",
-      featured: false
-    }
-
-  ];
-
-
 
   const fetchCategories = async () => {
     try {
-      const response = await axiosInstance.get(`/mapping/?vendor_ref_id=${userId}&&status_filter=false`)
-      setCategories(response.data.data)
+      const response = await axiosInstance.get(
+        `/mapping/?vendor_ref_id=${userId}&status_filter=false`
+      );
+      console.log("API Response for Categories:", response.data);
+      setCategories(response.data.data || []);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      toast.error("Failed to load category data");
     }
-    catch (error) {
-      toast.error('failed to load event data')
-    }
-  }
-
+  };
 
   const fetchProducts = async () => {
+    setIsLoading(true);
     try {
-      const response = await axiosInstance.get(`/products/by-vendor-id/${userId}`)
-      SetProducts(response.data)
+      const response = await axiosInstance.get(
+        `/products/by-vendor-id/${userId}`
+      );
+      console.log("API Response for Products:", response.data);
+      setProductss(response.data.data || response.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      toast.error("Failed to load product data");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    }
-    catch (error) {
-      toast.error('failed to load event data')
-    }
-  }
-  console.log(productss)
-  const filteredProducts = selectedCategory.toLowerCase() === 'all'
-    ? productss
-    : productss.filter(product =>
-      product.category_name?.toLowerCase() === selectedCategory.toLowerCase()
-    );
+  const filteredProducts =
+    selectedCategory.toLowerCase() === "all"
+      ? productss
+      : productss
+          .filter(
+            (product) =>
+              product.category_name?.toLowerCase() ===
+              selectedCategory.toLowerCase()
+          )
+          .filter((product) => product.identification?.product_name);
 
   const addToCart = (productId: number) => {
-    setCartItems(prev => prev + 1);
+    setCartItems((prev) => prev + 1);
   };
-  console.log(filteredProducts)
+
   const toggleWishlist = (productId: number) => {
-    setWishlistItems(prev =>
+    setWishlistItems((prev) =>
       prev.includes(productId)
-        ? prev.filter(id => id !== productId)
+        ? prev.filter((id) => id !== productId)
         : [...prev, productId]
     );
   };
 
   const saveStoreSettings = (newSettings: Partial<StoreSettings>) => {
-    setStoreSettings(prev => ({ ...prev, ...newSettings }));
+    setStoreSettings((prev) => ({ ...prev, ...newSettings }));
   };
 
-  const handleImageUpload = (file: File, type: 'banner' | 'profile') => {
-    // In a real app, you'd upload to a server here
+  const handleImageUpload = (file: File, type: "banner" | "profile") => {
     const imageUrl = URL.createObjectURL(file);
-    if (type === 'banner') {
+    if (type === "banner") {
       saveStoreSettings({ bannerImage: imageUrl });
     } else {
       saveStoreSettings({ ownerImage: imageUrl });
     }
   };
 
-
   useEffect(() => {
-    fetchCategories()
-    fetchProducts()
-  }, [])
-  console.log(productss)
+    fetchCategories();
+    fetchProducts();
+  }, [userId]);
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Admin Dashboard Header */}
       <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex items-center space-x-2"
-                onClick={() => window.history.back()}
-              >
-                <ArrowLeft className="h-4 w-4" />
-                <span>Back to Dashboard</span>
-              </Button>
-              <div className="h-6 w-px bg-gray-300 dark:bg-gray-600"></div>
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Online Store Preview</h1>
-            </div>
-
             {/* Admin Control Panel */}
             <div className="flex items-center space-x-2">
               <Button
@@ -284,7 +175,11 @@ const OnlineStorePage: React.FC = () => {
                 onClick={() => setIsAdminMode(!isAdminMode)}
                 className="flex items-center space-x-2"
               >
-                {isAdminMode ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {isAdminMode ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
                 <span>{isAdminMode ? "Hide Controls" : "Show Controls"}</span>
               </Button>
               <Button
@@ -302,11 +197,7 @@ const OnlineStorePage: React.FC = () => {
       </div>
 
       {/* Store Preview Container */}
-      <div className="relative bg-white">{/* Changed to white background for store preview */}
-
-        {/* Header */}
-
-
+      <div className="relative bg-white">
         {/* Hero Banner */}
         <section className="relative bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
           {isAdminMode && (
@@ -330,7 +221,7 @@ const OnlineStorePage: React.FC = () => {
               <div className="absolute inset-0 bg-black opacity-40"></div>
             </div>
           )}
-          <div className="absolute inset-0 "></div>
+          <div className="absolute inset-0"></div>
 
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
             <div className="text-center">
@@ -355,42 +246,53 @@ const OnlineStorePage: React.FC = () => {
         {/* Product Categories Menu */}
         <section className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Shop by Category</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              Shop by Category
+            </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {categories.filter(cat => cat.category_id !== 'all').map((category) => (
-                <div
-                  key={category.category_id}
-                  onClick={() => setSelectedCategory(category.category_name)}
-                  className={`cursor-pointer rounded-lg p-6 text-center transition-all hover:shadow-md ${selectedCategory === category.category_name
-                      ? 'bg-indigo-100 border-2 border-indigo-500'
-                      : 'bg-white border border-gray-200'
+              {categories
+                .filter((cat) => cat.category_id !== "all")
+                .map((category) => (
+                  <div
+                    key={category.category_id}
+                    onClick={() => setSelectedCategory(category.category_name)}
+                    className={`cursor-pointer rounded-lg p-6 text-center transition-all hover:shadow-md ${
+                      selectedCategory === category.category_name
+                        ? "bg-indigo-100 border-2 border-indigo-500"
+                        : "bg-white border border-gray-200"
                     }`}
-                >
-                  <div className="flex flex-col items-center">
-
-
-                    <h3 className="font-medium text-lg">{category.category_name}</h3>
-                    <p className="text-sm text-gray-500 mt-1">
-                      {
-                        productss.filter(
-                          p => p.category_name?.toLowerCase() === category.category_name?.toLowerCase()
-                        ).length
-                      } Products
-                    </p>
+                  >
+                    <div className="flex flex-col items-center">
+                      <h3 className="font-medium text-lg">
+                        {category.category_name}
+                      </h3>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {
+                          productss.filter(
+                            (p) =>
+                              p.category_name?.toLowerCase() ===
+                              category.category_name?.toLowerCase()
+                          ).length
+                        }{" "}
+                        Products
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </section>
-
 
         {/* Category Filter */}
         <section className="w-full mx-auto px-4 sm:px-6 lg:px-8 pb-8">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Product Catalog</h2>
-              <p className="text-gray-600">Preview how customers see your products</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                Product Catalog
+              </h2>
+              <p className="text-gray-600">
+                Preview how customers see your products
+              </p>
             </div>
             <div className="flex items-center space-x-4 mt-4 sm:mt-0">
               <div className="flex items-center space-x-2">
@@ -401,136 +303,162 @@ const OnlineStorePage: React.FC = () => {
                   className="border border-gray-300 rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
                 >
                   {categories.map((category) => (
-                    <option key={category.category_id} value={category.category_id}>
+                    <option
+                      key={category.category_id}
+                      value={category.category_name}
+                    >
                       {category.category_name}
                     </option>
                   ))}
-                  <option value='all'>
-                    All
-                  </option>
+                  <option value="all">All</option>
                 </select>
               </div>
               <div className="text-sm text-gray-500">
-                Showing {filteredProducts.length} of {products.length} products
+                Showing {filteredProducts.length} of {productss.length} products
               </div>
             </div>
           </div>
 
-          {/* Products Grid - Responsive layout with consistent card design */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6">
-            {filteredProducts.map((product) => (
-              <Card key={product.product_id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-0 shadow-md bg-white rounded-xl">
-                {/* Product Image Container */}
-                <div className="relative overflow-hidden">
-                  <div className="aspect-square w-full bg-gray-100 relative">
-                    <Image
-                      src={product.images?.urls?.[0] || 'placeholder.svg'}
-                      alt={product.identification?.product_name}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    {/* Overlay for hover effects */}
-                    <div className="absolute inset-0  bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
-                  </div>
-
-                  {/* Product Badges */}
-                  <div className="absolute top-3 left-3 flex flex-col gap-2">
-                    {product.featured && (
-                      <span className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-2 py-1 text-xs font-bold rounded-full shadow-lg">
-                        Featured
-                      </span>
-                    )}
-                    {product.price && (
-                      <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-2 py-1 text-xs font-bold rounded-full shadow-lg">
-                        -{(((product.pricing.actual_price - product.pricing.selling_price) / product.pricing.actual_price) * 100).toFixed(0)}% OFF
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Wishlist Button */}
-                  <button
-                    onClick={() => toggleWishlist(product.product_id)}
-                    className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all duration-300"
-                  >
-                    <Heart
-                      className={`h-4 w-4 ${wishlistItems.includes(product.product_id)
-                          ? 'text-red-500 fill-current'
-                          : 'text-gray-600'
-                        }`}
-                    />
-                  </button>
-
-
-                </div>
-
-                {/* Product Information */}
-                <CardContent className="p-4 space-y-3">
-                  {/* Product Category */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                      {product.category_name}
-                    </span>
-                  </div>
-
-                  {/* Product Name */}
-                  <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 min-h-[2.5rem] leading-tight">
-                    {product.identification?.product_name}
-                  </h3>
-
-                  {/* Rating */}
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`h-3 w-3 ${i < Math.floor(product.rating)
-                              ? 'text-yellow-400 fill-current'
-                              : 'text-gray-300'
-                            }`}
-                        />
-                      ))}
+          {/* Products Grid */}
+          {isLoading ? (
+            <div className="text-center py-8">Loading products...</div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              No products found.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6">
+              {filteredProducts.map((product) => (
+                <Card
+                  key={product.product_id}
+                  className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-0 shadow-md bg-white rounded-xl"
+                >
+                  {/* Product Image Container */}
+                  <div className="relative overflow-hidden">
+                    <div className="aspect-square w-full bg-gray-100 relative">
+                      <Image
+                        src={product.images?.urls?.[0] || "/placeholder.svg"}
+                        alt={product.identification?.product_name || "Product"}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
                     </div>
-                    {/* <span className="text-xs text-gray-600">
-                    {product.rating} ({product.reviews.toLocaleString()})
-                  </span> */}
-                  </div>
 
-                  {/* Price Section */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col">
-                      <span className="text-lg font-bold text-indigo-600">
-                        ${product.pricing.actual_price}
-                      </span>
-                      {product.pricing && (
-                        <span className="text-sm text-gray-500 line-through">
-                          ${product.pricing.selling_price}
+                    {/* Product Badges */}
+                    <div className="absolute top-3 left-3 flex flex-col gap-2">
+                      {product.featured && (
+                        <span className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-2 py-1 text-xs font-bold rounded-full shadow-lg">
+                          Featured
                         </span>
                       )}
+                      {product.pricing?.actual_price &&
+                        product.pricing?.selling_price &&
+                        !isNaN(parseFloat(product.pricing.actual_price)) &&
+                        !isNaN(parseFloat(product.pricing.selling_price)) && (
+                          <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-2 py-1 text-xs font-bold rounded-full shadow-lg">
+                            -
+                            {(
+                              ((parseFloat(product.pricing.selling_price) -
+                                parseFloat(product.pricing.actual_price)) /
+                                parseFloat(product.pricing.selling_price)) *
+                              100
+                            ).toFixed(0)}
+                            % OFF
+                          </span>
+                        )}
                     </div>
+
+                    {/* Wishlist Button */}
+                    <button
+                      onClick={() => toggleWishlist(product.product_id)}
+                      className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all duration-300"
+                    >
+                      <Heart
+                        className={`h-4 w-4 ${
+                          wishlistItems.includes(product.product_id)
+                            ? "text-red-500 fill-current"
+                            : "text-gray-600"
+                        }`}
+                      />
+                    </button>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-2 pt-2">
-                    <Button
-                      onClick={() => addToCart(product.product_id)}
-                      className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 rounded-lg transition-colors duration-200"
-                      size="sm"
-                    >
-                      <ShoppingCart className="h-4 w-4 mr-1" />
-                      Add to Cart
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="px-3 border-gray-300 hover:border-indigo-300 hover:text-indigo-600 transition-colors duration-200"
-                    >
-                      <Eye className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  {/* Product Information */}
+                  <CardContent className="p-4 space-y-3">
+                    {/* Product Category */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                        {product.category_name || "Uncategorized"}
+                      </span>
+                    </div>
+
+                    {/* Product Name */}
+                    <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 min-h-[2.5rem] leading-tight">
+                      {product.identification?.product_name ||
+                        "Unnamed Product"}
+                    </h3>
+
+                    {/* Rating */}
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-3 w-3 ${
+                              i < Math.floor(product.rating || 0)
+                                ? "text-yellow-400 fill-current"
+                                : "text-gray-300"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Price Section */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex flex-col">
+                        <span className="text-lg font-bold text-indigo-600">
+                          {product.pricing?.selling_price
+                            ? `$${parseFloat(
+                                product.pricing.selling_price
+                              ).toFixed(2)}`
+                            : "N/A"}
+                        </span>
+                        {product.pricing?.actual_price && (
+                          <span className="text-sm text-gray-500 line-through">
+                            $
+                            {parseFloat(product.pricing.actual_price).toFixed(
+                              2
+                            )}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2 pt-2">
+                      <Button
+                        onClick={() => addToCart(product.product_id)}
+                        className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 rounded-lg transition-colors duration-200"
+                        size="sm"
+                      >
+                        <ShoppingCart className="h-4 w-4 mr-1" />
+                        Add to Cart
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="px-3 border-gray-300 hover:border-indigo-300 hover:text-indigo-600 transition-colors duration-200"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </section>
 
         {/* Newsletter Section */}
@@ -540,11 +468,11 @@ const OnlineStorePage: React.FC = () => {
             <p className="text-xl mb-8 opacity-90">
               Subscribe to our newsletter for exclusive deals and new arrivals
             </p>
-            <div className="flex flex-col sm:flex-row max-w-md mx-auto gap-4  ">
+            <div className="flex flex-col sm:flex-row max-w-md mx-auto gap-4">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-md text-white-900    stroke-2 stroke-white h-10"
+                className="flex-1 px-4 py-3 rounded-md text-gray-900 h-10"
               />
               <Button className="bg-indigo-600 hover:bg-indigo-700 h-10">
                 Subscribe
@@ -553,11 +481,7 @@ const OnlineStorePage: React.FC = () => {
           </div>
         </section>
 
-
-
         {/* Admin Edit Overlays */}
-
-        {/* Banner Edit Overlay */}
         {editingBanner && (
           <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg p-6 w-full max-w-md">
@@ -579,7 +503,9 @@ const OnlineStorePage: React.FC = () => {
                   <input
                     type="text"
                     value={storeSettings.bannerTitle}
-                    onChange={(e) => saveStoreSettings({ bannerTitle: e.target.value })}
+                    onChange={(e) =>
+                      saveStoreSettings({ bannerTitle: e.target.value })
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
@@ -590,7 +516,9 @@ const OnlineStorePage: React.FC = () => {
                   </label>
                   <textarea
                     value={storeSettings.bannerSubtitle}
-                    onChange={(e) => saveStoreSettings({ bannerSubtitle: e.target.value })}
+                    onChange={(e) =>
+                      saveStoreSettings({ bannerSubtitle: e.target.value })
+                    }
                     rows={3}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
@@ -606,7 +534,7 @@ const OnlineStorePage: React.FC = () => {
                       accept="image/*"
                       onChange={(e) => {
                         const file = e.target.files?.[0];
-                        if (file) handleImageUpload(file, 'banner');
+                        if (file) handleImageUpload(file, "banner");
                       }}
                       className="hidden"
                       id="banner-upload"
@@ -652,7 +580,6 @@ const OnlineStorePage: React.FC = () => {
           </div>
         )}
 
-        {/* Profile Edit Overlay */}
         {editingProfile && (
           <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg p-6 w-full max-w-md">
@@ -689,7 +616,7 @@ const OnlineStorePage: React.FC = () => {
                       accept="image/*"
                       onChange={(e) => {
                         const file = e.target.files?.[0];
-                        if (file) handleImageUpload(file, 'profile');
+                        if (file) handleImageUpload(file, "profile");
                       }}
                       className="hidden"
                       id="profile-upload"
@@ -710,7 +637,9 @@ const OnlineStorePage: React.FC = () => {
                   <input
                     type="text"
                     value={storeSettings.ownerName}
-                    onChange={(e) => saveStoreSettings({ ownerName: e.target.value })}
+                    onChange={(e) =>
+                      saveStoreSettings({ ownerName: e.target.value })
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
@@ -735,7 +664,6 @@ const OnlineStorePage: React.FC = () => {
           </div>
         )}
 
-        {/* Store Settings Overlay */}
         {editingStore && (
           <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
@@ -751,7 +679,9 @@ const OnlineStorePage: React.FC = () => {
 
               <div className="space-y-6">
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-3">Basic Information</h4>
+                  <h4 className="font-medium text-gray-900 mb-3">
+                    Basic Information
+                  </h4>
                   <div className="space-y-3">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -760,7 +690,9 @@ const OnlineStorePage: React.FC = () => {
                       <input
                         type="text"
                         value={storeSettings.storeName}
-                        onChange={(e) => saveStoreSettings({ storeName: e.target.value })}
+                        onChange={(e) =>
+                          saveStoreSettings({ storeName: e.target.value })
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
@@ -772,7 +704,9 @@ const OnlineStorePage: React.FC = () => {
                       <input
                         type="text"
                         value={storeSettings.storeTagline}
-                        onChange={(e) => saveStoreSettings({ storeTagline: e.target.value })}
+                        onChange={(e) =>
+                          saveStoreSettings({ storeTagline: e.target.value })
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
@@ -780,7 +714,9 @@ const OnlineStorePage: React.FC = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-3">Banner Settings</h4>
+                  <h4 className="font-medium text-gray-900 mb-3">
+                    Banner Settings
+                  </h4>
                   <div className="space-y-3">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -789,7 +725,9 @@ const OnlineStorePage: React.FC = () => {
                       <input
                         type="text"
                         value={storeSettings.bannerTitle}
-                        onChange={(e) => saveStoreSettings({ bannerTitle: e.target.value })}
+                        onChange={(e) =>
+                          saveStoreSettings({ bannerTitle: e.target.value })
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
@@ -800,7 +738,9 @@ const OnlineStorePage: React.FC = () => {
                       </label>
                       <textarea
                         value={storeSettings.bannerSubtitle}
-                        onChange={(e) => saveStoreSettings({ bannerSubtitle: e.target.value })}
+                        onChange={(e) =>
+                          saveStoreSettings({ bannerSubtitle: e.target.value })
+                        }
                         rows={3}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       />
@@ -809,7 +749,9 @@ const OnlineStorePage: React.FC = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-3">Profile Settings</h4>
+                  <h4 className="font-medium text-gray-900 mb-3">
+                    Profile Settings
+                  </h4>
                   <div className="space-y-3">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -818,7 +760,9 @@ const OnlineStorePage: React.FC = () => {
                       <input
                         type="text"
                         value={storeSettings.ownerName}
-                        onChange={(e) => saveStoreSettings({ ownerName: e.target.value })}
+                        onChange={(e) =>
+                          saveStoreSettings({ ownerName: e.target.value })
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       />
                     </div>
@@ -826,20 +770,26 @@ const OnlineStorePage: React.FC = () => {
                 </div>
 
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-3">Preview Mode</h4>
+                  <h4 className="font-medium text-gray-900 mb-3">
+                    Preview Mode
+                  </h4>
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
                     <div>
                       <p className="font-medium">Admin Controls</p>
-                      <p className="text-sm text-gray-600">Show/hide editing buttons</p>
+                      <p className="text-sm text-gray-600">
+                        Show/hide editing buttons
+                      </p>
                     </div>
                     <button
                       onClick={() => setIsAdminMode(!isAdminMode)}
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isAdminMode ? 'bg-indigo-600' : 'bg-gray-200'
-                        }`}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        isAdminMode ? "bg-indigo-600" : "bg-gray-200"
+                      }`}
                     >
                       <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${isAdminMode ? 'translate-x-6' : 'translate-x-1'
-                          }`}
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                          isAdminMode ? "translate-x-6" : "translate-x-1"
+                        }`}
                       />
                     </button>
                   </div>
@@ -869,7 +819,4 @@ const OnlineStorePage: React.FC = () => {
   );
 };
 
-
-
 export default OnlineStorePage;
-

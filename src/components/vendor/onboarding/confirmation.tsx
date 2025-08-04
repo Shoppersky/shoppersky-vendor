@@ -56,7 +56,7 @@ export default function Step5VerificationConfirmation({
               <Hourglass className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-              Verification in Process!
+              Onboarding completed!
             </h1>
             <p className="text-lg text-gray-600">
               Thank you for completing your onboarding. Your application is now

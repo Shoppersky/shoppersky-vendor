@@ -2,7 +2,7 @@
 import Image from "next/image";
 import type React from "react";
 import { Lightbulb } from "lucide-react";
-
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -53,6 +53,15 @@ export default function Step2Goals({
     }
   };
 
+    const router = useRouter();
+  
+    const handleLogout = () => {
+      localStorage.clear();
+      console.log("User logged out!");
+  
+      router.push("/");
+    };
+
   return (
     <div className="w-full h-full lg:grid lg:grid-cols-2">
       {/* Image Side */}
@@ -76,6 +85,12 @@ export default function Step2Goals({
       </div>
       {/* Form Side */}
       <div className="flex items-center justify-center p-6 lg:p-8 h-full">
+          <Button
+                          onClick={handleLogout}
+                          className="absolute top-4 right-4 text-sm bg-blue-700 hover:bg-blue-800 text-white font-medium px-3 py-1.5 rounded-full shadow transition-all duration-200"
+                        >
+                          Logout
+                        </Button>
         <div className="w-full max-w-md space-y-6">
           <div className="text-center space-y-4">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-2xl mb-4 shadow-lg mx-auto">

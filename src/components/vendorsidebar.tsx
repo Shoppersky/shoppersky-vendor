@@ -15,22 +15,32 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import Logo from "./logo";
+import useStore from "../lib/Zustand";
+
 
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
+  const { user } = useStore(); 
+  const store_name = user?.vendor_store_slug; 
 
   const navItems = [
     { label: "Home", icon: Home, path: "/home" },
     { label: "Employees", icon: Users, path: "/employees" },
-    { label: "Customers", icon: Box, path: "/customers" },
+    // { label: "Customers", icon: Box, path: "/customers" },
     { label: "Categories", icon: Folder, path: "/categories" },
     { label: "Products", icon: ShoppingBag, path: "/products" },
-    { label: "Orders", icon: PackageCheck, path: "/orders" },
-    { label: "Affiliates", icon: Megaphone, path: "/affiliates" },
-    { label: "Payments", icon: CreditCard, path: "/payments" },
-    { label: "Settings", icon: Settings, path: "/settings" },
-    { label: "Onlinestore", icon: Settings, path: "/online-store" },
+    // { label: "Orders", icon: PackageCheck, path: "/orders" },
+    // { label: "Affiliates", icon: Megaphone, path: "/affiliates" },
+    // { label: "Payments", icon: CreditCard, path: "/payments" },
+    // { label: "Settings", icon: Settings, path: "/settings" },
+    {
+      label: "Onlinestore",
+      icon: Settings,
+      path: `/online-store/${encodeURIComponent(store_name || "default")}`, // Dynamically include store_name
+    },
+     { label: "My Enquiries", icon: Settings, path: "/enquiries" },
+   
   ];
 
   const handleLogout = () => {

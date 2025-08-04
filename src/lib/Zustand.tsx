@@ -8,6 +8,7 @@ interface UserData {
   ref_number?: string;
   industry?: string;
   onboarding_status?: string;
+  vendor_store_slug?:string;
   [key: string]: any;
 }
 
@@ -36,6 +37,7 @@ const normalizeUser = (user: any): UserData => ({
   ref_number: user?.ref_number || "",
   industry: user?.industry || "",
   onboarding_status: user?.onboarding_status || "",
+  vendor_store_slug: user?.vendor_store_slug || "",
   ...user,
 });
 
@@ -148,6 +150,7 @@ const useStore = create<AuthState>((set, get) => ({
         ref_number: "",
         industry: "",
         onboarding_status: "",
+        vendor_store_slug: "",
       };
     }
 

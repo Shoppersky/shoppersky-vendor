@@ -37,51 +37,51 @@ import axiosInstance from "@/lib/axiosInstance"
 import Image from "next/image"
 
 interface ProductResponse {
-  product_id: string
-  vendor_id: string
-  slug: string
+  product_id: string;
+  store_name?: string;
+  slug: string;
   identification: {
-    product_name: string
-    product_sku?: string
-  }
+    product_name: string;
+    product_sku?: string;
+  };
   descriptions: {
-    short_description?: string
-    full_description?: string
-  }
+    short_description?: string;
+    full_description?: string;
+  } | null;
   pricing: {
-    actual_price: string
-    selling_price: string
-  }
+    actual_price?: string;
+    selling_price?: string;
+  } | null;
   inventory: {
-    quantity: string
-    stock_alert_status?: string
-  }
+    quantity?: string;
+    stock_alert_status?: string;
+  } | null;
   physical_attributes?: {
-    weight: string
+    weight?: string;
     dimensions?: {
-      length?: string
-      width?: string
-      height?: string
-    }
-  }
+      length?: string;
+      width?: string;
+      height?: string;
+    };
+  } | null;
   images: {
-    primary_image?: string
-    additional_images?: string[]
-  } | null
+    urls?: string[];
+  } | null;
   tags_and_relationships?: {
-    product_tags?: string[]
-    linkedproductid?: string
-  }
+    product_tags?: string[];
+    linkedproductid?: string;
+  } | null;
   status_flags: {
-    product_status: boolean
-    featured_product?: boolean
-    published_product?: boolean
-  }
-  timestamp: string
-  category_name?: string
-  subcategory_name?: string
+    product_status: boolean;
+    featured_product?: boolean;
+    published_product?: boolean;
+  };
+  timestamp: string;
+  category_id?: string;
+  category_name?: string;
+  subcategory_id?: string;
+  subcategory_name?: string;
 }
-
 interface Product {
   id: string
   name: string
@@ -111,52 +111,52 @@ interface Product {
   additionalImages?: string[]
 }
 
-function StatCard({
-  title,
-  value,
-  icon,
-  color = "cyan",
-  subtitle,
-  delay = 0,
-}: {
-  title: string
-  value: string
-  icon: React.ReactNode
-  color?: "cyan" | "green" | "blue" | "yellow" | "indigo" | "pink" | "red" | "purple"
-  subtitle?: string
-  delay?: number
-}) {
-  const colorClasses = {
-    cyan: "from-cyan-500/10 to-cyan-600/20 border-cyan-200/50 dark:border-cyan-700/50",
-    green: "from-green-500/10 to-green-600/20 border-green-200/50 dark:border-green-700/50",
-    blue: "from-blue-500/10 to-blue-600/20 border-blue-200/50 dark:border-blue-700/50",
-    yellow: "from-yellow-500/10 to-yellow-600/20 border-yellow-200/50 dark:border-yellow-700/50",
-    indigo: "from-indigo-500/10 to-indigo-600/20 border-indigo-200/50 dark:border-indigo-700/50",
-    pink: "from-pink-500/10 to-pink-600/20 border-pink-200/50 dark:border-pink-700/50",
-    red: "from-red-500/10 to-red-600/20 border-red-200/50 dark:border-red-700/50",
-    purple: "from-purple-500/10 to-purple-600/20 border-purple-200/50 dark:border-purple-700/50",
-  }
+// function StatCard({
+//   title,
+//   value,
+//   icon,
+//   color = "cyan",
+//   subtitle,
+//   delay = 0,
+// }: {
+//   title: string
+//   value: string
+//   icon: React.ReactNode
+//   color?: "cyan" | "green" | "blue" | "yellow" | "indigo" | "pink" | "red" | "purple"
+//   subtitle?: string
+//   delay?: number
+// }) {
+//   const colorClasses = {
+//     cyan: "from-cyan-500/10 to-cyan-600/20 border-cyan-200/50 dark:border-cyan-700/50",
+//     green: "from-green-500/10 to-green-600/20 border-green-200/50 dark:border-green-700/50",
+//     blue: "from-blue-500/10 to-blue-600/20 border-blue-200/50 dark:border-blue-700/50",
+//     yellow: "from-yellow-500/10 to-yellow-600/20 border-yellow-200/50 dark:border-yellow-700/50",
+//     indigo: "from-indigo-500/10 to-indigo-600/20 border-indigo-200/50 dark:border-indigo-700/50",
+//     pink: "from-pink-500/10 to-pink-600/20 border-pink-200/50 dark:border-pink-700/50",
+//     red: "from-red-500/10 to-red-600/20 border-red-200/50 dark:border-red-700/50",
+//     purple: "from-purple-500/10 to-purple-600/20 border-purple-200/50 dark:border-purple-700/50",
+//   }
 
-  return (
-    <Card
-      className={`group relative overflow-hidden border bg-gradient-to-br ${colorClasses[color]} backdrop-blur-sm transition-all duration-500 hover:shadow-xl hover:-translate-y-1 animate-fade-in-up cursor-pointer`}
-      style={{ animationDelay: `${delay}ms` }}
-    >
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <p className="text-xs font-medium text-muted-foreground">{title}</p>
-            <p className="text-xl font-bold">{value}</p>
-            {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
-          </div>
-          <div className="rounded-lg bg-white/50 p-2 transition-all duration-300 group-hover:scale-110 dark:bg-zinc-800/50">
-            {icon}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
+//   return (
+//     <Card
+//       className={`group relative overflow-hidden border bg-gradient-to-br ${colorClasses[color]} backdrop-blur-sm transition-all duration-500 hover:shadow-xl hover:-translate-y-1 animate-fade-in-up cursor-pointer`}
+//       style={{ animationDelay: `${delay}ms` }}
+//     >
+//       <CardContent className="p-4">
+//         <div className="flex items-center justify-between">
+//           <div className="space-y-1">
+//             <p className="text-xs font-medium text-muted-foreground">{title}</p>
+//             <p className="text-xl font-bold">{value}</p>
+//             {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
+//           </div>
+//           <div className="rounded-lg bg-white/50 p-2 transition-all duration-300 group-hover:scale-110 dark:bg-zinc-800/50">
+//             {icon}
+//           </div>
+//         </div>
+//       </CardContent>
+//     </Card>
+//   )
+// }
 
 function ImageGallery({ images, productName }: { images: string[]; productName: string }) {
   const [currentImage, setCurrentImage] = useState(0)
@@ -269,61 +269,65 @@ export default function ProductView() {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      if (!slug) {
-        setError("Invalid product slug.")
-        setLoading(false)
-        return
-      }
-
-      try {
-        const response = await axiosInstance.get<ProductResponse>(`/products/slug/${slug}`)
-        const productData = response.data
-
-        if (response.status === 200 && productData.product_id) {
-          const mappedProduct: Product = {
-            id: productData.product_id,
-            name: productData.identification.product_name,
-            price: `$${Number.parseFloat(productData.pricing.selling_price).toFixed(2)}`,
-            image: productData.images?.primary_image || "/placeholder.svg?height=500&width=500",
-            purchases: Math.floor(Math.random() * 1000) + 100,
-            sold: Math.floor(Math.random() * 500) + 50,
-            status: productData.status_flags.product_status ? "Inactive" : "Active",
-            category: productData.category_name,
-            subcategory: productData.subcategory_name,
-            createdDate: productData.timestamp.split("T")[0],
-            lastUpdated: productData.timestamp.split("T")[0],
-            rating: Math.random() * 2 + 3, // 3-5 rating
-            stock: Number.parseInt(productData.inventory.quantity) || 0,
-            slug: productData.slug,
-            sku: productData.identification.product_sku,
-            shortDescription: productData.descriptions.short_description,
-            fullDescription: productData.descriptions.full_description,
-            seoKeywords: productData.tags_and_relationships?.product_tags?.join(", "),
-            seoTitle: "",
-            tags: productData.tags_and_relationships?.product_tags || [],
-            featured: productData.status_flags.featured_product || false,
-            weight: productData.physical_attributes?.weight,
-            length: productData.physical_attributes?.dimensions?.length,
-            width: productData.physical_attributes?.dimensions?.width,
-            height: productData.physical_attributes?.dimensions?.height,
-            additionalImages: productData.images?.additional_images || [],
-          }
-          setProduct(mappedProduct)
-          setError(null)
-        } else {
-          console.log("not found")
-        }
-      } catch (err: any) {
-        setError(err.response?.data?.message || "Failed to fetch product details.")
-        console.error(err)
-      } finally {
-        setLoading(false)
-      }
+  const fetchProduct = async () => {
+    if (!slug) {
+      setError("Invalid product slug.");
+      setLoading(false);
+      return;
     }
 
-    fetchProduct()
-  }, [slug])
+    try {
+      const response = await axiosInstance.get<ProductResponse>(`/products/slug/${slug}`);
+      const productData = response.data;
+
+      if (response.status === 200 && productData.product_id) {
+        const mappedProduct: Product = {
+          id: productData.product_id,
+          name: productData.identification.product_name || "Unnamed Product",
+          price: productData.pricing?.selling_price
+            ? `$${Number.parseFloat(productData.pricing.selling_price).toFixed(2)}`
+            : "$0.00",
+          image: productData.images?.urls?.[0] || "/placeholder.svg?height=500&width=500",
+          purchases: Math.floor(Math.random() * 1000) + 100,
+          sold: Math.floor(Math.random() * 500) + 50,
+          status: productData.status_flags.product_status ? "Active" : "Inactive", // Fixed logic
+          category: productData.category_name,
+          subcategory: productData.subcategory_name,
+          createdDate: productData.timestamp.split("T")[0],
+          lastUpdated: productData.timestamp.split("T")[0],
+          rating: Math.random() * 2 + 3, // 3-5 rating
+          stock: productData.inventory?.quantity
+            ? Number.parseInt(productData.inventory.quantity)
+            : 0,
+          slug: productData.slug,
+          sku: productData.identification.product_sku,
+          shortDescription: productData.descriptions?.short_description,
+          fullDescription: productData.descriptions?.full_description,
+          seoKeywords: productData.tags_and_relationships?.product_tags?.join(", "),
+          seoTitle: "",
+          tags: productData.tags_and_relationships?.product_tags || [],
+          featured: productData.status_flags.featured_product || false,
+          weight: productData.physical_attributes?.weight,
+          length: productData.physical_attributes?.dimensions?.length,
+          width: productData.physical_attributes?.dimensions?.width,
+          height: productData.physical_attributes?.dimensions?.height,
+          additionalImages: productData.images?.urls?.slice(1) || [],
+        };
+        setProduct(mappedProduct);
+        setError(null);
+      } else {
+        setError("Product not found.");
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to fetch product details.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProduct();
+}, [slug]);
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -477,7 +481,7 @@ export default function ProductView() {
           <span className="text-foreground font-medium">{product.name}</span>
         </div>
 
-        {/* Stats Grid */}
+{/*       
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <StatCard
             title="Views"
@@ -533,7 +537,7 @@ export default function ProductView() {
             subtitle={product.status === "Active" ? "Live" : "Inactive"}
             delay={700}
           />
-        </div>
+        </div> */}
 
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

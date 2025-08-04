@@ -59,11 +59,22 @@ export default function VendorLogin() {
             router.push("/onboarding");
             break;
           case "under_review":
-            router.push("/verification");
+            router.push(
+              `/review?ref=${encodeURIComponent(user?.ref_number || "N/A")}`
+            );
+            break;
+          case "submitted":
+            router.push(
+              `/verification?ref=${encodeURIComponent(
+                user?.ref_number || "N/A"
+              )}`
+            );
             break;
           case "rejected":
             router.push(
-              `/rejected?ref=${encodeURIComponent(user?.ref_number || "N/A")}`
+              `/rejected?ref=${encodeURIComponent(
+                user?.ref_number || "N/A"
+              )}&comment=${encodeURIComponent(user?.reviewer_comment || "")}`
             );
 
             break;

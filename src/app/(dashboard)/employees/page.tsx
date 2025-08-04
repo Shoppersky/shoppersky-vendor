@@ -13,7 +13,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
   Plus,
-  Eye,
   Pencil,
   Trash2,
   Search,
@@ -24,7 +23,6 @@ import {
   UserX,
   MoreHorizontal,
   Mail,
-  Phone,
   Calendar,
   Shield,
   Crown,
@@ -38,7 +36,6 @@ import {
   List,
   TrendingUp,
   Activity,
-  DollarSign,
 } from "lucide-react"
 import axiosInstance from "@/lib/axiosInstance"
 import useStore from '@/lib/Zustand';
@@ -135,7 +132,7 @@ function UserCard({
             </div>
             <div>
               <h3 className="font-semibold text-sm">{user.username}</h3>
-              <p className="text-xs text-muted-foreground">ID: {user.user_id}</p>
+             
             </div>
           </div>
           <DropdownMenu>
@@ -145,17 +142,14 @@ function UserCard({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <Eye className="w-4 h-4 mr-2" />
-                View Details
-              </DropdownMenuItem>
+            
               <DropdownMenuItem onClick={() => onEdit(user)}>
                 <Pencil className="w-4 h-4 mr-2" />
-                Edit User
+                Edit Employee
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onDelete(user.user_id)} className="text-red-600">
                 <Trash2 className="w-4 h-4 mr-2" />
-                Delete User
+                Delete Employee
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -398,7 +392,7 @@ export default function UsersPage() {
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
           <div className="space-y-2">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-slate-900 via-violet-700 to-blue-700 bg-clip-text text-transparent">
-              User Management
+              Employee Management
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base">
               Manage your team members, roles, and permissions with ease
@@ -425,7 +419,7 @@ export default function UsersPage() {
                   }}
                 >
                   <Plus className="w-4 h-4 mr-2" />
-                  Add User
+                  Add Employee
                 </Button>
               </DialogTrigger>
 
@@ -435,12 +429,12 @@ export default function UsersPage() {
                     {editingUser ? (
                       <>
                         <Edit className="w-6 h-6 text-violet-600" />
-                        Edit User
+                        Edit Employee
                       </>
                     ) : (
                       <>
                         <Plus className="w-6 h-6 text-violet-600" />
-                        Add New User
+                        Add New Employee
                       </>
                     )}
                   </DialogTitle>
@@ -599,12 +593,12 @@ export default function UsersPage() {
                     {editingUser ? (
                       <>
                         <Save className="w-4 h-4 mr-2" />
-                        Update User
+                        Update Employee
                       </>
                     ) : (
                       <>
                         <Plus className="w-4 h-4 mr-2" />
-                        Add User
+                        Add Employee
                       </>
                     )}
                   </Button>
@@ -840,7 +834,7 @@ export default function UsersPage() {
                               </div>
                               <div>
                                 <div className="font-semibold">{user.username}</div>
-                                <div className="text-xs text-muted-foreground">ID: {user.user_id}</div>
+                                
                               </div>
                             </div>
                           </TableCell>
@@ -877,23 +871,18 @@ export default function UsersPage() {
                             <div className="space-y-1">
                               <div className="flex items-center gap-2 text-sm">
                                 <Calendar className="w-3 h-3 text-muted-foreground" />
-                                <span>Joined {new Date(user.joinDate!).toLocaleDateString()}</span>
+                                <span>Joined {new Date(user.joinDate!).toLocaleDateString('en-GB')}</span>
                               </div>
                               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                                 <Activity className="w-3 h-3" />
-                                <span>Active {new Date(user.lastActive!).toLocaleDateString()}</span>
+                                <span>Active {new Date(user.lastActive!).toLocaleDateString('en-GB')}</span>
+
                               </div>
                             </div>
                           </TableCell>
                           <TableCell>
                             <div className="flex justify-end gap-1">
-                              <Button
-                                size="icon"
-                                variant="ghost"
-                                className="h-8 w-8 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-900/30"
-                              >
-                                <Eye className="w-4 h-4" />
-                              </Button>
+                             
                               <Button
                                 size="icon"
                                 variant="ghost"
