@@ -98,10 +98,10 @@ const QueryDetailsPage = () => {
     toast.error("Please enter your follow-up query");
     return;
   }
-
+// /users/vendor_admin_queries/1/messages
   try {
     setSubmitting(true);
-    const response = await axiosInstance.post(`/enquiries/${params.id}/messages`, {
+    const response = await axiosInstance.post(`/users/vendor_admin_queries/${params.id}/messages`, {
       user_id: userId,
       message: followUpText,
       message_type: "followup",
