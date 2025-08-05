@@ -94,36 +94,38 @@ const QueryDetailsPage = () => {
 
 
   const handleFollowUpQuery = async () => {
-    if (!followUpText.trim()) {
-      toast.error("Please enter your follow-up query");
-      return;
-    }
+  if (!followUpText.trim()) {
+    toast.error("Please enter your follow-up query");
+    return;
+  }
 
-    try {
-      setSubmitting(true);
-      await axiosInstance.patch(`/api/v1/enquiries/${params.id}/follow-up`, {
-        follow_up_query: followUpText
+  try {
+    setSubmitting(true);
+    const response = await axiosInstance.post(`/enquiries/${params.id}/messages`, {
+      user_id: userId,
+      message: followUpText,
+      message_type: "followup",
+    });
+
+    if (query) {
+      setQuery({
+        ...query,
+        follow_up_query: followUpText,
+        follow_up_date: new Date().toISOString(),
+        status: response.data.data.query_status?.toLowerCase() || 'pending',
+        updated_at: response.data.data.updated_at || new Date().toISOString(),
       });
-
-      if (query) {
-        setQuery({
-          ...query,
-          follow_up_query: followUpText,
-          follow_up_date: new Date().toISOString(),
-          status: 'pending',
-          updated_at: new Date().toISOString()
-        });
-      }
-      
-      setFollowUpText("");
-      toast.success("Follow-up query submitted successfully");
-    } catch (error) {
-      console.error("Error submitting follow-up query:", error);
-      toast.error("Failed to submit follow-up query");
-    } finally {
-      setSubmitting(false);
     }
-  };
+
+    setFollowUpText("");
+    toast.success("Follow-up query submitted successfully");
+  } catch (error) {
+    console.error("Error submitting follow-up query:", error);
+    toast.error("Failed to submit follow-up query");
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   const getStatusColor = (status: string) => {
     switch (status) {
