@@ -45,11 +45,8 @@ import {
   TrendingUp,
   Copy,
   Mail,
-  Phone,
-  Calendar,
   Link,
-  Plus,
-  RefreshCw
+  Plus
 } from "lucide-react";
 
 interface Affiliate {

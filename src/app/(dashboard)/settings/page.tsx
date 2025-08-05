@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { 
   User, 
@@ -7,26 +8,15 @@ import {
   Bell, 
   Shield, 
   Palette, 
-  Globe, 
   Mail, 
-  Phone, 
   MapPin, 
-  CreditCard, 
-  Lock, 
-  Eye, 
-  EyeOff, 
   Camera, 
   Upload, 
   Save, 
   Settings, 
   Trash2, 
-  Edit, 
   Check, 
-  X, 
   AlertTriangle, 
-  Info, 
-  Star, 
-  Heart, 
   Share2, 
   Download, 
   RefreshCw, 
@@ -35,66 +25,14 @@ import {
   Monitor, 
   Smartphone, 
   Laptop, 
-  Tablet,
   Facebook,
   Instagram,
   Twitter,
   Youtube,
   Linkedin,
-  Github,
-  ExternalLink,
-  Copy,
-  QrCode,
-  Zap,
   Crown,
-  Gift,
-  TrendingUp,
-  BarChart3,
-  PieChart,
-  Calendar,
   Clock,
-  Target,
-  Award,
-  Bookmark,
-  Flag,
-  Tag,
-  Filter,
-  Search,
-  Plus,
-  Minus,
-  ChevronRight,
-  ChevronDown,
-  ArrowRight,
-  ArrowLeft,
-  Home,
-  Building,
-  Users,
-  Package,
-  ShoppingCart,
-  DollarSign,
-  Percent,
-  Hash,
-  AtSign,
-  Link,
-  Image,
-  FileText,
-  Video,
-  Music,
-  Headphones,
-  Mic,
-  Volume2,
-  VolumeX,
-  Wifi,
-  WifiOff,
-  Bluetooth,
-  Battery,
-  BatteryLow,
-  Signal,
-  SignalHigh,
-  SignalLow,
-  SignalMedium,
-  SignalZero
-} from "lucide-react";
+  Building} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -107,7 +45,6 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -421,7 +358,7 @@ export default function VendorSettingsPage() {
                   <Camera className="w-4 h-4 text-white" />
                 </label>
                 {form.coverImageUrl && (
-                  <img src={form.coverImageUrl} alt="Cover" className="w-full h-full object-cover" />
+                  <Image src={form.coverImageUrl} alt="Cover" className="w-full h-full object-cover" />
                 )}
               </div>
               <CardContent className="p-6 -mt-16 relative">

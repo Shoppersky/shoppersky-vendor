@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
-  Plus,
+
   Search,
   Download,
   Eye,
@@ -45,7 +45,7 @@ import {
   Star,
   TrendingUp,
   DollarSign,
-  Filter
+
 } from "lucide-react";
 
 // StatCard Component

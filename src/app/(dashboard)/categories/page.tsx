@@ -21,7 +21,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import {
-  Search,
   Folder,
   Tag,
   CheckCircle,

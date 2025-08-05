@@ -13,7 +13,6 @@ import Image from 'next/image';
 import { useState } from 'react';
 import {
   Tooltip,
-  TooltipProvider,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';

@@ -563,7 +563,7 @@ export default function ProductForm() {
                         >
                           {image ? (
                             <div className="relative w-full h-full">
-                              <img
+                              <Image
                                 src={URL.createObjectURL(image)}
                                 alt={`Preview ${index + 1}`}
                                 className="w-full h-full object-cover rounded-lg"

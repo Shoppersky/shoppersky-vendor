@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import Image from "next/image";
 import {
   Table,
   TableBody,
@@ -243,7 +244,7 @@ export default function CategoryPage() {
                   >
                     {image ? (
                       <div className="relative w-full h-full">
-                        <img
+                        <Image
                           src={URL.createObjectURL(image)}
                           alt="Preview"
                           className="w-full h-full object-cover rounded-lg"
@@ -459,7 +460,7 @@ export default function CategoryPage() {
                           <TableCell>
                             <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 flex items-center justify-center overflow-hidden">
                               {category.image ? (
-                                <img src={category.image} alt={category.name} className="w-full h-full object-cover" />
+                                <Image src={category.image} alt={category.name} className="w-full h-full object-cover" />
                               ) : (
                                 <ImageIcon className="w-5 h-5 text-gray-400" />
                               )}
@@ -531,7 +532,7 @@ export default function CategoryPage() {
                 <CardContent className="space-y-4">
                   {selectedCategory.image && (
                     <div className="aspect-video rounded-xl overflow-hidden max-w-md">
-                      <img src={selectedCategory.image} alt={selectedCategory.name} className="w-full h-full object-cover" />
+                      <Image src={selectedCategory.image} alt={selectedCategory.name} className="w-full h-full object-cover" />
                     </div>
                   )}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

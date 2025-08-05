@@ -18,6 +18,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import axiosInstance from "@/lib/axiosInstance";
 import useStore from "../../../lib/Zustand";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface Subcategory {
   subcategory_id: string;
@@ -444,7 +445,7 @@ export default function AddProductPage() {
                         >
                           {image ? (
                             <div className="relative w-full h-full">
-                              <img
+                              <Image
                                 src={URL.createObjectURL(image)}
                                 alt={`Preview ${index + 1}`}
                                 className="w-full h-full object-cover rounded-lg"

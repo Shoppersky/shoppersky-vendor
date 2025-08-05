@@ -562,7 +562,7 @@ export default function UsersPage() {
                             <div>
                               <p className="text-sm font-medium text-blue-800 dark:text-blue-300">Welcome Email</p>
                               <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                                A welcome email with login credentials will be sent to the user's email address.
+                                A welcome email with login credentials will be sent to the user&apos;s email address.
                               </p>
                             </div>
                           </div>

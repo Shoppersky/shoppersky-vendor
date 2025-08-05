@@ -26,7 +26,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
 import {
@@ -47,11 +46,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { Progress } from "@/components/ui/progress";
 
 import { 
   Search, 
-  Filter, 
   Download, 
   Eye, 
   Edit, 
@@ -72,7 +69,6 @@ import {
   CheckCircle,
   Clock,
   X,
-  Plus,
   FileText,
   TrendingUp,
   TrendingDown,
@@ -80,14 +76,10 @@ import {
   Users,
   ShoppingCart,
   Bell,
-  Settings,
   ExternalLink,
-  Archive,
-  Star,
   MessageSquare,
   Calendar as CalendarDays,
   BarChart3,
-  PieChart,
   Activity
 } from "lucide-react";
 import { format, isToday, isYesterday, isThisWeek, isThisMonth, parseISO } from "date-fns";

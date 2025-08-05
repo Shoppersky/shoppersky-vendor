@@ -8,13 +8,10 @@ import {
   CreditCard, 
   Download, 
   Search, 
-  Filter, 
   Wallet, 
   Banknote , 
   Eye,
   RefreshCw,
-  Settings,
-  FileText,
   BarChart3,
   PieChart,
   ArrowUpRight,
@@ -22,12 +19,9 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  Bell,
   Shield,
   Plus,
-  Edit,
-  ExternalLink
-} from "lucide-react";
+  Edit} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -91,7 +85,6 @@ export default function PaymentsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterMethod, setFilterMethod] = useState("all");
-  const [dateRange, setDateRange] = useState("all");
   const [availableBalance] = useState(45750.50);
   const [autoWithdraw, setAutoWithdraw] = useState(false);
   const [withdrawFrequency, setWithdrawFrequency] = useState("monthly");
@@ -268,7 +261,7 @@ export default function PaymentsPage() {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Today's Earnings</p>
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Today&apos;s Earnings</p>
                       <p className="text-2xl font-bold text-gray-900 dark:text-white">₹{todayEarnings.toLocaleString()}</p>
                       <p className="text-xs text-blue-600 dark:text-blue-400 flex items-center mt-1">
                         <TrendingUp className="w-3 h-3 mr-1" />

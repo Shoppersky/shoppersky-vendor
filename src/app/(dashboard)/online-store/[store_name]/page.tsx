@@ -7,8 +7,6 @@ import {
   Star,
   Heart,
   User,
-  Search,
-  Menu,
   X,
   Filter,
   Edit3,
@@ -17,7 +15,6 @@ import {
   Settings,
   Eye,
   EyeOff,
-  ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -60,8 +57,7 @@ interface StoreSettings {
 }
 
 const OnlineStorePage: React.FC = () => {
-  // UI States
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [cartItems, setCartItems] = useState(0);
   const [wishlistItems, setWishlistItems] = useState<number[]>([]);

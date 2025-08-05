@@ -4,12 +4,8 @@ import { useRouter, usePathname } from "next/navigation";
 import {
   Home,
   Users,
-  Box,
   Folder,
   ShoppingBag,
-  PackageCheck,
-  Megaphone,
-  CreditCard,
   Settings,
   X,
 } from "lucide-react";
