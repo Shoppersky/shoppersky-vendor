@@ -162,7 +162,7 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { CheckCircle, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -214,6 +214,7 @@ export default function EmailConfirmation() {
   };
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <SuspenseSearchParamsWrapper onParamsFetch={handleParamsFetch}>
       <div className="min-h-screen w-full lg:grid lg:grid-cols-2 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
         <EmailConfirmationInfo />
@@ -314,5 +315,6 @@ export default function EmailConfirmation() {
         </div>
       </div>
     </SuspenseSearchParamsWrapper>
+    </Suspense>
   );
 }

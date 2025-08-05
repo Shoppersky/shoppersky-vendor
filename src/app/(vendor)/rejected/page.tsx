@@ -123,7 +123,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import SuspenseSearchParamsWrapper from "@/components/SuspenseSearchParamsWrapper";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 export default function VerificationRejected() {
   const router = useRouter();
@@ -142,6 +142,7 @@ export default function VerificationRejected() {
   };
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <SuspenseSearchParamsWrapper onParamsFetch={handleParamsFetch}>
       <div className="w-full h-screen lg:grid lg:grid-cols-2">
         {/* Image Side */}
@@ -234,5 +235,6 @@ export default function VerificationRejected() {
         </div>
       </div>
     </SuspenseSearchParamsWrapper>
+    </Suspense>
   );
 }

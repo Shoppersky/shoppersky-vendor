@@ -479,7 +479,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -645,6 +645,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <SuspenseSearchParamsWrapper onParamsFetch={handleParamsFetch}>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950 flex items-center justify-center p-4">
         {/* Background Pattern */}
@@ -933,5 +934,6 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </SuspenseSearchParamsWrapper>
+    </Suspense>
   );
 }
