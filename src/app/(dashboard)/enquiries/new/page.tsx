@@ -52,14 +52,14 @@ const NewQueryPage = () => {
       setLoading(true);
       
       await axiosInstance.post('/users/vendor_admin_queries', {
-        user_id: "WpMCvQ",
+        user_id: userId,
         title: newQuery.title,
         category: newQuery.category,
         message: newQuery.description
       });
       
       toast.success("Query submitted successfully");
-      router.push("/queries");
+      router.push("/enquiries");
     } catch (error) {
       console.error("Error creating query:", error);
       toast.error("Failed to submit query");
@@ -69,7 +69,7 @@ const NewQueryPage = () => {
   };
 
   const handleCancel = () => {
-    router.push("/queries");
+    router.push("/enquiries");
   };
 
   return (

@@ -16,9 +16,20 @@ import {
   AlertCircle,
   CheckCircle
 } from "lucide-react";
-import axiosInstance from "@/lib/axiosinstance";
+
 import useStore from "@/lib/Zustand";
 import { toast } from "sonner";
+import axiosInstance from "@/lib/axiosInstance";
+
+// Types
+interface Thread {
+  type: string;
+  sender_type: string;
+  user_id: string;
+  username: string;
+  message: string;
+  timestamp: string;
+}
 
 interface Query {
   id: string;
@@ -27,7 +38,7 @@ interface Query {
   status: 'pending' | 'in-progress' | 'resolved' | 'closed';
   vendor_id: string;
   vendor_name: string;
-  vendor_email: string;
+  vendor_email?: string;
   created_at: string;
   updated_at: string;
   admin_response?: string;
@@ -39,56 +50,11 @@ interface Query {
 const QueryDetailsPage = () => {
   const router = useRouter();
   const params = useParams();
-  const { user } = useStore();
+  const { userId } = useStore();
   const [query, setQuery] = useState<Query | null>(null);
   const [loading, setLoading] = useState(true);
-  const [adminResponse, setAdminResponse] = useState("");
   const [followUpText, setFollowUpText] = useState("");
   const [submitting, setSubmitting] = useState(false);
-
-  // Mock data - replace with actual API call
-  const mockQueries: Query[] = [
-    {
-      id: "1",
-      title: "Event Setup Issue",
-      description: "Having trouble setting up the event venue details. The location field is not accepting special characters.",
-      status: "pending",
-      vendor_id: "vendor_1",
-      vendor_name: "John Vendor",
-      vendor_email: "john@vendor.com",
-      created_at: "2024-01-15T10:30:00Z",
-      updated_at: "2024-01-15T10:30:00Z",
-      category: "Technical"
-    },
-    {
-      id: "2",
-      title: "Payment Gateway Integration",
-      description: "Need assistance with integrating the payment gateway for ticket sales. Getting error codes during checkout process.",
-      status: "in-progress",
-      vendor_id: "vendor_2",
-      vendor_name: "Sarah Events",
-      vendor_email: "sarah@events.com",
-      created_at: "2024-01-14T14:20:00Z",
-      updated_at: "2024-01-15T09:15:00Z",
-      category: "Payment",
-      admin_response: "We're looking into this issue. Our technical team is working on a solution.",
-      follow_up_query: "The solution you provided didn't work. I'm still getting the same error. Can you provide more specific steps?",
-      follow_up_date: "2024-01-16T08:30:00Z"
-    },
-    {
-      id: "3",
-      title: "Bulk Ticket Upload",
-      description: "How can I upload multiple ticket types at once? The current interface only allows one at a time.",
-      status: "resolved",
-      vendor_id: "vendor_3",
-      vendor_name: "Mike Productions",
-      vendor_email: "mike@productions.com",
-      created_at: "2024-01-13T16:45:00Z",
-      updated_at: "2024-01-14T11:30:00Z",
-      category: "Feature Request",
-      admin_response: "You can use the bulk upload feature in the advanced settings. Please check the documentation for detailed steps."
-    }
-  ];
 
   useEffect(() => {
     fetchQuery();
@@ -97,16 +63,28 @@ const QueryDetailsPage = () => {
   const fetchQuery = async () => {
     try {
       setLoading(true);
-      // Replace with actual API call
-      // const response = await axiosInstance.get(`/api/v1/queries/${params.id}`);
-      // setQuery(response.data.data);
-      
-      // Using mock data for now
-      setTimeout(() => {
-        const foundQuery = mockQueries.find(q => q.id === params.id);
-        setQuery(foundQuery || null);
-        setLoading(false);
-      }, 1000);
+      const response = await axiosInstance.get(`/users/vendor_admin_queries/${params.id}?user_id=${userId}`);
+      const queryData = response.data.data;
+
+      // Map API response to Query interface
+      const mappedQuery: Query = {
+        id: queryData.id.toString(),
+        title: queryData.title,
+        description: queryData.last_message || queryData.thread?.[0]?.message || 'No description available',
+        status: queryData.query_status?.toLowerCase() === 'open' ? 'pending' : queryData.query_status?.toLowerCase() as 'pending' | 'in-progress' | 'resolved' | 'closed',
+        vendor_id: queryData.sender_user_id,
+        vendor_name: queryData.thread?.[0]?.username || 'Unknown',
+        vendor_email: queryData.vendor_email || '',
+        created_at: queryData.created_at,
+        updated_at: queryData.updated_at,
+        category: queryData.category || 'General',
+        admin_response: queryData.thread?.find((t: Thread) => t.sender_type === 'admin')?.message,
+        follow_up_query: queryData.thread?.length > 1 ? queryData.thread[queryData.thread.length - 1].message : undefined,
+        follow_up_date: queryData.thread?.length > 1 ? queryData.thread[queryData.thread.length - 1].timestamp : undefined,
+      };
+
+      setQuery(mappedQuery);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching query:", error);
       toast.error("Failed to fetch query details");
@@ -114,41 +92,6 @@ const QueryDetailsPage = () => {
     }
   };
 
-  const handleAdminResponse = async () => {
-    if (!adminResponse.trim()) {
-      toast.error("Please enter a response");
-      return;
-    }
-
-    try {
-      setSubmitting(true);
-      // Replace with actual API call
-      // await axiosInstance.patch(`/api/v1/queries/${params.id}/respond`, {
-      //   response: adminResponse,
-      //   status: 'in-progress'
-      // });
-
-      // Mock update for now
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      if (query) {
-        setQuery({
-          ...query,
-          admin_response: adminResponse,
-          status: 'in-progress',
-          updated_at: new Date().toISOString()
-        });
-      }
-      
-      setAdminResponse("");
-      toast.success("Response sent successfully");
-    } catch (error) {
-      console.error("Error sending response:", error);
-      toast.error("Failed to send response");
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   const handleFollowUpQuery = async () => {
     if (!followUpText.trim()) {
@@ -158,14 +101,10 @@ const QueryDetailsPage = () => {
 
     try {
       setSubmitting(true);
-      // Replace with actual API call
-      // await axiosInstance.patch(`/api/v1/queries/${params.id}/follow-up`, {
-      //   follow_up_query: followUpText
-      // });
+      await axiosInstance.patch(`/api/v1/enquiries/${params.id}/follow-up`, {
+        follow_up_query: followUpText
+      });
 
-      // Mock update for now
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
       if (query) {
         setQuery({
           ...query,
@@ -236,7 +175,7 @@ const QueryDetailsPage = () => {
           <Button 
             variant="ghost" 
             size="sm" 
-            onClick={() => router.push("/queries")}
+            onClick={() => router.push("/enquiries")}
             className="p-2"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -249,7 +188,7 @@ const QueryDetailsPage = () => {
           <CardContent className="p-6 text-center">
             <p className="text-muted-foreground">The requested query could not be found.</p>
             <Button 
-              onClick={() => router.push("/queries")} 
+              onClick={() => router.push("/enquiries")} 
               className="mt-4"
             >
               Back to Queries
@@ -267,7 +206,7 @@ const QueryDetailsPage = () => {
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => router.push("/queries")}
+          onClick={() => router.push("/enquiries")}
           className="p-2"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -321,7 +260,7 @@ const QueryDetailsPage = () => {
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <Label className="text-xs font-medium text-muted-foreground">Vendor Email</Label>
-                  <p>{query.vendor_email}</p>
+                  <p>{query.vendor_email || 'N/A'}</p>
                 </div>
                 <div>
                   <Label className="text-xs font-medium text-muted-foreground">Last Updated</Label>
@@ -366,7 +305,7 @@ const QueryDetailsPage = () => {
         )}
 
         {/* Admin Response Form */}
-        {user?.role_name === 'admin' && query.status !== 'resolved' && query.status !== 'closed' && (
+        {/* {user?.role_name === 'admin' && query.status !== 'resolved' && query.status !== 'closed' && (
           <Card>
             <CardHeader>
               <CardTitle>Send Response</CardTitle>
@@ -399,10 +338,10 @@ const QueryDetailsPage = () => {
               </div>
             </CardContent>
           </Card>
-        )}
+        )} */}
 
         {/* Follow-up Form */}
-        {user?.role_name !== 'admin' && query.admin_response && query.status !== 'resolved' && query.status !== 'closed' && (
+       
           <Card>
             <CardHeader>
               <CardTitle>Follow-up Query</CardTitle>
@@ -435,7 +374,7 @@ const QueryDetailsPage = () => {
               </div>
             </CardContent>
           </Card>
-        )}
+   
       </div>
     </div>
   );
