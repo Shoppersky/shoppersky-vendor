@@ -391,7 +391,12 @@ function Avatar({ src }: { src?: string }) {
   return (
     <span className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-tr from-purple-400 via-purple-300 to-blue-300 dark:from-purple-600 dark:via-purple-500 dark:to-blue-500 rounded-full shadow-lg ring-2 ring-purple-200 dark:ring-purple-800/50 overflow-hidden transition-all duration-300 hover:scale-110 hover:shadow-xl hover:shadow-purple-500/20">
       {src ? (
-        <Image src={src} alt="User avatar" className="w-full h-full object-cover" />
+        <Image
+          src={src}
+          alt="User avatar"
+          fill
+          className="object-cover"
+        />
       ) : (
         <User2 className="w-6 h-6 text-white drop-shadow-sm" />
       )}

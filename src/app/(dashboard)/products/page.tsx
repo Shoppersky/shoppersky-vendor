@@ -338,83 +338,83 @@ export default function ProductsPage() {
   const router = useRouter();
 
   useEffect(() => {
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const response = await axiosInstance.get<ProductResponse[]>(
-        `/products/by-vendor-id/${userId}`
-      );
-      const mappedProducts: Product[] = response.data.map((product) => ({
-        id: product.product_id,
-        name: product.identification.product_name,
-        price: product.pricing?.selling_price
-          ? `$${Number.parseFloat(product.pricing.selling_price).toFixed(2)}`
-          : "$0.00", // Fallback price
-        image:
-          product.images?.urls?.[0]?.replace(/\\/g, "/") ||
-          "/placeholder.svg?height=56&width=56",
-        images:
-          product.images?.urls?.map((url) => url.replace(/\\/g, "/")) || [],
-        purchases: Math.floor(Math.random() * 100),
-        sold: Math.floor(Math.random() * 50),
-        status: product.status_flags.product_status ? "Inactive" : "Active",
-        category: product.category_name,
-        subcategory: product.subcategory_name,
-        createdDate: product.timestamp.split("T")[0],
-        lastUpdated: product.timestamp.split("T")[0],
-        rating: Math.random() * 5,
-        stock: product.inventory?.quantity
-          ? Number.parseInt(product.inventory.quantity)
-          : 0, // Fallback stock
-        slug: product.slug,
-        sku: product.identification.product_sku,
-        shortDescription: product.descriptions?.short_description || "",
-        fullDescription: product.descriptions?.full_description || "",
-        seoKeywords: product.tags_and_relationships?.product_tags?.join(", ") || "",
-        seoTitle: "",
-        tags: product.tags_and_relationships?.product_tags || [],
-        featured: product.status_flags.featured_product || false,
-        weight: product.physical_attributes?.weight || "",
-        length: product.physical_attributes?.dimensions?.length || "",
-        width: product.physical_attributes?.dimensions?.width || "",
-        height: product.physical_attributes?.dimensions?.height || "",
-      }));
-      setProducts(mappedProducts);
-      setError(null);
-    } catch (err) {
-      setError("Failed to fetch products.");
-      console.error(err);
-
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchVendorCategories = async () => {
-    if (!userId) {
-      setError("Vendor ID is required to fetch categories.");
-      return;
-    }
-    try {
-      const response = await axiosInstance.get(
-        `/mapping/list-categories?vendor_ref_id=${userId}&status_value=false`
-      );
-      if (response.data?.statusCode === 200 && response.data?.data) {
-        setCategories(response.data.data);
-      } else {
-        throw new Error("Invalid response format");
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const response = await axiosInstance.get<ProductResponse[]>(
+          `/products/by-vendor-id/${userId}`
+        );
+        const mappedProducts: Product[] = response.data.map((product) => ({
+          id: product.product_id,
+          name: product.identification.product_name,
+          price: product.pricing?.selling_price
+            ? `$${Number.parseFloat(product.pricing.selling_price).toFixed(2)}`
+            : "$0.00", // Fallback price
+          image:
+            product.images?.urls?.[0]?.replace(/\\/g, "/") ||
+            "/placeholder.svg?height=56&width=56",
+          images:
+            product.images?.urls?.map((url) => url.replace(/\\/g, "/")) || [],
+          purchases: Math.floor(Math.random() * 100),
+          sold: Math.floor(Math.random() * 50),
+          status: product.status_flags.product_status ? "Inactive" : "Active",
+          category: product.category_name,
+          subcategory: product.subcategory_name,
+          createdDate: product.timestamp.split("T")[0],
+          lastUpdated: product.timestamp.split("T")[0],
+          rating: Math.random() * 5,
+          stock: product.inventory?.quantity
+            ? Number.parseInt(product.inventory.quantity)
+            : 0, // Fallback stock
+          slug: product.slug,
+          sku: product.identification.product_sku,
+          shortDescription: product.descriptions?.short_description || "",
+          fullDescription: product.descriptions?.full_description || "",
+          seoKeywords:
+            product.tags_and_relationships?.product_tags?.join(", ") || "",
+          seoTitle: "",
+          tags: product.tags_and_relationships?.product_tags || [],
+          featured: product.status_flags.featured_product || false,
+          weight: product.physical_attributes?.weight || "",
+          length: product.physical_attributes?.dimensions?.length || "",
+          width: product.physical_attributes?.dimensions?.width || "",
+          height: product.physical_attributes?.dimensions?.height || "",
+        }));
+        setProducts(mappedProducts);
+        setError(null);
+      } catch (err) {
+        setError("Failed to fetch products.");
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching vendor categories:", error);
-      setError(
-        "Failed to load categories and subcategories. Please try again."
-      );
-    }
-  };
+    };
 
-  fetchProducts();
-  fetchVendorCategories();
-}, [userId]);
+    const fetchVendorCategories = async () => {
+      if (!userId) {
+        setError("Vendor ID is required to fetch categories.");
+        return;
+      }
+      try {
+        const response = await axiosInstance.get(
+          `/mapping/list-categories?vendor_ref_id=${userId}&status_value=false`
+        );
+        if (response.data?.statusCode === 200 && response.data?.data) {
+          setCategories(response.data.data);
+        } else {
+          throw new Error("Invalid response format");
+        }
+      } catch (error) {
+        console.error("Error fetching vendor categories:", error);
+        setError(
+          "Failed to load categories and subcategories. Please try again."
+        );
+      }
+    };
+
+    fetchProducts();
+    fetchVendorCategories();
+  }, [userId]);
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -1099,13 +1099,13 @@ export default function ProductsPage() {
                                   className="relative overflow-hidden rounded-xl shadow-sm"
                                 >
                                   <Image
-                                    src={
-                                      imgUrl ||
-                                      "/placeholder.svg?height=56&width=56"
-                                    }
-                                    alt={`${product.name} image ${index + 1}`}
+                                    src={product.image || "/placeholder.svg"}
+                                    alt={product.name}
+                                    width={56}
+                                    height={56}
                                     className="h-14 w-14 object-cover transition-transform duration-300 group-hover:scale-110"
                                   />
+
                                   {(product.stock || 0) <= 5 &&
                                     product.status === "Active" &&
                                     index === 0 && (
@@ -1119,11 +1119,10 @@ export default function ProductsPage() {
                           ) : (
                             <div className="relative overflow-hidden rounded-xl shadow-sm">
                               <Image
-                                src={
-                                  product.image ||
-                                  "/placeholder.svg?height=56&width=56"
-                                }
+                                src={product.image || "/placeholder.svg"}
                                 alt={product.name}
+                                width={56} // Match the h-14 w-14 (56px)
+                                height={56}
                                 className="h-14 w-14 object-cover transition-transform duration-300 group-hover:scale-110"
                               />
                               {(product.stock || 0) <= 5 &&
@@ -1493,6 +1492,8 @@ export default function ProductsPage() {
                   <Image
                     src={productToDelete.image || "/placeholder.svg"}
                     alt={productToDelete.name}
+                    width={48} // Set width (e.g., 48px to match h-12 w-12 in Tailwind)
+                    height={48} // Set height (e.g., 48px to match h-12 w-12 in Tailwind)
                     className="h-12 w-12 rounded-lg object-cover"
                   />
                   <div>
@@ -1552,6 +1553,8 @@ export default function ProductsPage() {
                   <Image
                     src={productToRestore.image || "/placeholder.svg"}
                     alt={productToRestore.name}
+                    width={48} // Match h-12 w-12 (48px)
+                    height={48}
                     className="h-12 w-12 rounded-lg object-cover"
                   />
 
@@ -1618,4 +1621,3 @@ export default function ProductsPage() {
     </div>
   );
 }
-

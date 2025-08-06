@@ -54,10 +54,13 @@ export default function VendorOnboarding() {
         listing: "Payments for Product Listing",
         orders: "Payments for Orders",
       };
+
+      const trimmedAbn = abnDetails.abn.replace(/\s+/g, "");
+
       const payload = {
         vendor_id: userId,
         purpose: generalQuestions.mainGoals,
-        abn_id: abnDetails.abn,
+        abn_id: trimmedAbn,
         payment_preference: paymentPreferences.paymentType.map(
           (key) => paymentPreferenceMap[key]
         ),
@@ -68,7 +71,7 @@ export default function VendorOnboarding() {
       };
 
       const response = await axiosInstance.post(
-        `/vendor/onboarding?id=${abnDetails.abn}`,
+        `/vendor/onboarding?id=${trimmedAbn}`,
         payload
       );
       return {

@@ -1503,7 +1503,7 @@ export default function UsersPage() {
                           </Select>
                         </div>
 
-                        <div className="space-y-2">
+                        {/* <div className="space-y-2">
                           <label className="text-sm font-medium flex items-center gap-2">
                             <UserCheck className="w-4 h-4" />
                             Status
@@ -1530,7 +1530,7 @@ export default function UsersPage() {
                               </SelectItem>
                             </SelectContent>
                           </Select>
-                        </div>
+                        </div> */}
                       </div>
 
                       {!editingUser && (
