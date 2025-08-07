@@ -30,8 +30,13 @@ interface Product {
   purchases: number;
   sold: number;
   status: "Active" | "Inactive";
-  category?: string;
-  subcategory?: string;
+  category_id?: string; // Changed to category_id
+
+  subcategory_id?: string; // Changed to subcategory_id
+
+  category_name?: string; // Added for display
+
+  subcategory_name?: string; 
   createdDate?: string;
   lastUpdated?: string;
   rating?: number;
@@ -86,8 +91,13 @@ export default function ProductForm() {
 
   const [formData, setFormData] = useState({
     name: "",
-    category: "",
-    subcategory: "",
+    category_id: "", // Changed to category_id
+
+    subcategory_id: "", // Changed to subcategory_id
+
+    category_name: "", // Added for display
+
+    subcategory_name: "",
     price: "",
     salePrice: "",
     sku: "",
@@ -131,90 +141,199 @@ export default function ProductForm() {
   }, [userId]);
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      if (!slug) {
-        setLoading(false);
-        return;
-      }
-      try {
-        const response = await axiosInstance.get(`/products/slug/${slug}`);
-        const product = response.data;
-        const productImages = product.images?.urls || []; // Get image URLs from API
-        setExistingImages(productImages); // Store existing images
-        setEditingProduct({
-          id: product.product_id,
-          name: product.identification.product_name,
-          price: `$${Number.parseFloat(product.pricing.selling_price).toFixed(
-            2
-          )}`,
-          image:
-            product.images?.urls?.[0] || "/placeholder.svg?height=56&width=56",
-          images: product.images?.urls || [], // Store image URLs
-          purchases: Math.floor(Math.random() * 100),
-          sold: Math.floor(Math.random() * 50),
-          status: product.status_flags.product_status ? "Active" : "Inactive",
-          category: product.category_name,
-          subcategory: product.subcategory_name,
-          createdDate: product.timestamp.split("T")[0],
-          lastUpdated: product.timestamp.split("T")[0],
-          rating: Math.random() * 5,
-          stock: Number.parseInt(product.inventory.quantity) || 0,
-          slug: product.slug,
-          sku: product.identification.product_sku,
-          shortDescription: product.descriptions.short_description,
-          fullDescription: product.descriptions.full_description,
-          seoKeywords:
-            product.tags_and_relationships?.product_tags?.join(", ") || "",
-          seoTitle: "",
-          tags: product.tags_and_relationships?.product_tags || [],
-          featured: product.status_flags.featured_product || false,
-          weight: product.physical_attributes?.weight || "",
-          length: product.physical_attributes?.dimensions?.length || "",
-          width: product.physical_attributes?.dimensions?.width || "",
-          height: product.physical_attributes?.dimensions?.height || "",
-        });
-        // Wait for categories to be fetched before setting formData
-        setFormData((prev) => ({
-          ...prev,
-          name: product.identification.product_name,
-          category:product.category_name,
 
-          subcategory:product.subcategory_name,
-          price: Number.parseFloat(product.pricing.actual_price).toFixed(2),
-          salePrice: Number.parseFloat(product.pricing.selling_price).toFixed(
-            2
-          ),
-          sku: product.identification.product_sku || "",
-          shortDescription: product.descriptions.short_description || "",
-          fullDescription: product.descriptions.full_description || "",
-          seoKeywords:
-            product.tags_and_relationships?.product_tags?.join(", ") || "",
-          seoTitle: "",
-          stock: product.inventory.quantity || "",
-          weight: product.physical_attributes?.weight || "",
-          length: product.physical_attributes?.dimensions?.length || "",
-          width: product.physical_attributes?.dimensions?.width || "",
-          height: product.physical_attributes?.dimensions?.height || "",
-          tags: product.tags_and_relationships?.product_tags?.join(", ") || "",
-          featured: product.status_flags.featured_product || false,
-          isActive: product.status_flags.product_status,
-          images: [null, null, null, null], // Keep images as null for new uploads
-        }));
-      } catch (error) {
-        console.error("Error fetching product:", error);
-        setError("Failed to load product details.");
-      } finally {
+    const fetchProduct = async () => {
+
+      if (!slug) {
+
         setLoading(false);
+
+        return;
+
       }
+
+      try {
+
+        const response = await axiosInstance.get(`/products/slug/${slug}`);
+
+        const product = response.data;
+
+        const productImages = product.images?.urls || [];
+
+        setExistingImages(productImages);
+
+        // Find category and subcategory IDs based on names
+
+        let categoryId = product.category_id;
+
+        let subcategoryId = product.subcategory_id;
+
+        let categoryName = product.category_name;
+
+        let subcategoryName = product.subcategory_name;
+
+
+
+        for (const category of categories) {
+
+          if (category.category_name === product.category_name) {
+
+            categoryId = category.category_id;
+
+            for (const subcategory of category.subcategories) {
+
+              if (subcategory.subcategory_name === product.subcategory_name) {
+
+                subcategoryId = subcategory.subcategory_id;
+
+                break;
+
+              }
+
+            }
+
+            break;
+
+          }
+
+        }
+
+
+
+        setEditingProduct({
+
+          id: product.product_id,
+
+          name: product.identification.product_name,
+
+          price: `$${Number.parseFloat(product.pricing.selling_price).toFixed(2)}`,
+
+          image: product.images?.urls?.[0] || "/placeholder.svg?height=56&width=56",
+
+          images: product.images?.urls || [],
+
+          purchases: Math.floor(Math.random() * 100),
+
+          sold: Math.floor(Math.random() * 50),
+
+          status: product.status_flags.product_status ? "Active" : "Inactive",
+
+          category_id: categoryId, // Store ID
+
+          subcategory_id: subcategoryId, // Store ID
+
+          category_name: categoryName, // Store name for display
+
+          subcategory_name: subcategoryName, // Store name for display
+
+          createdDate: product.timestamp.split("T")[0],
+
+          lastUpdated: product.timestamp.split("T")[0],
+
+          rating: Math.random() * 5,
+
+          stock: Number.parseInt(product.inventory.quantity) || 0,
+
+          slug: product.slug,
+
+          sku: product.identification.product_sku,
+
+          shortDescription: product.descriptions.short_description,
+
+          fullDescription: product.descriptions.full_description,
+
+          seoKeywords: product.tags_and_relationships?.product_tags?.join(", ") || "",
+
+          seoTitle: "",
+
+          tags: product.tags_and_relationships?.product_tags || [],
+
+          featured: product.status_flags.featured_product || false,
+
+          weight: product.physical_attributes?.weight || "",
+
+          length: product.physical_attributes?.dimensions?.length || "",
+
+          width: product.physical_attributes?.dimensions?.width || "",
+
+          height: product.physical_attributes?.dimensions?.height || "",
+
+        });
+
+
+
+        setFormData((prev) => ({
+
+          ...prev,
+
+          name: product.identification.product_name,
+
+          category_id: categoryId, // Store ID
+
+          subcategory_id: subcategoryId, // Store ID
+
+          category_name: categoryName, // Store name for display
+
+          subcategory_name: subcategoryName, // Store name for display
+
+          price: Number.parseFloat(product.pricing.actual_price).toFixed(2),
+
+          salePrice: Number.parseFloat(product.pricing.selling_price).toFixed(2),
+
+          sku: product.identification.product_sku || "",
+
+          shortDescription: product.descriptions.short_description || "",
+
+          fullDescription: product.descriptions.full_description || "",
+
+          seoKeywords: product.tags_and_relationships?.product_tags?.join(", ") || "",
+
+          seoTitle: "",
+
+          stock: product.inventory.quantity || "",
+
+          weight: product.physical_attributes?.weight || "",
+
+          length: product.physical_attributes?.dimensions?.length || "",
+
+          width: product.physical_attributes?.dimensions?.width || "",
+
+          height: product.physical_attributes?.dimensions?.height || "",
+
+          tags: product.tags_and_relationships?.product_tags?.join(", ") || "",
+
+          featured: product.status_flags.featured_product || false,
+
+          isActive: product.status_flags.product_status,
+
+          images: [null, null, null, null],
+
+        }));
+
+      } catch (error) {
+
+        console.error("Error fetching product:", error);
+
+        setError("Failed to load product details.");
+
+      } finally {
+
+        setLoading(false);
+
+      }
+
     };
 
-    fetchProduct();
+
+
+    if (categories.length > 0) {
+
+      fetchProduct();
+
+    }
+
   }, [slug, categories]);
 
-  const availableSubcategories = formData.category
-    ? categories.find((cat) => cat.category_id === formData.category)
-        ?.subcategories || []
-    : [];
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -256,7 +375,7 @@ export default function ProductForm() {
   const handleSubmit = async () => {
     if (
       !formData.name.trim() ||
-      !formData.category.trim() ||
+     
       !formData.price.trim() ||
       !formData.stock.trim()
     ) {
@@ -273,9 +392,9 @@ export default function ProductForm() {
 
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append("cat_id", formData.category);
-      if (formData.subcategory) {
-        formDataToSend.append("subcat_id", formData.subcategory);
+      formDataToSend.append("cat_id", formData.category_id);
+      if (formData.subcategory_id) {
+        formDataToSend.append("subcat_id", formData.subcategory_id);
       }
       formDataToSend.append(
         "identification",
@@ -492,18 +611,30 @@ export default function ProductForm() {
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
                       Category *
                     </label>
-                    <p className="text-base text-gray-900 dark:text-gray-100">
-    {formData.category || "Not selected"}
-  </p>
+                    <Input
+
+                      value={formData.category_name || "Not selected"}
+
+                      disabled
+
+                      className="border-cyan-200 bg-white/50 dark:border-cyan-700 dark:bg-zinc-800/50 text-gray-900 dark:text-gray-100"
+
+                    />
                   </div>
 
                   <div>
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
                       Subcategory
                     </label>
-                    <p className="text-base text-gray-900 dark:text-gray-100">
-    {formData.subcategory || "Not selected"}
-  </p>
+                     <Input
+
+                      value={formData.subcategory_name || "Not selected"}
+
+                      disabled
+
+                      className="border-cyan-200 bg-white/50 dark:border-cyan-700 dark:bg-zinc-800/50 text-gray-900 dark:text-gray-100"
+
+                    />
                   </div>
                 </div>
                 <div>
@@ -820,3 +951,7 @@ export default function ProductForm() {
     </div>
   );
 }
+
+
+
+
