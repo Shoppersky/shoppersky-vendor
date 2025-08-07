@@ -433,7 +433,7 @@ const OnlineStorePage: React.FC = () => {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex gap-2 pt-2">
+                    {/* <div className="flex gap-2 pt-2">
                       <Button
                         onClick={() => addToCart(product.product_id)}
                         className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium py-2 rounded-lg transition-colors duration-200"
@@ -449,7 +449,7 @@ const OnlineStorePage: React.FC = () => {
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
-                    </div>
+                    </div> */}
                   </CardContent>
                 </Card>
               ))}

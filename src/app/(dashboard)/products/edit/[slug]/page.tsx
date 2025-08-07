@@ -301,7 +301,7 @@ export default function ProductForm() {
       })
 
       if (editingProduct) {
-        await axiosInstance.put(`/products/${editingProduct.id}`, formDataToSend, {
+        await axiosInstance.put(`/products/slug/${editingProduct.slug}`, formDataToSend, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

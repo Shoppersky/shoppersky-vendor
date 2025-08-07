@@ -458,7 +458,7 @@ export default function ProductView() {
               {copied ? "Copied!" : "Share"}
             </Button>
             <Button
-              onClick={() => router.push(`/products/edit/${product.id}`)}
+              onClick={() => router.push(`/products/edit/${product.slug}`)}
               className="bg-gradient-to-r from-cyan-600 to-blue-600 shadow-lg hover:from-cyan-700 hover:to-blue-700 hover:shadow-xl"
             >
               <Pencil className="mr-2 h-4 w-4" />

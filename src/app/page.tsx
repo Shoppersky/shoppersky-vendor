@@ -230,7 +230,7 @@ export default function VendorLogin() {
                           const val = e.target.value;
                           setPassword(val);
                         }}
-                        placeholder="Create a strong password"
+                        placeholder="Please enter your password"
                         className="h-12 border-2 border-gray-200 focus:border-emerald-500 transition-colors duration-200 pr-12"
                         required
                       />

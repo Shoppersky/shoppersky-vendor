@@ -583,7 +583,7 @@ export default function ResetPasswordPage() {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      if (response.data.status_code === 200) {
+      if (response.data.statusCode === 200) {
         setIsSuccess(true);
         router.push("/");
       } else {

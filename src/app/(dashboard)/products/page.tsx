@@ -1226,14 +1226,14 @@ export default function ProductsPage() {
                         >
                           <ExternalLink className="h-4 w-4" />
                         </Button>
-                        <Button
+                        {/* <Button
                           size="icon"
                           variant="ghost"
                           onClick={() => handleEditProduct(product)}
                           className="h-8 w-8 rounded-full transition-all hover:bg-green-100 hover:text-green-600 hover:scale-110 dark:hover:bg-green-900/30"
                         >
                           <Pencil className="h-4 w-4" />
-                        </Button>
+                        </Button> */}
                         {product.status === "Active" ? (
                           <Button
                             size="icon"
