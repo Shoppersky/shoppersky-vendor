@@ -51,7 +51,7 @@ const NewQueryPage = () => {
     try {
       setLoading(true);
       
-      await axiosInstance.post('/Vendor/vendor_admin_queries', {
+      await axiosInstance.post('/vendor/vendor_admin_queries', {
         user_id: userId,
         title: newQuery.title,
         category: newQuery.category,

@@ -1,80 +1,88 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useRouter, useParams } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { toast } from "sonner"
-import { Pencil, Plus, Upload, X, ArrowLeft, XCircle } from "lucide-react"
-import axiosInstance from "@/lib/axiosInstance"
-import useStore from "../../../../../lib/Zustand"
-import Image from "next/image"
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { toast } from "sonner";
+import { Pencil, Plus, Upload, X, ArrowLeft, XCircle } from "lucide-react";
+import axiosInstance from "@/lib/axiosInstance";
+import useStore from "../../../../../lib/Zustand";
+import Image from "next/image";
 
+// Interfaces remain the same
 interface Product {
-  id: string
-  name: string
-  price: string
-  image: string
-  purchases: number
-  sold: number
-  status: "Active" | "Inactive"
-  category?: string
-  subcategory?: string
-  createdDate?: string
-  lastUpdated?: string
-  rating?: number
-  stock?: number
-  slug?: string
-  sku?: string
-  shortDescription?: string
-  fullDescription?: string
-  seoKeywords?: string
-  seoTitle?: string
-  tags?: string[]
-  featured?: boolean
-  weight?: string
-  length?: string
-  width?: string
-  height?: string
+  id: string;
+  name: string;
+  price: string;
+  image: string;
+  purchases: number;
+  sold: number;
+  status: "Active" | "Inactive";
+  category?: string;
+  subcategory?: string;
+  createdDate?: string;
+  lastUpdated?: string;
+  rating?: number;
+  stock?: number;
+  slug?: string;
+  sku?: string;
+  shortDescription?: string;
+  fullDescription?: string;
+  seoKeywords?: string;
+  seoTitle?: string;
+  tags?: string[];
+  featured?: boolean;
+  weight?: string;
+  length?: string;
+  width?: string;
+  height?: string;
+  images?: string[]; // Added to store existing image URLs
 }
 
 interface Category {
-  category_id: string
-  category_name: string
-  slug: string
-  description: string
-  meta_title: string
-  meta_description: string
-  imgthumbnail: string
-  featured_category: boolean
-  show_in_menu: boolean
-  status: boolean
-  subcategories: Subcategory[]
+  category_id: string;
+  category_name: string;
+  slug: string;
+  description: string;
+  meta_title: string;
+  meta_description: string;
+  imgthumbnail: string;
+  featured_category: boolean;
+  show_in_menu: boolean;
+  status: boolean;
+  subcategories: Subcategory[];
 }
 
 interface Subcategory {
-  subcategory_id: string
-  subcategory_name: string
-  slug: string
-  description: string
-  meta_title: string
-  meta_description: string
-  imgthumbnail: string
-  featured_category: boolean
-  show_in_menu: boolean
-  status: boolean
+  subcategory_id: string;
+  subcategory_name: string;
+  slug: string;
+  description: string;
+  meta_title: string;
+  meta_description: string;
+  imgthumbnail: string;
+  featured_category: boolean;
+  show_in_menu: boolean;
+  status: boolean;
 }
 
 export default function ProductForm() {
-  const { userId } = useStore()
-  const router = useRouter()
-  const params = useParams()
-  const slug = params.slug as string
+  const { userId } = useStore();
+  const router = useRouter();
+  const params = useParams();
+  const slug = params.slug as string;
 
   const [formData, setFormData] = useState({
     name: "",
@@ -95,49 +103,53 @@ export default function ProductForm() {
     tags: "",
     featured: false,
     isActive: true,
-    images: [null, null, null, null] as (File | null)[]
-  })
-  const [categories, setCategories] = useState<Category[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState("basic")
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
+    images: [null, null, null, null] as (File | null)[],
+  });
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]); // Store existing image URLs
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("basic");
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     const fetchVendorCategories = async () => {
-      if (!userId) {
-        setError("Vendor ID is required to fetch categories.")
-        setLoading(false)
-        return
-      }
+      if (!userId) return;
       try {
         const response = await axiosInstance.get(
           `/mapping/list-categories?vendor_ref_id=${userId}&status_value=false`
-        )
+        );
         if (response.data?.statusCode === 200 && response.data?.data) {
-          setCategories(response.data.data)
-        } else {
-          throw new Error("Invalid response format")
+          setCategories(response.data.data);
         }
       } catch (error) {
-        console.error("Error fetching vendor categories:", error)
-        setError("Failed to load categories and subcategories. Please try again.")
+        console.error("Error fetching categories", error);
       }
-    }
+    };
 
+    fetchVendorCategories();
+  }, [userId]);
+
+  useEffect(() => {
     const fetchProduct = async () => {
       if (!slug) {
-        setLoading(false)
-        return
+        setLoading(false);
+        return;
       }
       try {
-        const response = await axiosInstance.get(`/products/slug/${slug}`)
-        const product = response.data
+        const response = await axiosInstance.get(`/products/slug/${slug}`);
+        const product = response.data;
+        const productImages = product.images?.urls || []; // Get image URLs from API
+        setExistingImages(productImages); // Store existing images
         setEditingProduct({
           id: product.product_id,
           name: product.identification.product_name,
-          price: `$${Number.parseFloat(product.pricing.selling_price).toFixed(2)}`,
-          image: product.images?.primary_image || "/placeholder.svg?height=56&width=56",
+          price: `$${Number.parseFloat(product.pricing.selling_price).toFixed(
+            2
+          )}`,
+          image:
+            product.images?.urls?.[0] || "/placeholder.svg?height=56&width=56",
+          images: product.images?.urls || [], // Store image URLs
           purchases: Math.floor(Math.random() * 100),
           sold: Math.floor(Math.random() * 50),
           status: product.status_flags.product_status ? "Active" : "Inactive",
@@ -151,28 +163,32 @@ export default function ProductForm() {
           sku: product.identification.product_sku,
           shortDescription: product.descriptions.short_description,
           fullDescription: product.descriptions.full_description,
-          seoKeywords: product.tags_and_relationships?.product_tags?.join(", "),
+          seoKeywords:
+            product.tags_and_relationships?.product_tags?.join(", ") || "",
           seoTitle: "",
           tags: product.tags_and_relationships?.product_tags || [],
           featured: product.status_flags.featured_product || false,
-          weight: product.physical_attributes?.weight,
-          length: product.physical_attributes?.dimensions?.length,
-          width: product.physical_attributes?.dimensions?.width,
-          height: product.physical_attributes?.dimensions?.height,
-        })
-        setFormData({
+          weight: product.physical_attributes?.weight || "",
+          length: product.physical_attributes?.dimensions?.length || "",
+          width: product.physical_attributes?.dimensions?.width || "",
+          height: product.physical_attributes?.dimensions?.height || "",
+        });
+        // Wait for categories to be fetched before setting formData
+        setFormData((prev) => ({
+          ...prev,
           name: product.identification.product_name,
-          category: categories.find((cat) => cat.category_name === product.category_name)?.category_id || "",
-          subcategory:
-            categories
-              .find((cat) => cat.category_name === product.category_name)
-              ?.subcategories.find((sub) => sub.subcategory_name === product.subcategory_name)?.subcategory_id || "",
+          category:product.category_name,
+
+          subcategory:product.subcategory_name,
           price: Number.parseFloat(product.pricing.actual_price).toFixed(2),
-          salePrice: Number.parseFloat(product.pricing.selling_price).toFixed(2),
+          salePrice: Number.parseFloat(product.pricing.selling_price).toFixed(
+            2
+          ),
           sku: product.identification.product_sku || "",
           shortDescription: product.descriptions.short_description || "",
           fullDescription: product.descriptions.full_description || "",
-          seoKeywords: product.tags_and_relationships?.product_tags?.join(", ") || "",
+          seoKeywords:
+            product.tags_and_relationships?.product_tags?.join(", ") || "",
           seoTitle: "",
           stock: product.inventory.quantity || "",
           weight: product.physical_attributes?.weight || "",
@@ -182,64 +198,84 @@ export default function ProductForm() {
           tags: product.tags_and_relationships?.product_tags?.join(", ") || "",
           featured: product.status_flags.featured_product || false,
           isActive: product.status_flags.product_status,
-          images: [null, null, null, null],
-        })
+          images: [null, null, null, null], // Keep images as null for new uploads
+        }));
       } catch (error) {
-        console.error("Error fetching product:", error)
-        setError("Failed to load product details.")
+        console.error("Error fetching product:", error);
+        setError("Failed to load product details.");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchVendorCategories()
-    fetchProduct()
-  }, [])
+    fetchProduct();
+  }, [slug, categories]);
 
   const availableSubcategories = formData.category
-    ? categories.find((cat) => cat.category_id === formData.category)?.subcategories || []
-    : []
+    ? categories.find((cat) => cat.category_id === formData.category)
+        ?.subcategories || []
+    : [];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-  const handleImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+  const handleImageChange = (
+    index: number,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size should be less than 5MB")
-        return
+        toast.error("Image size should be less than 5MB");
+        return;
       }
-      const newImages = [...formData.images]
-      newImages[index] = file
-      setFormData((prev) => ({ ...prev, images: newImages }))
+      const newImages = [...formData.images];
+      newImages[index] = file;
+      setFormData((prev) => ({ ...prev, images: newImages }));
+      // Optionally, remove the existing image at this index
+      const newExistingImages = [...existingImages];
+      newExistingImages[index] = "";
+      setExistingImages(newExistingImages);
     }
-  }
+  };
 
   const removeImage = (index: number) => {
-    const newImages = [...formData.images]
-    newImages[index] = null
-    setFormData((prev) => ({ ...prev, images: newImages }))
-  }
+    const newImages = [...formData.images];
+    newImages[index] = null;
+    setFormData((prev) => ({ ...prev, images: newImages }));
+    // Also clear the existing image URL if present
+    const newExistingImages = [...existingImages];
+    newExistingImages[index] = "";
+    setExistingImages(newExistingImages);
+  };
 
   const handleSubmit = async () => {
-    if (!formData.name.trim() || !formData.category.trim() || !formData.price.trim() || !formData.stock.trim()) {
-      toast.error("Please fill in all required fields: Product Name, Category, Price, and Stock.")
-      return
+    if (
+      !formData.name.trim() ||
+      !formData.category.trim() ||
+      !formData.price.trim() ||
+      !formData.stock.trim()
+    ) {
+      toast.error(
+        "Please fill in all required fields: Product Name, Category, Price, and Stock."
+      );
+      return;
     }
 
     if (!userId) {
-      toast.error("Vendor ID is required")
-      return
+      toast.error("Vendor ID is required");
+      return;
     }
 
     try {
-      const formDataToSend = new FormData()
-      formDataToSend.append("cat_id", formData.category)
+      const formDataToSend = new FormData();
+      formDataToSend.append("cat_id", formData.category);
       if (formData.subcategory) {
-        formDataToSend.append("subcat_id", formData.subcategory)
+        formDataToSend.append("subcat_id", formData.subcategory);
       }
       formDataToSend.append(
         "identification",
@@ -247,35 +283,39 @@ export default function ProductForm() {
           product_name: formData.name,
           product_sku: formData.sku,
         })
-      )
+      );
       formDataToSend.append(
         "descriptions",
         JSON.stringify({
           short_description: formData.shortDescription,
           full_description: formData.fullDescription,
         })
-      )
+      );
       formDataToSend.append(
         "pricing",
         JSON.stringify({
           actual_price: formData.price,
           selling_price: formData.salePrice || formData.price,
         })
-      )
+      );
       formDataToSend.append(
         "inventory",
         JSON.stringify({
           quantity: formData.stock,
           stock_alert_status: formData.stock ? "instock" : "outofstock",
         })
-      )
+      );
       formDataToSend.append(
         "physical_attributes",
         JSON.stringify({
           weight: formData.weight,
-          dimensions: { length: formData.length, width: formData.width, height: formData.height },
+          dimensions: {
+            length: formData.length,
+            width: formData.width,
+            height: formData.height,
+          },
         })
-      )
+      );
       formDataToSend.append(
         "tags_and_relationships",
         JSON.stringify({
@@ -285,7 +325,7 @@ export default function ProductForm() {
             .filter((tag) => tag),
           linkedproductid: "",
         })
-      )
+      );
       formDataToSend.append(
         "status_flags",
         JSON.stringify({
@@ -293,35 +333,44 @@ export default function ProductForm() {
           published_product: formData.isActive,
           product_status: formData.isActive,
         })
-      )
+      );
 
+      // Append new images only (existing images are retained on the server unless overwritten)
       formData.images.forEach((image, index) => {
         if (image) {
-          formDataToSend.append(`files[${index}]`, image)
+          formDataToSend.append(`files[${index}]`, image);
         }
-      })
+      });
 
       if (editingProduct) {
-        await axiosInstance.put(`/products/slug/${editingProduct.slug}`, formDataToSend, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        toast.success("Product updated successfully!")
+        await axiosInstance.put(
+          `/products/slug/${editingProduct.slug}`,
+          formDataToSend,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        toast.success("Product updated successfully!");
       } else {
-        formDataToSend.append("vendor_id", userId)
+        formDataToSend.append("vendor_id", userId);
         await axiosInstance.post("/products/create-product/", formDataToSend, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        })
-        toast.success("Product added successfully!")
+        });
+        toast.success("Product added successfully!");
       }
-      router.push("/products")
+      router.push("/products");
     } catch (error) {
-      toast.error(`Failed to ${editingProduct ? "update" : "add"} product: ${error.message}`)
+      toast.error(
+        `Failed to ${editingProduct ? "update" : "add"} product: ${
+          error.message
+        }`
+      );
     }
-  }
+  };
 
   if (loading) {
     return (
@@ -331,12 +380,15 @@ export default function ProductForm() {
           <div className="h-6 w-80 animate-pulse rounded bg-muted/30" />
           <div className="grid grid-cols-1 gap-6">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-24 animate-pulse rounded-xl bg-muted/30" />
+              <div
+                key={i}
+                className="h-24 animate-pulse rounded-xl bg-muted/30"
+              />
             ))}
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -365,8 +417,12 @@ export default function ProductForm() {
             <CardContent className="flex items-center gap-4 p-6">
               <XCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
               <div>
-                <h3 className="font-semibold text-red-900 dark:text-red-100">Error</h3>
-                <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+                <h3 className="font-semibold text-red-900 dark:text-red-100">
+                  Error
+                </h3>
+                <p className="text-sm text-red-700 dark:text-red-300">
+                  {error}
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -377,15 +433,25 @@ export default function ProductForm() {
           <CardHeader>
             <div className="flex items-center gap-3">
               <div className="rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 p-2">
-                {editingProduct ? <Pencil className="h-5 w-5 text-white" /> : <Plus className="h-5 w-5 text-white" />}
+                {editingProduct ? (
+                  <Pencil className="h-5 w-5 text-white" />
+                ) : (
+                  <Plus className="h-5 w-5 text-white" />
+                )}
               </div>
               <h2 className="text-xl font-semibold">
-                {editingProduct ? "Update Product Details" : "Create a New Product"}
+                {editingProduct
+                  ? "Update Product Details"
+                  : "Create a New Product"}
               </h2>
             </div>
           </CardHeader>
           <CardContent>
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
+            >
               <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 mb-6 bg-cyan-50/50 dark:bg-cyan-900/20">
                 <TabsTrigger value="basic">Basic Info</TabsTrigger>
                 <TabsTrigger value="pricing">Pricing & Inventory</TabsTrigger>
@@ -426,42 +492,18 @@ export default function ProductForm() {
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
                       Category *
                     </label>
-                    <Select
-                      value={formData.category}
-                      onValueChange={(value) => setFormData((prev) => ({ ...prev, category: value, subcategory: "" }))}
-                    >
-                      <SelectTrigger className="border-cyan-200 bg-white/50 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50">
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white/95 backdrop-blur-sm dark:bg-zinc-900/95">
-                        {categories.map((cat) => (
-                          <SelectItem key={cat.category_id} value={cat.category_id}>
-                            {cat.category_name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <p className="text-base text-gray-900 dark:text-gray-100">
+    {formData.category || "Not selected"}
+  </p>
                   </div>
+
                   <div>
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
                       Subcategory
                     </label>
-                    <Select
-                      value={formData.subcategory}
-                      onValueChange={(value) => setFormData((prev) => ({ ...prev, subcategory: value }))}
-                      disabled={!formData.category || availableSubcategories.length === 0}
-                    >
-                      <SelectTrigger className="border-cyan-200 bg-white/50 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50">
-                        <SelectValue placeholder="Select subcategory (optional)" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white/95 backdrop-blur-sm dark:bg-zinc-900/95">
-                        {availableSubcategories.map((subcat) => (
-                          <SelectItem key={subcat.subcategory_id} value={subcat.subcategory_id}>
-                            {subcat.subcategory_name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <p className="text-base text-gray-900 dark:text-gray-100">
+    {formData.subcategory || "Not selected"}
+  </p>
                   </div>
                 </div>
                 <div>
@@ -565,20 +607,42 @@ export default function ProductForm() {
                           {image ? (
                             <div className="relative w-full h-full">
                               <Image
-      src={URL.createObjectURL(image)}
-      alt={`Preview ${index + 1}`}
-      width={56} // Add width (match your design, e.g., 56px for h-14 w-14)
-      height={56} // Add height (match your design)
-      className="w-full h-full object-cover rounded-lg"
-    />
+                                src={URL.createObjectURL(image)}
+                                alt={`Preview ${index + 1}`}
+                                width={128}
+                                height={128}
+                                className="w-full h-full object-cover rounded-lg"
+                              />
                               <Button
                                 type="button"
                                 variant="destructive"
                                 size="sm"
                                 className="absolute top-1 right-1 h-6 w-6 p-0"
                                 onClick={(e) => {
-                                  e.preventDefault()
-                                  removeImage(index)
+                                  e.preventDefault();
+                                  removeImage(index);
+                                }}
+                              >
+                                <X className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          ) : existingImages[index] ? (
+                            <div className="relative w-full h-full">
+                              <Image
+                                src={existingImages[index]}
+                                alt={`Existing Image ${index + 1}`}
+                                width={128}
+                                height={128}
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="sm"
+                                className="absolute top-1 right-1 h-6 w-6 p-0"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  removeImage(index);
                                 }}
                               >
                                 <X className="w-3 h-3" />
@@ -588,7 +652,9 @@ export default function ProductForm() {
                             <div className="flex flex-col items-center text-gray-500 dark:text-gray-400 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
                               <Upload className="w-6 h-6 mb-1" />
                               <p className="text-xs font-medium">
-                                {index === 0 ? "Main Image" : `Image ${index + 1}`}
+                                {index === 0
+                                  ? "Main Image"
+                                  : `Image ${index + 1}`}
                               </p>
                             </div>
                           )}
@@ -604,7 +670,8 @@ export default function ProductForm() {
                     ))}
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                    Upload up to 4 images. First image will be the main product image. Max 5MB each.
+                    Upload up to 4 images. First image will be the main product
+                    image. Max 5MB each.
                   </p>
                 </div>
                 <div className="flex justify-end gap-3">
@@ -661,7 +728,9 @@ export default function ProductForm() {
                     </label>
                     <Switch
                       checked={formData.featured}
-                      onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, featured: checked }))}
+                      onCheckedChange={(checked) =>
+                        setFormData((prev) => ({ ...prev, featured: checked }))
+                      }
                     />
                   </div>
                   <div className="flex items-center justify-between">
@@ -670,7 +739,9 @@ export default function ProductForm() {
                     </label>
                     <Switch
                       checked={formData.isActive}
-                      onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, isActive: checked }))}
+                      onCheckedChange={(checked) =>
+                        setFormData((prev) => ({ ...prev, isActive: checked }))
+                      }
                     />
                   </div>
                 </div>
@@ -747,5 +818,5 @@ export default function ProductForm() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

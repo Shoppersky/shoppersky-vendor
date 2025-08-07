@@ -76,7 +76,7 @@ const QueriesPage = () => {
   const fetchQueries = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get(`/users/vendor_admin_queries/list?user_id=${userId}&page=${pagination.current_page}&limit=20`);
+      const response = await axiosInstance.get(`/vendor/vendor_admin_queries/list?user_id=${userId}&page=${pagination.current_page}&limit=20`);
       console.log('API Response:', response.data); // Debug
       const { data } = response.data
 console.log(data.queries)
@@ -102,7 +102,7 @@ console.log(data.queries)
       setLoading(false);
     } catch (error) {
       console.error("Error fetching queries:", error);
-      toast.error("Failed to fetch queries");
+      // toast.error("Failed to fetch queries");
       setQueries([]);
       setPagination({
         current_page: 1,

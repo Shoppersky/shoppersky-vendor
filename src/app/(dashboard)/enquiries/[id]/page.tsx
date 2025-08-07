@@ -50,11 +50,12 @@ interface Query {
 const QueryDetailsPage = () => {
   const router = useRouter();
   const params = useParams();
-  const { userId } = useStore();
+  const { userId, user } = useStore();
   const [query, setQuery] = useState<Query | null>(null);
   const [loading, setLoading] = useState(true);
   const [followUpText, setFollowUpText] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [resolving, setResolving] = useState(false);
 
   useEffect(() => {
     fetchQuery();
@@ -63,7 +64,7 @@ const QueryDetailsPage = () => {
   const fetchQuery = async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get(`/users/vendor_admin_queries/${params.id}?user_id=${userId}`);
+      const response = await axiosInstance.get(`/vendor/vendor_admin_queries/${params.id}?user_id=${userId}`);
       const queryData = response.data.data;
 
       // Map API response to Query interface
@@ -87,45 +88,71 @@ const QueryDetailsPage = () => {
       setLoading(false);
     } catch (error) {
       console.error("Error fetching query:", error);
-      toast.error("Failed to fetch query details");
+      // toast.error("Failed to fetch query details");
       setLoading(false);
     }
   };
 
-
   const handleFollowUpQuery = async () => {
-  if (!followUpText.trim()) {
-    toast.error("Please enter your follow-up query");
-    return;
-  }
-// /users/vendor_admin_queries/1/messages
-  try {
-    setSubmitting(true);
-    const response = await axiosInstance.post(`/users/vendor_admin_queries/${params.id}/messages`, {
-      user_id: userId,
-      message: followUpText,
-      message_type: "followup",
-    });
-
-    if (query) {
-      setQuery({
-        ...query,
-        follow_up_query: followUpText,
-        follow_up_date: new Date().toISOString(),
-        status: response.data.data.query_status?.toLowerCase() || 'pending',
-        updated_at: response.data.data.updated_at || new Date().toISOString(),
-      });
+    if (!followUpText.trim()) {
+      toast.error("Please enter your follow-up query");
+      return;
     }
 
-    setFollowUpText("");
-    toast.success("Follow-up query submitted successfully");
-  } catch (error) {
-    console.error("Error submitting follow-up query:", error);
-    toast.error("Failed to submit follow-up query");
-  } finally {
-    setSubmitting(false);
-  }
-};
+    try {
+      setSubmitting(true);
+      const response = await axiosInstance.post(`/vendor/vendor_admin_queries/${params.id}/messages`, {
+        user_id: userId,
+        message: followUpText,
+        message_type: "followup",
+      });
+
+      if (query) {
+        setQuery({
+          ...query,
+          follow_up_query: followUpText,
+          follow_up_date: new Date().toISOString(),
+          status: response.data.data.query_status?.toLowerCase() || 'pending',
+          updated_at: response.data.data.updated_at || new Date().toISOString(),
+        });
+      }
+
+      setFollowUpText("");
+      toast.success("Follow-up query submitted successfully");
+    } catch (error) {
+      console.error("Error submitting follow-up query:", error);
+      toast.error("Failed to submit follow-up query");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleMarkAsResolved = async () => {
+    if (!query) return;
+
+    try {
+      setResolving(true);
+      const response = await axiosInstance.patch(`/vendor/vendor_admin_queries/${params.id}/status`, {
+        user_id: userId,
+        query_status: "closed",
+        message: "Marked as resolved by vendor",
+      });
+
+      setQuery({
+        ...query,
+        status: response.data.data.query_status?.toLowerCase() || 'closed',
+        updated_at: response.data.data.updated_at || new Date().toISOString(),
+        admin_response: response.data.data.thread?.find((t: Thread) => t.sender_type === 'vendor' && t.type === 'response')?.message || query.admin_response,
+      });
+
+      toast.success("Query marked as resolved successfully");
+    } catch (error) {
+      console.error("Error marking query as resolved:", error);
+      toast.error("Failed to mark query as resolved");
+    } finally {
+      setResolving(false);
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -146,6 +173,9 @@ const QueryDetailsPage = () => {
       default: return <Clock className="h-4 w-4" />;
     }
   };
+
+  // Determine if follow-up is allowed
+  const canFollowUp = query && query.status !== 'closed' && query.admin_response;
 
   if (loading) {
     return (
@@ -306,44 +336,36 @@ const QueryDetailsPage = () => {
           </Card>
         )}
 
-        {/* Admin Response Form */}
-        {/* {user?.role_name === 'admin' && query.status !== 'resolved' && query.status !== 'closed' && (
+        {/* Resolve Query */}
+        {query.status !== 'closed' && (
           <Card>
             <CardHeader>
-              <CardTitle>Send Response</CardTitle>
+              <CardTitle>Resolve Query</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <Textarea
-                  placeholder="Enter your response to help the vendor..."
-                  value={adminResponse}
-                  onChange={(e) => setAdminResponse(e.target.value)}
-                  rows={4}
-                  disabled={submitting}
-                />
-                <Button 
-                  onClick={handleAdminResponse} 
-                  disabled={submitting || !adminResponse.trim()}
-                >
-                  {submitting ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4 mr-2" />
-                      Send Response
-                    </>
-                  )}
-                </Button>
-              </div>
+              <Button 
+                onClick={handleMarkAsResolved} 
+                disabled={resolving}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                {resolving ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Marking as Resolved...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Mark as Resolved
+                  </>
+                )}
+              </Button>
             </CardContent>
           </Card>
-        )} */}
+        )}
 
         {/* Follow-up Form */}
-       
+        {canFollowUp && (
           <Card>
             <CardHeader>
               <CardTitle>Follow-up Query</CardTitle>
@@ -376,7 +398,7 @@ const QueryDetailsPage = () => {
               </div>
             </CardContent>
           </Card>
-   
+        )}
       </div>
     </div>
   );

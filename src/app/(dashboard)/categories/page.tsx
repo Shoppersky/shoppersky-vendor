@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
@@ -38,6 +37,7 @@ interface SubCategory {
   subcategory_name: string;
   subcategory_description: string;
   subcategory_status: boolean;
+  vendor_subcategory_mapping_status?: boolean; 
 }
 
 interface Category {
@@ -45,8 +45,10 @@ interface Category {
   category_name: string;
   category_description: string;
   category_status: boolean;
+  vendor_category_mapping_status?: boolean; 
   subcategories: SubCategory[];
 }
+
 
 export default function CategoriesPage() {
   const { userId, user } = useStore(); 
@@ -62,35 +64,16 @@ export default function CategoriesPage() {
   // Fetch categories
   useEffect(() => {
     const fetchData = async () => {
-      if (!industry || !userId) return; 
+      if (!industry || !userId) return;
       try {
         setIsLoading(true);
 
         const [industryRes, mappedRes] = await Promise.all([
-          axiosInstance.get(
-            `/industries/by-industry/${industry}?status_filter=false`
-          ),
-          axiosInstance.get(
-            `/mapping/?vendor_ref_id=${userId}&status_filter=false`
-          ),
+          axiosInstance.get(`/industries/by-industry/${industry}?status_filter=false`),
+          axiosInstance.get(`/mapping/?vendor_ref_id=${userId}`),
         ]);
 
-        const industryData: Category[] = industryRes.data.data.map(
-          (item: any) => ({
-            category_id: item.category_id,
-            category_name: item.category_name,
-            category_description: item.category_description,
-            category_status: item.category_status,
-            subcategories: item.subcategories.map((sub: any) => ({
-              subcategory_id: sub.subcategory_id,
-              subcategory_name: sub.subcategory_name,
-              subcategory_description: sub.subcategory_description,
-              subcategory_status: sub.subcategory_status,
-            })),
-          })
-        );
-
-        const mappedData: Category[] = mappedRes.data.data.map((item: any) => ({
+        const industryData: Category[] = industryRes.data.data.map((item: any) => ({
           category_id: item.category_id,
           category_name: item.category_name,
           category_description: item.category_description,
@@ -100,6 +83,21 @@ export default function CategoriesPage() {
             subcategory_name: sub.subcategory_name,
             subcategory_description: sub.subcategory_description,
             subcategory_status: sub.subcategory_status,
+          })),
+        }));
+
+        const mappedData: Category[] = mappedRes.data.data.map((item: any) => ({
+          category_id: item.category_id,
+          category_name: item.category_name,
+          category_description: item.category_description,
+          category_status: item.category_status,
+          vendor_category_mapping_status: item.vendor_category_mapping_status,
+          subcategories: item.subcategories.map((sub: any) => ({
+            subcategory_id: sub.subcategory_id,
+            subcategory_name: sub.subcategory_name,
+            subcategory_description: sub.subcategory_description,
+            subcategory_status: sub.subcategory_status,
+            vendor_subcategory_mapping_status: sub.vendor_subcategory_mapping_status,
           })),
         }));
 
@@ -117,18 +115,22 @@ export default function CategoriesPage() {
     fetchData();
   }, [userId]);
 
-  const isMapped = (categoryId: string, subcategoryId?: string) => {
+
+ const isMapped = (categoryId: string, subcategoryId?: string) => {
     const matchedCategory = mappedCategories.find(
       (cat) => cat.category_id === categoryId
     );
-
     if (!matchedCategory) return false;
 
-    if (!subcategoryId) return true;
+    if (!subcategoryId) {
+      return matchedCategory.vendor_category_mapping_status === false;
+    }
 
-    return matchedCategory.subcategories.some(
+    const matchedSub = matchedCategory.subcategories.find(
       (sub) => sub.subcategory_id === subcategoryId
     );
+
+    return matchedSub?.vendor_subcategory_mapping_status === false;
   };
 
   const filteredCategories = useMemo(() => {
@@ -165,7 +167,7 @@ export default function CategoriesPage() {
     isCurrentlyMapped?: boolean
   ) => {
     try {
-      const endpoint = isCurrentlyMapped ? "/mapping/remove" : "/mapping/add";
+      const endpoint = isCurrentlyMapped ? "/mapping/unmap" : "/mapping/add";
       const payload = {
         vendor_ref_id: userId,
         category_id: categoryId,
@@ -176,7 +178,7 @@ export default function CategoriesPage() {
 
       // Refetch mappings after toggle to update UI
       const mappedRes = await axiosInstance.get(
-        `/mapping/?vendor_ref_id=${userId}&status_filter=false`
+        `/mapping/?vendor_ref_id=${userId}`
       );
 
       const updatedMappedData: Category[] = mappedRes.data.data.map(
@@ -185,11 +187,13 @@ export default function CategoriesPage() {
           category_name: item.category_name,
           category_description: item.category_description,
           category_status: item.category_status,
+          vendor_category_mapping_status: item.vendor_category_mapping_status,
           subcategories: item.subcategories.map((sub: any) => ({
             subcategory_id: sub.subcategory_id,
             subcategory_name: sub.subcategory_name,
             subcategory_description: sub.subcategory_description,
             subcategory_status: sub.subcategory_status,
+            vendor_subcategory_mapping_status: item.vendor_subcategory_mapping_status,
           })),
         })
       );
@@ -219,8 +223,8 @@ export default function CategoriesPage() {
     );
   };
 
-  const getStatusDisplay = (status: boolean) =>
-    !status ? "Active" : "Inactive";
+   const getStatusDisplay = (status: boolean) =>
+    status ? "Unmapped" : "Mapped";
 
   const renderCategoryTable = (categoryList: Category[]) => {
     if (categoryList.length === 0) {
@@ -250,137 +254,148 @@ export default function CategoriesPage() {
                 <TableHead className="text-right text-xs sm:text-sm">Actions</TableHead>
               </TableRow>
             </TableHeader>
-          <TableBody>
-            {categoryList.map((category) => (
-              <>
-                <TableRow key={category.category_id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50">
-                  <TableCell className="py-3">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() =>
-                          toggleCategoryExpansion(category.category_id)
-                        }
-                        className="p-1 h-auto"
-                      >
-                        {expandedCategories.includes(category.category_id) ? (
-                          <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-600" />
-                        ) : (
-                          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-600" />
-                        )}
-                      </Button>
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white">
-                        <Tag className="w-3 h-3 sm:w-4 sm:h-4" />
-                      </div>
-                      <div>
-                        <div className="font-semibold text-sm sm:text-base text-gray-800 dark:text-gray-100">
-                          {category.category_name}
-                        </div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="py-3">
-                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate max-w-xs">
-                      {category.category_description}
-                    </p>
-                  </TableCell>
-                  <TableCell className="py-3">
-                    <Badge
-                      className={`px-2 sm:px-3 py-1 text-xs ${
-                        !category.category_status
-                          ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                          : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                      }`}
-                    >
-                      {!category.category_status ? (
-                        <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                      ) : (
-                        <XCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                      )}
-                      {getStatusDisplay(category.category_status)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right py-3">
-                    <ToggleSwitch
-                      checked={isMapped(category.category_id)}
-                      onCheckedChange={() =>
-                        handleToggle(
-                          category.category_id,
-                          undefined,
-                          isMapped(category.category_id)
-                        )
-                      }
-                      className={
-                        isMapped(category.category_id)
-                          ? "bg-red-500"
-                          : "bg-green-500"
-                      }
-                    />
-                  </TableCell>
-                </TableRow>
+            <TableBody>
+  {categoryList.map((category) => (
+    <>
+      <TableRow className="hover:bg-gray-50 dark:hover:bg-slate-800/50">
+        <TableCell className="py-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => toggleCategoryExpansion(category.category_id)}
+              className="p-1 h-auto"
+            >
+              {expandedCategories.includes(category.category_id) ? (
+                <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-600" />
+              ) : (
+                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-600" />
+              )}
+            </Button>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white">
+              <Tag className="w-3 h-3 sm:w-4 sm:h-4" />
+            </div>
+            <div>
+              <div className="font-semibold text-sm sm:text-base text-gray-800 dark:text-gray-100">
+                {category.category_name}
+              </div>
+            </div>
+          </div>
+        </TableCell>
 
-                {expandedCategories.includes(category.category_id) &&
-                  category.subcategories.map((sub) => (
-                    <TableRow
-                      key={sub.subcategory_id}
-                      className="bg-cyan-50/30 dark:bg-cyan-900/10 hover:bg-cyan-100/40 dark:hover:bg-cyan-900/20"
-                    >
-                      <TableCell className="pl-8 sm:pl-12 py-3">
-                        <div className="flex items-center gap-2 sm:gap-3">
-                          <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-blue-400 flex items-center justify-center text-white">
-                            <Tag className="w-2 h-2 sm:w-3 sm:h-3" />
-                          </div>
-                          <div className="font-medium text-xs sm:text-sm text-gray-700 dark:text-gray-300">
-                            {sub.subcategory_name}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-3">
-                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate max-w-xs">
-                          {sub.subcategory_description}
-                        </p>
-                      </TableCell>
-                      <TableCell className="py-3">
-                        <Badge
-                          className={`px-2 sm:px-3 py-1 text-xs ${
-                            !sub.subcategory_status
-                              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                              : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                          }`}
-                        >
-                          {!sub.subcategory_status ? (
-                            <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                          ) : (
-                            <XCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
-                          )}
-                          {getStatusDisplay(sub.subcategory_status)}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right py-3">
-                        {isMapped(category.category_id) && (
-                          <ToggleSwitch
-                            checked={isMapped(category.category_id, sub.subcategory_id)}
-                            onCheckedChange={() =>
-                              handleToggle(
-                                category.category_id,
-                                sub.subcategory_id,
-                                isMapped(category.category_id, sub.subcategory_id)
-                              )
-                            }
-                            className={
-                              isMapped(category.category_id, sub.subcategory_id)
-                                ? "bg-red-500"
-                                : "bg-green-500"
-                            }
-                          />
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </>
-            ))}
-            </TableBody>
+        <TableCell className="py-3">
+          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate max-w-xs">
+            {category.category_description}
+          </p>
+        </TableCell>
+
+        <TableCell className="py-3">
+          <Badge
+            className={`px-2 sm:px-3 py-1 text-xs ${
+              isMapped(category.category_id)
+                ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+            }`}
+          >
+            {isMapped(category.category_id) ? (
+              <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+            ) : (
+              <XCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+            )}
+            {isMapped(category.category_id) ? "Mapped" : "Unmapped"}
+          </Badge>
+        </TableCell>
+
+        <TableCell className="text-right py-3">
+          <ToggleSwitch
+            checked={isMapped(category.category_id)}
+            onCheckedChange={() =>
+              handleToggle(
+                category.category_id,
+                undefined,
+                isMapped(category.category_id)
+              )
+            }
+            className={
+              isMapped(category.category_id)
+                ? "bg-green-500"
+                : "bg-red-500"
+            }
+          />
+        </TableCell>
+      </TableRow>
+
+      {expandedCategories.includes(category.category_id) &&
+        category.subcategories.map((sub) => (
+          <TableRow
+            key={sub.subcategory_id}
+            className="bg-cyan-50/30 dark:bg-cyan-900/10 hover:bg-cyan-100/40 dark:hover:bg-cyan-900/20"
+          >
+            <TableCell className="pl-8 sm:pl-12 py-3">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-blue-400 flex items-center justify-center text-white">
+                  <Tag className="w-2 h-2 sm:w-3 sm:h-3" />
+                </div>
+                <div className="font-medium text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                  {sub.subcategory_name}
+                </div>
+              </div>
+            </TableCell>
+
+            <TableCell className="py-3">
+              <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate max-w-xs">
+                {sub.subcategory_description}
+              </p>
+            </TableCell>
+
+            <TableCell className="py-3">
+              <Badge
+                className={`px-2 sm:px-3 py-1 text-xs ${
+                  isMapped(category.category_id, sub.subcategory_id)
+                    ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                    : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                }`}
+              >
+                {isMapped(category.category_id, sub.subcategory_id) ? (
+                  <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                ) : (
+                  <XCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                )}
+                {isMapped(category.category_id, sub.subcategory_id)
+                  ? "Mapped"
+                  : "Unmapped"}
+              </Badge>
+            </TableCell>
+
+            <TableCell className="text-right py-3">
+              {isMapped(category.category_id) && (
+                <ToggleSwitch
+                  checked={isMapped(
+                    category.category_id,
+                    sub.subcategory_id
+                  )}
+                  onCheckedChange={() =>
+                    handleToggle(
+                      category.category_id,
+                      sub.subcategory_id,
+                      isMapped(category.category_id, sub.subcategory_id)
+                    )
+                  }
+                  className={
+                    isMapped(category.category_id, sub.subcategory_id)
+                      ? "bg-green-500"
+                      : "bg-red-500"
+                  }
+                />
+              )}
+            </TableCell>
+          </TableRow>
+        ))}
+   </>
+  ))}
+</TableBody>
+
+         
           </Table>
         </div>
 
@@ -557,30 +572,7 @@ export default function CategoriesPage() {
           </p>
         </div>
         
-        {/* Desktop Actions */}
-        <div className="hidden sm:flex items-center gap-2 sm:gap-3 lg:gap-4">
-          <div className="relative">
-            <Input
-              placeholder="Search categories..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-48 lg:w-64 pl-8 text-sm"
-            />
-            <svg className="absolute left-2.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-32 lg:w-40">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="inactive">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+       
       </div>
 
       {/* Mobile Search and Filters */}
@@ -633,3 +625,6 @@ export default function CategoriesPage() {
     </div>
   );
 }
+
+
+
