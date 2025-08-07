@@ -317,7 +317,7 @@ export default function CustomersPage() {
   };
 
   return (
-    <div className="space-y-6 bg-white p-6 min-h-screen">
+    <div className="space-y-6 sm:space-y-8 p-4 sm:p-6 bg-white animate-fadeIn">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="space-y-2">

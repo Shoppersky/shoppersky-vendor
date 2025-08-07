@@ -266,7 +266,7 @@ export default function AddProductPage() {
     : [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br bg-white py-6 px-2 sm:px-4 lg:px-8">
+    <div className="space-y-6 sm:space-y-8 p-4 sm:p-6 bg-white animate-fadeIn">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-600 via-blue-600 to-green-600 bg-clip-text text-transparent mb-8">
           Add a New Product

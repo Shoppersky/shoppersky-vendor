@@ -17,8 +17,8 @@ export default function VendorSignupComponent() {
       </div>
 
       <div className="flex flex-col items-center justify-center p-12 relative z-10 text-white">
-        <div className="text-center space-y-8 max-w-lg">
-          <div className="space-y-4">
+        <div className="text-center space-y-8 max-w-lg ml-40 ">
+          <div className="space-y-4  ">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 rounded-3xl backdrop-blur-sm">
               <Store className="w-10 h-10 text-white" />
             </div>

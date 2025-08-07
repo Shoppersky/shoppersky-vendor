@@ -11,7 +11,7 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-muted">
+    <div className="space-y-6 sm:space-y-8 p-4 sm:p-6 bg-white animate-fadeIn flex flex-col">
       {/* Header */}
       <div className="h-14 bg-white border-b px-6 flex items-center justify-between">
         <h1 className="text-xl font-semibold">Dashboard</h1>

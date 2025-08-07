@@ -73,7 +73,7 @@ const NewQueryPage = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-2xl">
+    <div className="space-y-6 sm:space-y-8 p-4 sm:p-6 bg-white animate-fadeIn max-w-2xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
         <Button 

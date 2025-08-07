@@ -119,4 +119,28 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Improve touch interactions on mobile */
+  @media (max-width: 768px) {
+    button, input, select, textarea {
+      font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    /* Improve tap targets */
+    button, a {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Better focus states for accessibility */
+  *:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
 }

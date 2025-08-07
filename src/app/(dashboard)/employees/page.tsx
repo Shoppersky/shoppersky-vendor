@@ -432,20 +432,20 @@ export default function UsersPage() {
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div className="space-y-6 sm:space-y-8 p-4 sm:p-6 bg-white animate-fadeIn">Loading...</div>
   }
 
   if (error) {
-    return <div>Error: {error}</div>
+    return <div className="space-y-6 sm:space-y-8 p-4 sm:p-6 bg-white animate-fadeIn">Error: {error}</div>
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-violet-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-      <div className="container mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+    <div className=" space-y-6 sm:space-y-8  bg-white animate-fadeIn">
+      <div className="container mx-auto space-y-6">
         {/* Enhanced Header */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
           <div className="space-y-2">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-slate-900 via-violet-700 to-blue-700 bg-clip-text text-transparent">
+            <h1 className="text-3xl p-2 sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-slate-900 via-violet-700 to-blue-700 bg-clip-text text-transparent">
               Employee Management
             </h1>
             <p className="text-muted-foreground text-sm sm:text-base">
@@ -663,7 +663,7 @@ export default function UsersPage() {
         </div>
 
         {/* Enhanced Statistics Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
           <div className="col-span-2 sm:col-span-1">
             <StatCard
               title="Total Users"
@@ -688,25 +688,15 @@ export default function UsersPage() {
             icon={<UserX className="w-6 h-6" />}
             color="red"
           />
-          <StatCard title="Admins" value={stats.admin.toString()} icon={<Crown className="w-6 h-6" />} color="amber" />
+          
           <StatCard
             title="Managers"
             value={stats.manager.toString()}
             icon={<Shield className="w-6 h-6" />}
             color="blue"
           />
-          <StatCard
-            title="Employees"
-            value={stats.employee.toString()}
-            icon={<User className="w-6 h-6" />}
-            color="emerald"
-          />
-          <StatCard
-            title="Vendors"
-            value={stats.vendor.toString()}
-            icon={<Store className="w-6 h-6" />}
-            color="violet"
-          />
+         
+        
         </div>
 
         {/* Enhanced Filters and Search */}

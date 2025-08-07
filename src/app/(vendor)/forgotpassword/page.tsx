@@ -236,7 +236,98 @@ export default function ForgotPasswordPage() {
         <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-0 shadow-2xl rounded-3xl overflow-hidden">
           <CardContent className="grid lg:grid-cols-2 p-0 min-h-[600px]">
             {/* Left Side - Forgot Password Form */}
-            <div className="flex flex-col justify-center p-8 lg:p-12">
+         <div className="bg-gradient-to-br from-cyan-500/10 via-blue-500/10 to-cyan-500/10 dark:from-cyan-950/30 dark:via-blue-950/30 dark:to-cyan-950/30 p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden">
+              {/* Background Pattern */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)] dark:bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_70%)]" />
+
+              <div className="relative z-10">
+                {/* Main Feature */}
+                <div className="text-center mb-12">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-3xl shadow-2xl mb-6">
+                    <Shield className="w-10 h-10 text-white" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-4">
+                    Secure Reset
+                  </h2>
+                  <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
+                    Your account security is our priority. We'll send you a
+                    secure reset link.
+                  </p>
+                </div>
+
+                {/* Security Features */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4 p-4 bg-white/60 dark:bg-slate-800/60 rounded-2xl backdrop-blur-sm border border-white/20 dark:border-slate-700/50">
+                    <div className="p-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl shadow-lg">
+                      <CheckCircle className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-slate-800 dark:text-slate-100">
+                        Secure Link
+                      </h3>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                        One-time use reset link
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 p-4 bg-white/60 dark:bg-slate-800/60 rounded-2xl backdrop-blur-sm border border-white/20 dark:border-slate-700/50">
+                    <div className="p-3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl shadow-lg">
+                      <Clock className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-slate-800 dark:text-slate-100">
+                        Time Limited
+                      </h3>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                        Expires in 60 minutes
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-4 p-4 bg-white/60 dark:bg-slate-800/60 rounded-2xl backdrop-blur-sm border border-white/20 dark:border-slate-700/50">
+                    <div className="p-3 bg-gradient-to-r from-cyan-500 to-pink-500 rounded-xl shadow-lg">
+                      <Shield className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-slate-800 dark:text-slate-100">
+                        Account Protected
+                      </h3>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                        Your data stays secure
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Trust Indicators */}
+                <div className="mt-12 pt-8 border-t border-white/20 dark:border-slate-700/50">
+                  <div className="flex items-center justify-center gap-8 text-slate-500 dark:text-slate-400">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+                        256-bit
+                      </div>
+                      <div className="text-xs">Encryption</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+                        60min
+                      </div>
+                      <div className="text-xs">Link Expiry</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">
+                        24/7
+                      </div>
+                      <div className="text-xs">Support</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Side - Security Information */}
+               <div className="flex flex-col justify-center p-8 lg:p-12">
               {/* Header */}
               <div className="text-center mb-8">
                 <div className="inline-flex items-center gap-3 mb-6">
@@ -338,97 +429,6 @@ export default function ForgotPasswordPage() {
                   </Button>
                 </Link>
               </form>
-            </div>
-
-            {/* Right Side - Security Information */}
-            <div className="bg-gradient-to-br from-cyan-500/10 via-blue-500/10 to-cyan-500/10 dark:from-cyan-950/30 dark:via-blue-950/30 dark:to-cyan-950/30 p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden">
-              {/* Background Pattern */}
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)] dark:bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_70%)]" />
-
-              <div className="relative z-10">
-                {/* Main Feature */}
-                <div className="text-center mb-12">
-                  <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-3xl shadow-2xl mb-6">
-                    <Shield className="w-10 h-10 text-white" />
-                  </div>
-                  <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-4">
-                    Secure Reset
-                  </h2>
-                  <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-                    Your account security is our priority. We'll send you a
-                    secure reset link.
-                  </p>
-                </div>
-
-                {/* Security Features */}
-                <div className="space-y-6">
-                  <div className="flex items-center gap-4 p-4 bg-white/60 dark:bg-slate-800/60 rounded-2xl backdrop-blur-sm border border-white/20 dark:border-slate-700/50">
-                    <div className="p-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl shadow-lg">
-                      <CheckCircle className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-slate-800 dark:text-slate-100">
-                        Secure Link
-                      </h3>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
-                        One-time use reset link
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4 p-4 bg-white/60 dark:bg-slate-800/60 rounded-2xl backdrop-blur-sm border border-white/20 dark:border-slate-700/50">
-                    <div className="p-3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl shadow-lg">
-                      <Clock className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-slate-800 dark:text-slate-100">
-                        Time Limited
-                      </h3>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
-                        Expires in 60 minutes
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4 p-4 bg-white/60 dark:bg-slate-800/60 rounded-2xl backdrop-blur-sm border border-white/20 dark:border-slate-700/50">
-                    <div className="p-3 bg-gradient-to-r from-cyan-500 to-pink-500 rounded-xl shadow-lg">
-                      <Shield className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-slate-800 dark:text-slate-100">
-                        Account Protected
-                      </h3>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
-                        Your data stays secure
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Trust Indicators */}
-                <div className="mt-12 pt-8 border-t border-white/20 dark:border-slate-700/50">
-                  <div className="flex items-center justify-center gap-8 text-slate-500 dark:text-slate-400">
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">
-                        256-bit
-                      </div>
-                      <div className="text-xs">Encryption</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">
-                        60min
-                      </div>
-                      <div className="text-xs">Link Expiry</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-slate-800 dark:text-slate-100">
-                        24/7
-                      </div>
-                      <div className="text-xs">Support</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </CardContent>
         </Card>

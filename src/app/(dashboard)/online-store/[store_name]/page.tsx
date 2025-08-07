@@ -158,7 +158,7 @@ const OnlineStorePage: React.FC = () => {
   }, [userId]);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="space-y-6 sm:space-y-8 p-4 sm:p-6 bg-white animate-fadeIn">
       {/* Admin Dashboard Header */}
       <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">

@@ -384,15 +384,15 @@ export default function CategoriesPage() {
   };
 
   if (isLoading) {
-    return <div className="p-6">Loading categories...</div>;
+    return <div className="space-y-6 sm:space-y-8 p-4 sm:p-6 bg-white animate-fadeIn">Loading categories...</div>;
   }
 
   if (error) {
-    return <div className="p-6 text-red-500">{error}</div>;
+    return <div className="space-y-6 sm:space-y-8 p-4 sm:p-6 bg-white animate-fadeIn text-red-500">{error}</div>;
   }
 
   return (
-    <div className="p-6 space-y-8">
+    <div className="space-y-6 sm:space-y-8 p-4 sm:p-6 bg-white animate-fadeIn">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-cyan-600">
           Category Management
