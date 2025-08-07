@@ -78,7 +78,7 @@ export default function AppHeader({ toggleSidebar }: AppHeaderProps) {
           <Bell className="text-5xl" />
         </button>
 
-        <ModeToggle />
+        {/* <ModeToggle /> */}
 
         <div className="flex items-center space-x-2">
           <div className="hidden sm:flex flex-col text-right">

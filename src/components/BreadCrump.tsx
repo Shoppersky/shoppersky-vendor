@@ -20,7 +20,7 @@ const DynamicBreadcrumb: React.FC = () => {
       <Breadcrumb>
         <BreadcrumbList className="list-none flex items-center">
           <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard">Home</BreadcrumbLink>
+            <BreadcrumbLink href="/home">Home</BreadcrumbLink>
           </BreadcrumbItem>
 
           {pathSegments.map((segment, index) => {

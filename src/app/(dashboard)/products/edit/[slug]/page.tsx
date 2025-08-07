@@ -13,6 +13,7 @@ import { toast } from "sonner"
 import { Pencil, Plus, Upload, X, ArrowLeft, XCircle } from "lucide-react"
 import axiosInstance from "@/lib/axiosInstance"
 import useStore from "../../../../../lib/Zustand"
+import Image from "next/image"
 
 interface Product {
   id: string
@@ -564,10 +565,12 @@ export default function ProductForm() {
                           {image ? (
                             <div className="relative w-full h-full">
                               <Image
-                                src={URL.createObjectURL(image)}
-                                alt={`Preview ${index + 1}`}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
+      src={URL.createObjectURL(image)}
+      alt={`Preview ${index + 1}`}
+      width={56} // Add width (match your design, e.g., 56px for h-14 w-14)
+      height={56} // Add height (match your design)
+      className="w-full h-full object-cover rounded-lg"
+    />
                               <Button
                                 type="button"
                                 variant="destructive"

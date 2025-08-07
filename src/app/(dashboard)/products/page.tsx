@@ -785,32 +785,7 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50 to-blue-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-800 p-8">
       <div className="mx-auto max-w-7xl space-y-8">
-        {/* Error Message */}
-        {error && (
-          <Card className="border-red-200/50 bg-gradient-to-br from-red-50/80 to-rose-100/80 backdrop-blur-sm dark:border-red-800/50 dark:from-red-950/30 dark:to-rose-950/30 animate-fade-in">
-            <CardContent className="flex items-center gap-4 p-6">
-              <div className="rounded-full bg-red-100 p-3 dark:bg-red-900/30">
-                <XCircle className="h-8 w-8 text-red-600 dark:text-red-400" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-red-900 dark:text-red-100">
-                  Error Loading Products
-                </h3>
-                <p className="text-sm text-red-700 dark:text-red-300">
-                  {error}
-                </p>
-                <Button
-                  onClick={() => window.location.reload()}
-                  variant="outline"
-                  size="sm"
-                  className="mt-3 border-red-200 text-red-700 hover:bg-red-50 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-900/20"
-                >
-                  Try Again
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        
 
         {/* Header */}
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between animate-fade-in">
