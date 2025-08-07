@@ -827,7 +827,7 @@ const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   };
 
   return (
-    <div className="space-y-6 bg-white p-6 min-h-screen min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 dark:from-slate-900 dark:via-slate-800/50 dark:to-slate-700/30">
+    <div className="space-y-6 sm:space-y-8 p-4 sm:p-6 bg-white animate-fadeIn">
       {/* Enhanced Header with Glass Effects */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/10 dark:bg-slate-900/20 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/30 dark:border-white/10 hover:bg-white/15 dark:hover:bg-slate-900/25 transition-all duration-300">
         <div>
