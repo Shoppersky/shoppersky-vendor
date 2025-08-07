@@ -4,7 +4,6 @@ import "./vendor.css";
 import { SidebarProvider } from "@/components/sidebarprovider";
 import ClientLayout from "@/components/ClientLayout";
 
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

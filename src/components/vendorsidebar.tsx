@@ -8,17 +8,55 @@ import {
   ShoppingBag,
   Settings,
   X,
+  Menu,
 } from "lucide-react";
 import clsx from "clsx";
 import Logo from "./logo";
 import useStore from "../lib/Zustand";
+import { useSidebar } from "./sidebarprovider";
+import { useEffect } from "react";
 
 
-export default function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+  isMobile?: boolean;
+}
+
+export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps = {}) {
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useStore(); 
-  const store_name = user?.vendor_store_slug; 
+  const store_name = user?.vendor_store_slug;
+  const { isOpen: contextIsOpen, toggleSidebar, closeSidebar } = useSidebar();
+  
+  // Use props if provided, otherwise fall back to context
+  const sidebarOpen = isOpen !== undefined ? isOpen : contextIsOpen;
+  const handleClose = onClose || closeSidebar;
+  const isMobileDevice = isMobile !== undefined ? isMobile : (typeof window !== 'undefined' && window.innerWidth < 768);
+
+  // Close sidebar on mobile when route changes
+  useEffect(() => {
+    // Close sidebar on mobile after navigation
+    if (isMobileDevice) {
+      handleClose();
+    }
+  }, [pathname, handleClose, isMobileDevice]);
+
+  // Prevent body scroll when sidebar is open on mobile
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (sidebarOpen && isMobileDevice) {
+        document.body.classList.add('sidebar-open');
+      } else {
+        document.body.classList.remove('sidebar-open');
+      }
+    }
+
+    return () => {
+      document.body.classList.remove('sidebar-open');
+    };
+  }, [sidebarOpen, isMobileDevice]); 
 
   const navItems = [
     { label: "Home", icon: Home, path: "/home" },
@@ -44,17 +82,60 @@ export default function Sidebar() {
     router.push("/");     // Redirect to login
   };
 
+  const handleNavigation = (path: string) => {
+    router.push(path);
+    // Close sidebar on mobile after navigation
+    if (isMobileDevice) {
+      handleClose();
+    }
+  };
+
+  const handleToggleSidebar = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleSidebar();
+  };
+
   return (
     <>
-      {/* Desktop Sidebar */}
-      <aside className="fixed top-0 left-0 h-screen w-16 md:w-64 bg-gradient-to-b from-white to-gray-50 dark:from-white-900 dark:to-white-950 border-r backdrop-blur-xl z-50 transition-all duration-300 flex flex-col">
+      {/* Sidebar */}
+      <aside 
+        className={clsx(
+          "bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950 border-r border-gray-200 dark:border-gray-700 backdrop-blur-xl flex flex-col transition-transform duration-300 ease-in-out shadow-lg",
+          // Width - always 64 (16rem) when visible
+          "w-64",
+          // Desktop - always visible and sticky
+          "md:sticky md:top-0 md:h-screen md:translate-x-0",
+          // Mobile - slide in/out based on sidebarOpen state, overlay content
+          isMobileDevice 
+            ? (sidebarOpen ? "fixed top-0 left-0 h-screen z-50 translate-x-0" : "fixed top-0 left-0 h-screen z-50 -translate-x-full")
+            : "sticky top-0 h-screen translate-x-0"
+        )}
+        style={{
+          // Ensure the sidebar is always the right width
+          minWidth: '16rem',
+          maxWidth: '16rem'
+        }}
+      >
         {/* Logo */}
-        <div className="flex items-center justify-center md:justify-start gap-2 h-16 px-4 border-b">
+        <div className="flex items-center justify-start gap-2 h-16 px-4 border-b">
           <span className="text-2xl"><Logo/></span>
-          <span className="text-lg font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent hidden md:inline">
+          <span className="text-lg font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
             SHOPPERSKY
           </span>
         </div>
+
+        {/* Close button for mobile */}
+        {isMobileDevice && (
+          <button
+            onClick={handleClose}
+            className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors touch-manipulation active:scale-95"
+            aria-label="Close sidebar"
+            style={{ minHeight: '44px', minWidth: '44px' }}
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
 
         {/* Nav Items */}
         <nav className="flex-1 overflow-y-auto mt-4 space-y-1">
@@ -63,12 +144,12 @@ export default function Sidebar() {
             return (
               <button
                 key={item.label}
-                onClick={() => router.push(item.path)}
+                onClick={() => handleNavigation(item.path)}
                 className={clsx(
-                  "group flex w-full items-center md:justify-start justify-center gap-3 px-4 py-2 rounded-none transition-all duration-200",
+                  "group flex w-full items-center justify-start gap-3 px-4 py-3 rounded-none transition-all duration-200",
                   active
                     ? "bg-gradient-to-r from-cyan-100 to-blue-100 text-cyan-800"
-                    : "text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-cyan-100 hover:to-blue-100 hover:text-cyan-800 dark:hover:bg-white-800"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-cyan-100 hover:to-blue-100 hover:text-cyan-800 dark:hover:bg-gray-800"
                 )}
               >
                 <item.icon
@@ -78,57 +159,15 @@ export default function Sidebar() {
                     active ? "text-cyan-700" : "text-cyan-600"
                   )}
                 />
-                <span className="hidden md:inline font-medium">{item.label}</span>
+                <span className="font-medium">{item.label}</span>
               </button>
             );
           })}
         </nav>
 
-        {/* ✅ Logout Button */}
-        <div className="p-4 border-t">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-md transition"
-          >
-            <X className="w-5 h-5" />
-            <span className="hidden md:inline">Logout</span>
-          </button>
-        </div>
+        {/* Logout Button */}
+     
       </aside>
-
-      {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 w-full bg-gradient-to-t from-white to-gray-50 dark:from-white-900 dark:to-white-950 border-t backdrop-blur-xl flex justify-around py-2 z-50">
-        {navItems.map((item) => {
-          const active = pathname === item.path;
-          return (
-            <div key={item.label} className="relative flex flex-col items-center">
-              <button
-                onClick={() => router.push(item.path)}
-                className={clsx(
-                  "p-2 rounded-lg transition transform",
-                  active
-                    ? "bg-cyan-100 text-cyan-700"
-                    : "text-gray-600 hover:bg-cyan-50 hover:text-cyan-700"
-                )}
-              >
-                <item.icon size={24} />
-              </button>
-              <span className="text-xs mt-1 text-gray-500">{item.label}</span>
-            </div>
-          );
-        })}
-
-        {/* ✅ Mobile Logout Button */}
-        <div className="relative flex flex-col items-center">
-          <button
-            onClick={handleLogout}
-            className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
-          >
-            <X size={24} />
-          </button>
-          <span className="text-xs mt-1 text-red-500">Logout</span>
-        </div>
-      </nav>
     </>
   );
 }

@@ -120,3 +120,115 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    .animate-fadeIn {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    
+    /* Improve touch targets */
+    button, [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    
+    /* Better scrolling on mobile */
+    .overflow-y-auto {
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Prevent zoom on input focus */
+    input, select, textarea {
+      font-size: 16px;
+    }
+    
+    /* Prevent body scroll when sidebar is open */
+    body.sidebar-open {
+      overflow: hidden;
+    }
+  }
+  
+  /* Custom scrollbar for better mobile experience */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.3);
+    border-radius: 2px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(156, 163, 175, 0.5);
+  }
+  
+  /* Hamburger menu animation */
+  .hamburger-menu {
+    transition: all 0.3s ease;
+  }
+  
+  .hamburger-menu:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Sidebar slide animation */
+  .sidebar-slide {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Touch optimization */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+  
+  /* Active state for mobile buttons */
+  @media (max-width: 768px) {
+    button:active, [role="button"]:active {
+      transform: scale(0.95);
+      transition: transform 0.1s ease;
+    }
+  }
+  
+  /* Sticky sidebar styles */
+  .sidebar-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+  }
+  
+  /* Ensure sidebar content scrolls properly */
+  .sidebar-sticky::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .sidebar-sticky::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .sidebar-sticky::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.3);
+    border-radius: 3px;
+  }
+  
+  .sidebar-sticky::-webkit-scrollbar-thumb:hover {
+    background: rgba(156, 163, 175, 0.5);
+  }
+  
+  /* Mobile sidebar overlay */
+  @media (max-width: 768px) {
+    .sidebar-sticky {
+      position: fixed;
+      height: 100vh;
+      z-index: 50;
+    }
+  }
+}

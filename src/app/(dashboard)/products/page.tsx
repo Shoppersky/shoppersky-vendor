@@ -784,7 +784,7 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50 to-blue-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-800 p-8">
-      <div className="mx-auto max-w-7xl space-y-8">
+      <div className="mx-auto  space-y-8">
         
 
         {/* Header */}
@@ -867,46 +867,10 @@ export default function ProductsPage() {
             subtitle="Units sold"
             delay={300}
           />
-          <StatCard
-            title="Revenue"
-            value={stats.revenue}
-            icon={<DollarSign className="h-5 w-5 text-green-600" />}
-            color="green"
-            trend="up"
-            trendValue="+23%"
-            subtitle="Total earnings"
-            delay={400}
-          />
-          <StatCard
-            title="Avg Rating"
-            value={stats.avgRating}
-            icon={<Star className="h-5 w-5 text-yellow-600" />}
-            color="yellow"
-            trend="up"
-            trendValue="+0.2"
-            subtitle="Customer satisfaction"
-            delay={500}
-          />
-          <StatCard
-            title="Total Stock"
-            value={stats.stock.toString()}
-            icon={<BarChart3 className="h-5 w-5 text-blue-600" />}
-            color="blue"
-            trend="up"
-            trendValue="+5%"
-            subtitle="Items in inventory"
-            delay={600}
-          />
-          <StatCard
-            title="Categories"
-            value={uniqueCategories.length.toString()}
-            icon={<Tag className="h-5 w-5 text-purple-600" />}
-            color="purple"
-            trend="up"
-            trendValue="+2"
-            subtitle="Product categories"
-            delay={700}
-          />
+        
+        
+        
+      
         </div>
 
         {/* Filters */}

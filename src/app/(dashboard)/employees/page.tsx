@@ -85,29 +85,31 @@ function StatCard({
 
   return (
     <Card
-      className={`bg-gradient-to-br ${colorClasses[color]} border transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group`}
+      className={`bg-gradient-to-br ${colorClasses[color]} border transition-all duration-300 hover:shadow-lg hover:scale-[1.02] group backdrop-blur-sm`}
     >
-      <CardContent className="p-4 sm:p-6">
+      <CardContent className="p-3 sm:p-4 lg:p-6">
         <div className="flex items-center justify-between">
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <div className="flex items-baseline gap-2">
-              <p className="text-2xl sm:text-3xl font-bold">{value}</p>
+          <div className="space-y-1 min-w-0 flex-1">
+            <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">{title}</p>
+            <div className="flex items-baseline gap-1 sm:gap-2">
+              <p className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold truncate">{value}</p>
               {trend && trendValue && (
                 <div
                   className={`flex items-center text-xs font-medium ${trend === "up" ? "text-emerald-600" : "text-red-600"
                     }`}
                 >
                   <TrendingUp className={`w-3 h-3 mr-1 ${trend === "down" ? "rotate-180" : ""}`} />
-                  {trendValue}
+                  <span className="hidden sm:inline">{trendValue}</span>
                 </div>
               )}
             </div>
           </div>
           <div
-            className={`p-3 rounded-xl ${iconColors[color]} group-hover:scale-110 transition-transform duration-300`}
+            className={`p-2 sm:p-3 rounded-xl ${iconColors[color]} group-hover:scale-110 transition-transform duration-300 flex-shrink-0`}
           >
-            {icon}
+            <div className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6">
+              {icon}
+            </div>
           </div>
         </div>
       </CardContent>
@@ -128,43 +130,43 @@ function UserCard({
   onRestore: (id: string) => void;
 }) {
   return (
-    <Card className="transition-all duration-300 hover:shadow-md">
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-violet-400 to-blue-400 flex items-center justify-center text-white font-semibold">
+    <Card className="transition-all duration-300 hover:shadow-md backdrop-blur-sm">
+      <CardContent className="p-3 sm:p-4">
+        <div className="flex items-start justify-between mb-2 sm:mb-3">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-violet-400 to-blue-400 flex items-center justify-center text-white font-semibold text-xs sm:text-sm flex-shrink-0">
               {user.username
                 .split(" ")
                 .map((n: string) => n[0])
                 .join("")
                 .toUpperCase()}
             </div>
-            <div>
-              <h3 className="font-semibold text-sm">{user.username}</h3>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-semibold text-xs sm:text-sm truncate">{user.username}</h3>
             </div>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <MoreHorizontal className="w-4 h-4" />
+              <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8 flex-shrink-0">
+                <MoreHorizontal className="w-3 h-3 sm:w-4 sm:h-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {user.is_active ? (
                 <>
                   <DropdownMenuItem onClick={() => onEdit(user)}>
-                    <Pencil className="w-4 h-4 mr-2" />
-                    Edit Employee
+                    <Pencil className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                    <span className="text-xs sm:text-sm">Edit Employee</span>
                   </DropdownMenuItem>
                    <DropdownMenuItem onClick={() => onRestore(user.user_id)} className="text-emerald-600">
-                  <RotateCcw className="w-4 h-4 mr-2" />
-                  Restore Employee
-                </DropdownMenuItem>
+                    <RotateCcw className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                    <span className="text-xs sm:text-sm">Restore Employee</span>
+                  </DropdownMenuItem>
                 </>
               ) : (
                  <DropdownMenuItem onClick={() => onDelete(user.user_id)} className="text-red-600">
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Delete Employee
+                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                    <span className="text-xs sm:text-sm">Delete Employee</span>
                   </DropdownMenuItem>
                
               )}
@@ -172,19 +174,19 @@ function UserCard({
           </DropdownMenu>
         </div>
 
-        <div className="space-y-2 mb-3">
+        <div className="space-y-1 sm:space-y-2 mb-2 sm:mb-3">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Mail className="w-3 h-3" />
+            <Mail className="w-3 h-3 flex-shrink-0" />
             <span className="truncate">{user.email}</span>
           </div>
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Badge variant={user.is_active ? "secondary" : "default"} className="text-xs">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 min-w-0 flex-1">
+            <Badge variant={user.is_active ? "secondary" : "default"} className="text-xs flex-shrink-0">
               {user.is_active ? "Inactive" : "Active"}
             </Badge>
-            <span className="text-xs font-medium">{user.role_name}</span>
+            <span className="text-xs font-medium truncate">{user.role_name}</span>
           </div>
         </div>
       </CardContent>
@@ -432,50 +434,71 @@ export default function UsersPage() {
   }
 
   if (loading) {
-    return <div className="space-y-6 sm:space-y-8 p-4 sm:p-6 bg-white animate-fadeIn">Loading...</div>
+    return (
+      <div className="space-y-4 sm:space-y-6 lg:space-y-8 px-4 sm:px-6 lg:px-8 xl:px-12 py-4 sm:py-6 lg:py-8 pt-16 md:pt-4 bg-white animate-fadeIn min-h-screen custom-scrollbar">
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-violet-600 mx-auto mb-4"></div>
+            <p className="text-sm sm:text-base text-muted-foreground">Loading employees...</p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (error) {
-    return <div className="space-y-6 sm:space-y-8 p-4 sm:p-6 bg-white animate-fadeIn">Error: {error}</div>
+    return (
+      <div className="space-y-4 sm:space-y-6 lg:space-y-8 px-4 sm:px-6 lg:px-8 xl:px-12 py-4 sm:py-6 lg:py-8 pt-16 md:pt-4 bg-white animate-fadeIn min-h-screen custom-scrollbar">
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="w-8 h-8 sm:w-12 sm:h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <X className="w-4 h-4 sm:w-6 sm:h-6 text-red-600" />
+            </div>
+            <h3 className="text-base sm:text-lg font-semibold text-red-600 mb-2">Error Loading Data</h3>
+            <p className="text-sm sm:text-base text-muted-foreground">{error}</p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className=" space-y-6 sm:space-y-8  bg-white animate-fadeIn">
-      <div className="container mx-auto space-y-6">
-        {/* Enhanced Header */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-          <div className="space-y-2">
-            <h1 className="text-3xl p-2 sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-slate-900 via-violet-700 to-blue-700 bg-clip-text text-transparent">
-              Employee Management
-            </h1>
-            <p className="text-muted-foreground text-sm sm:text-base">
-              Manage your team members, roles, and permissions with ease
-            </p>
-          </div>
+    <div className="space-y-4 sm:space-y-6 lg:space-y-8 px-4 sm:px-6 lg:px-8 xl:px-12 py-4 sm:py-6 lg:py-8 pt-16 md:pt-4 bg-white animate-fadeIn min-h-screen custom-scrollbar">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 sm:gap-6">
+        <div className="space-y-1 sm:space-y-2 flex-1">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-gray-800 via-purple-700 to-blue-700 bg-clip-text text-transparent leading-tight">
+            Employee Management
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm lg:text-base leading-relaxed">
+            Manage your team members, roles, and permissions with ease
+          </p>
+        </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
-            <Button
-              variant="outline"
-              onClick={handleExportUsers}
-              className="flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300 bg-transparent"
-            >
-              <Download className="w-4 h-4" />
-              <span className="hidden sm:inline">Export</span>
-            </Button>
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          <Button
+            variant="outline"
+            onClick={handleExportUsers}
+            className="flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all duration-300 bg-transparent text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2"
+          >
+            <Download className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">Export</span>
+          </Button>
 
-            <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger asChild>
-                <Button
-                  className="bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white transition-all duration-300 shadow-lg hover:shadow-xl"
-                  onClick={() => {
-                    setEditingUser(null)
-                    setFormData({ username: "", email: "", role_id: "", is_active: false })
-                  }}
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Employee
-                </Button>
-              </DialogTrigger>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <Button
+                className="bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white transition-all duration-300 shadow-lg hover:shadow-xl text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2"
+                onClick={() => {
+                  setEditingUser(null)
+                  setFormData({ username: "", email: "", role_id: "", is_active: false })
+                }}
+              >
+                <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Add Employee</span>
+                <span className="sm:hidden">Add</span>
+              </Button>
+            </DialogTrigger>
 
               <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
@@ -659,63 +682,58 @@ export default function UsersPage() {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-          </div>
         </div>
+      </div>
 
-        {/* Enhanced Statistics Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4">
-          <div className="col-span-2 sm:col-span-1">
-            <StatCard
-              title="Total Users"
-              value={stats.total.toString()}
-              icon={<Users className="w-6 h-6" />}
-              color="slate"
-              trend="up"
-              trendValue="+12%"
-            />
-          </div>
-          <StatCard
-            title="Active"
-            value={stats.active.toString()}
-            icon={<UserCheck className="w-6 h-6" />}
-            color="emerald"
-            trend="up"
-            trendValue="+5%"
-          />
-          <StatCard
-            title="Inactive"
-            value={stats.inactive.toString()}
-            icon={<UserX className="w-6 h-6" />}
-            color="red"
-          />
-          
-          <StatCard
-            title="Managers"
-            value={stats.manager.toString()}
-            icon={<Shield className="w-6 h-6" />}
-            color="blue"
-          />
-         
-        
-        </div>
+      {/* Enhanced Statistics Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+        <StatCard
+          title="Total Users"
+          value={stats.total.toString()}
+          icon={<Users className="w-6 h-6" />}
+          color="slate"
+          trend="up"
+          trendValue="+12%"
+        />
+        <StatCard
+          title="Active"
+          value={stats.active.toString()}
+          icon={<UserCheck className="w-6 h-6" />}
+          color="emerald"
+          trend="up"
+          trendValue="+5%"
+        />
+        <StatCard
+          title="Inactive"
+          value={stats.inactive.toString()}
+          icon={<UserX className="w-6 h-6" />}
+          color="red"
+        />
+        <StatCard
+          title="Managers"
+          value={stats.manager.toString()}
+          icon={<Shield className="w-6 h-6" />}
+          color="blue"
+        />
+      </div>
 
-        {/* Enhanced Filters and Search */}
-        <Card className="shadow-lg border-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex flex-col lg:flex-row gap-4">
-              {/* Search */}
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                <Input
-                  placeholder="Search users by name or email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 transition-all duration-300 focus:ring-2 focus:ring-violet-500/20"
-                />
-              </div>
+      {/* Enhanced Filters and Search */}
+      <Card className="shadow-lg border-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
+        <CardContent className="p-3 sm:p-4 lg:p-6">
+          <div className="flex flex-col lg:flex-row gap-3 sm:gap-4">
+            {/* Search */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-3 h-3 sm:w-4 sm:h-4" />
+              <Input
+                placeholder="Search users by name or email..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-8 sm:pl-10 transition-all duration-300 focus:ring-2 focus:ring-violet-500/20 text-xs sm:text-sm"
+              />
+            </div>
 
-              {/* Desktop Filters */}
-              <div className="hidden lg:flex items-center gap-3">
+            {/* Desktop Filters */}
+            <div className="hidden lg:flex items-center gap-2 sm:gap-3">
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="w-40">
                     <SelectValue placeholder="Status" />
@@ -745,56 +763,56 @@ export default function UsersPage() {
                     variant={viewMode === "table" ? "default" : "ghost"}
                     size="sm"
                     onClick={() => setViewMode("table")}
-                    className="h-8 w-8 p-0"
+                    className="h-7 w-7 sm:h-8 sm:w-8 p-0"
                   >
-                    <List className="w-4 h-4" />
+                    <List className="w-3 h-3 sm:w-4 sm:h-4" />
                   </Button>
                   <Button
                     variant={viewMode === "grid" ? "default" : "ghost"}
                     size="sm"
                     onClick={() => setViewMode("grid")}
-                    className="h-8 w-8 p-0"
+                    className="h-7 w-7 sm:h-8 sm:w-8 p-0"
                   >
-                    <Grid3X3 className="w-4 h-4" />
+                    <Grid3X3 className="w-3 h-3 sm:w-4 sm:h-4" />
                   </Button>
                 </div>
               </div>
 
-              {/* Mobile Filters Toggle */}
-              <div className="flex lg:hidden items-center gap-3">
+            {/* Mobile Filters Toggle */}
+            <div className="flex lg:hidden items-center gap-2 sm:gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
+                className="flex items-center gap-2 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2"
+              >
+                <Filter className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Filters</span>
+              </Button>
+
+              <div className="flex items-center border rounded-lg p-1">
                 <Button
-                  variant="outline"
-                  onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
-                  className="flex items-center gap-2"
+                  variant={viewMode === "table" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("table")}
+                  className="h-7 w-7 sm:h-8 sm:w-8 p-0"
                 >
-                  <Filter className="w-4 h-4" />
-                  Filters
+                  <List className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
-
-                <div className="flex items-center border rounded-lg p-1">
-                  <Button
-                    variant={viewMode === "table" ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setViewMode("table")}
-                    className="h-8 w-8 p-0"
-                  >
-                    <List className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant={viewMode === "grid" ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setViewMode("grid")}
-                    className="h-8 w-8 p-0"
-                  >
-                    <Grid3X3 className="w-4 h-4" />
-                  </Button>
-                </div>
+                <Button
+                  variant={viewMode === "grid" ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("grid")}
+                  className="h-7 w-7 sm:h-8 sm:w-8 p-0"
+                >
+                  <Grid3X3 className="w-3 h-3 sm:w-4 sm:h-4" />
+                </Button>
               </div>
             </div>
+          </div>
 
-            {/* Mobile Filters */}
-            {mobileFiltersOpen && (
-              <div className="lg:hidden mt-4 pt-4 border-t grid grid-cols-2 gap-3">
+          {/* Mobile Filters */}
+          {mobileFiltersOpen && (
+            <div className="lg:hidden mt-3 sm:mt-4 pt-3 sm:pt-4 border-t grid grid-cols-2 gap-2 sm:gap-3">
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger>
                     <SelectValue placeholder="Status" />
@@ -818,44 +836,44 @@ export default function UsersPage() {
                     <SelectItem value="vendor">Vendor</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Users Display */}
-        <Card className="shadow-lg border-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
-          <CardHeader className="border-b bg-gradient-to-r from-slate-50 to-violet-50 dark:from-slate-800 dark:to-violet-900/20">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-violet-600" />
-                <h3 className="text-lg font-semibold">Users ({filteredUsers.length})</h3>
-              </div>
-              <Badge variant="secondary" className="hidden sm:inline-flex">
-                {filteredUsers.length} of {users.length}
-              </Badge>
             </div>
-          </CardHeader>
+          )}
+        </CardContent>
+      </Card>
 
-          <CardContent className="p-0">
-            {viewMode === "grid" ? (
-              <div className="p-4 sm:p-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {filteredUsers.map((user) => (
-                    <UserCard 
-                      key={user.user_id} 
-                      user={user} 
-                      onEdit={handleEditUser} 
-                      onDelete={handleDeleteUser}
-                      onRestore={handleRestoreUser}
-                    />
-                  ))}
-                </div>
+      {/* Users Display */}
+      <Card className="shadow-lg border-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm overflow-hidden">
+        <CardHeader className="border-b bg-gradient-to-r from-slate-50 to-violet-50 dark:from-slate-800 dark:to-violet-900/20 p-3 sm:p-4 lg:p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 sm:w-5 sm:h-5 text-violet-600" />
+              <h3 className="text-sm sm:text-base lg:text-lg font-semibold">Users ({filteredUsers.length})</h3>
+            </div>
+            <Badge variant="secondary" className="hidden sm:inline-flex text-xs">
+              {filteredUsers.length} of {users.length}
+            </Badge>
+          </div>
+        </CardHeader>
+
+        <CardContent className="p-0">
+          {viewMode === "grid" ? (
+            <div className="p-3 sm:p-4 lg:p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                {filteredUsers.map((user) => (
+                  <UserCard 
+                    key={user.user_id} 
+                    user={user} 
+                    onEdit={handleEditUser} 
+                    onDelete={handleDeleteUser}
+                    onRestore={handleRestoreUser}
+                  />
+                ))}
               </div>
-            ) : (
-              <>
-                {/* Desktop Table */}
-                <div className="hidden lg:block overflow-x-auto">
+            </div>
+          ) : (
+            <>
+              {/* Desktop Table */}
+              <div className="hidden lg:block overflow-x-auto">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -967,31 +985,30 @@ export default function UsersPage() {
                   </Table>
                 </div>
 
-                {/* Mobile Cards */}
-                <div className="lg:hidden p-4 space-y-4">
-                  {filteredUsers.map((user) => (
-                    <UserCard 
-                      key={user.user_id} 
-                      user={user} 
-                      onEdit={handleEditUser} 
-                      onDelete={handleDeleteUser}
-                      onRestore={handleRestoreUser}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-
-            {filteredUsers.length === 0 && (
-              <div className="text-center py-12">
-                <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-muted-foreground mb-2">No users found</h3>
-                <p className="text-muted-foreground">Try adjusting your search or filter criteria</p>
+              {/* Mobile Cards */}
+              <div className="lg:hidden p-3 sm:p-4 space-y-3 sm:space-y-4">
+                {filteredUsers.map((user) => (
+                  <UserCard 
+                    key={user.user_id} 
+                    user={user} 
+                    onEdit={handleEditUser} 
+                    onDelete={handleDeleteUser}
+                    onRestore={handleRestoreUser}
+                  />
+                ))}
               </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+            </>
+          )}
+
+          {filteredUsers.length === 0 && (
+            <div className="text-center py-8 sm:py-12">
+              <Users className="w-8 h-8 sm:w-12 sm:h-12 text-muted-foreground mx-auto mb-3 sm:mb-4" />
+              <h3 className="text-base sm:text-lg font-semibold text-muted-foreground mb-1 sm:mb-2">No users found</h3>
+              <p className="text-sm sm:text-base text-muted-foreground">Try adjusting your search or filter criteria</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }

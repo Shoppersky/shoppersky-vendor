@@ -20,11 +20,11 @@ import {
 import { useRouter } from 'next/navigation';
 
 type AppHeaderProps = {
-  collapsed: boolean;
   toggleSidebar: () => void;
+  sidebarOpen?: boolean;
+  isMobile?: boolean;
 };
 
-// Static user type
 type User = {
   id: string;
   username: string;
@@ -33,65 +33,81 @@ type User = {
   profile_picture: string;
 };
 
-export default function AppHeader({ toggleSidebar }: AppHeaderProps) {
+export default function AppHeader({ toggleSidebar, sidebarOpen, isMobile }: AppHeaderProps) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  // Static hard-coded user data
   const user: User = {
     id: '1',
     username: 'Jane Doe',
-    role_name: 'Admin',
+    role_name: 'Vendor',
     email: 'jane.doe@example.com',
     profile_picture: 'https://github.com/shadcn.png',
   };
 
   return (
-    <header className="border-b border-gray-200 px-8 py-3 h-20 flex items-center justify-between shadow-sm sticky top-0 z-40 bg-white dark:bg-neutral-900">
+    <header className="border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-3 h-16 sm:h-20 flex items-center justify-between shadow-sm sticky top-0 z-40 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm">
+      
       {/* Left section */}
-      <div className="flex items-center gap-3 min-w-0">
-        <button
-          onClick={toggleSidebar}
-          className="text-gray-600 hover:text-purple-500 transition"
-          aria-label="Toggle Sidebar"
-        >
-          <Menu size={20} />
-        </button>
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        {isMobile && (
+          <button
+            onClick={toggleSidebar}
+            className="md:hidden p-2 text-gray-600 hover:text-purple-500 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+            aria-label="Toggle Sidebar"
+          >
+            <Menu size={20} />
+          </button>
+        )}
 
         <Separator orientation="vertical" className="hidden sm:block" />
 
-        <div className="truncate max-w-[180px] sm:max-w-xs md:max-w-md">
-          <DynamicBreadcrumb />
+        {/* Breadcrumb or fallback text */}
+        <div className="truncate max-w-[120px] sm:max-w-[180px] md:max-w-xs lg:max-w-md">
+          <span className="sm:hidden font-semibold text-sm">Dashboard</span>
+          <span className="hidden sm:inline">
+            <DynamicBreadcrumb />
+          </span>
         </div>
       </div>
 
       {/* Right section */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-2 sm:gap-4 lg:gap-6">
+        
+        {/* Search Bar for desktop */}
         <div className="hidden sm:block">
           <SearchBarWithIcon />
         </div>
 
+        {/* Notification */}
         <button
-          className="text-gray-600 hover:text-purple-500 transition cursor-pointer"
+          className="p-2 text-gray-600 hover:text-purple-500 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
           aria-label="Notifications"
         >
-          <Bell className="text-5xl" />
+          <Bell size={20} />
         </button>
 
+        {/* Optional Theme Toggle */}
         {/* <ModeToggle /> */}
 
-        <div className="flex items-center space-x-2">
-          <div className="hidden sm:flex flex-col text-right">
-            <span className="text-sm font-medium">{user.username}</span>
-            <span className="text-xs text-gray-400">{user.role_name}</span>
+        {/* User Profile */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          
+          {/* Hide user info on small screens */}
+          <div className="hidden md:flex flex-col text-right">
+            <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{user.username}</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">{user.role_name}</span>
           </div>
 
+          {/* Avatar + Dropdown */}
           <div className="relative inline-block cursor-pointer">
             <DropdownMenu open={open} onOpenChange={setOpen}>
               <DropdownMenuTrigger asChild>
-                <Avatar>
+                <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
                   <AvatarImage src={user.profile_picture} alt={user.username} />
-                  <AvatarFallback>{user.username ? user.username[0] : 'U'}</AvatarFallback>
+                  <AvatarFallback className="text-sm">
+                    {user.username ? user.username[0] : 'U'}
+                  </AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-40" align="end">
@@ -100,12 +116,6 @@ export default function AppHeader({ toggleSidebar }: AppHeaderProps) {
                   className="cursor-pointer"
                 >
                   Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => router.push('/Settings')}
-                  className="cursor-pointer"
-                >
-                  Settings
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => router.push('/')}

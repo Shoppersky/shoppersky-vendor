@@ -445,11 +445,12 @@ export default function AddProductPage() {
                         >
                           {image ? (
                             <div className="relative w-full h-full">
-                              <Image
-                                src={URL.createObjectURL(image)}
-                                alt={`Preview ${index + 1}`}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
+                               <Image
+    src={URL.createObjectURL(image)}
+    alt={`Preview ${index + 1}`}
+    fill
+    className="object-cover rounded-lg"
+  />
                               <Button
                                 type="button"
                                 variant="destructive"
