@@ -9,21 +9,26 @@ import {
   Settings,
   X,
   Menu,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import clsx from "clsx";
 import Logo from "./logo";
 import useStore from "../lib/Zustand";
 import { useSidebar } from "./sidebarprovider";
 import { useEffect } from "react";
+import Link from "next/link";
 
 
 interface SidebarProps {
   isOpen?: boolean;
   onClose?: () => void;
   isMobile?: boolean;
+  collapsed?: boolean;            // desktop: icon-only when true
+  onToggleCollapse?: () => void;  // desktop: toggle collapse
 }
 
-export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps = {}) {
+export default function Sidebar({ isOpen, onClose, isMobile, collapsed = false, onToggleCollapse }: SidebarProps = {}) {
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useStore(); 
@@ -36,12 +41,12 @@ export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps = {}
   const isMobileDevice = isMobile !== undefined ? isMobile : (typeof window !== 'undefined' && window.innerWidth < 768);
 
   // Close sidebar on mobile when route changes
-  useEffect(() => {
-    // Close sidebar on mobile after navigation
-    if (isMobileDevice) {
-      handleClose();
-    }
-  }, [pathname, handleClose, isMobileDevice]);
+  // useEffect(() => {
+  //   // Close sidebar on mobile after navigation
+  //   if (isMobileDevice) {
+  //     handleClose();
+  //   }
+  // }, [pathname, handleClose, isMobileDevice]);
 
   // Prevent body scroll when sidebar is open on mobile
   useEffect(() => {
@@ -102,8 +107,8 @@ export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps = {}
       <aside 
         className={clsx(
           "bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950 border-r border-gray-200 dark:border-gray-700 backdrop-blur-xl flex flex-col transition-transform duration-300 ease-in-out shadow-lg",
-          // Width - always 64 (16rem) when visible
-          "w-64",
+          // Width - collapsible on desktop
+          collapsed ? "w-20" : "w-64",
           // Desktop - always visible and sticky
           "md:sticky md:top-0 md:h-screen md:translate-x-0",
           // Mobile - slide in/out based on sidebarOpen state, overlay content
@@ -113,29 +118,46 @@ export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps = {}
         )}
         style={{
           // Ensure the sidebar is always the right width
-          minWidth: '16rem',
-          maxWidth: '16rem'
+          minWidth: collapsed ? '5rem' : '16rem',
+          maxWidth: collapsed ? '5rem' : '16rem'
         }}
       >
         {/* Logo */}
         <div className="flex items-center justify-start gap-2 h-16 px-4 border-b">
-          <span className="text-2xl"><Logo/></span>
-          <span className="text-lg font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+       <Link href="/home" className="inline-flex items-center">
+  <span className="text-2xl">
+    <Logo />
+  </span>
+</Link>
+          <span className={clsx(
+            "text-lg font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent transition-all",
+            collapsed && "opacity-0 w-0 overflow-hidden"
+          )}>
             SHOPPERSKY
           </span>
         </div>
 
-        {/* Close button for mobile */}
-        {isMobileDevice && (
-          <button
-            onClick={handleClose}
-            className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors touch-manipulation active:scale-95"
-            aria-label="Close sidebar"
-            style={{ minHeight: '44px', minWidth: '44px' }}
-          >
+        {/* Collapse/Expand button (desktop) and Close (mobile) */}
+        {/* <button
+          onClick={() => {
+            if (isMobileDevice) {
+              handleClose();
+            } else {
+              onToggleCollapse?.();
+            }
+          }}
+          className={clsx(
+            "absolute top-4 right-4 p-2 rounded-lg transition-colors touch-manipulation active:scale-95",
+            "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200",
+            "hover:bg-gray-100 dark:hover:bg-gray-800"
+          )}
+          aria-label={isMobileDevice ? "Close sidebar" : (collapsed ? "Expand sidebar" : "Collapse sidebar")}
+          style={{ minHeight: '44px', minWidth: '44px' }}
+        >
+          {isMobileDevice && (
             <X className="w-5 h-5" />
-          </button>
-        )}
+          ) }
+        </button> */}
 
         {/* Nav Items */}
         <nav className="flex-1 overflow-y-auto mt-4 space-y-1">
@@ -159,7 +181,13 @@ export default function Sidebar({ isOpen, onClose, isMobile }: SidebarProps = {}
                     active ? "text-cyan-700" : "text-cyan-600"
                   )}
                 />
-                <span className="font-medium">{item.label}</span>
+                {/* Hide labels when collapsed on desktop */}
+                <span className={clsx(
+                  "font-medium transition-all",
+                  !isMobileDevice && collapsed && "opacity-0 w-0 overflow-hidden"
+                )}>
+                  {item.label}
+                </span>
               </button>
             );
           })}

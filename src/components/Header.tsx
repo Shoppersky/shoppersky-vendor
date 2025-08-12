@@ -10,19 +10,20 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar";
+} from '@/components/ui/avatar';
 import { useRouter } from 'next/navigation';
 
 type AppHeaderProps = {
   toggleSidebar: () => void;
   sidebarOpen?: boolean;
   isMobile?: boolean;
+  sidebarCollapsed?: boolean;
 };
 
 type User = {
@@ -33,36 +34,32 @@ type User = {
   profile_picture: string;
 };
 
-export default function AppHeader({ toggleSidebar, sidebarOpen, isMobile }: AppHeaderProps) {
+export default function AppHeader({ toggleSidebar }: AppHeaderProps) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
   const user: User = {
     id: '1',
-    username: 'Jane Doe',
+    username: 'Minnu',
     role_name: 'Vendor',
     email: 'jane.doe@example.com',
     profile_picture: 'https://github.com/shadcn.png',
   };
 
   return (
-    <header className="border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-3 h-16 sm:h-20 flex items-center justify-between shadow-sm sticky top-0 z-40 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm">
-      
+    <header className="sticky top-0 z-40 border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-8 h-15 sm:h-12 flex items-center justify-between shadow-sm bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm">
       {/* Left section */}
       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-        {isMobile && (
-          <button
-            onClick={toggleSidebar}
-            className="md:hidden p-2 text-gray-600 hover:text-purple-500 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
-            aria-label="Toggle Sidebar"
-          >
-            <Menu size={20} />
-          </button>
-        )}
+        <button
+          onClick={toggleSidebar}
+          className="p-2 text-gray-600 hover:text-purple-500 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+          aria-label="Toggle Sidebar"
+        >
+          <Menu size={20} />
+        </button>
 
         <Separator orientation="vertical" className="hidden sm:block" />
 
-        {/* Breadcrumb or fallback text */}
         <div className="truncate max-w-[120px] sm:max-w-[180px] md:max-w-xs lg:max-w-md">
           <span className="sm:hidden font-semibold text-sm">Dashboard</span>
           <span className="hidden sm:inline">
@@ -73,13 +70,12 @@ export default function AppHeader({ toggleSidebar, sidebarOpen, isMobile }: AppH
 
       {/* Right section */}
       <div className="flex items-center gap-2 sm:gap-4 lg:gap-6">
-        
         {/* Search Bar for desktop */}
-        <div className="hidden sm:block">
+        {/* <div className="hidden sm:block">
           <SearchBarWithIcon />
-        </div>
+        </div> */}
 
-        {/* Notification */}
+        {/* Notification button */}
         <button
           className="p-2 text-gray-600 hover:text-purple-500 transition-colors rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
           aria-label="Notifications"
@@ -87,22 +83,25 @@ export default function AppHeader({ toggleSidebar, sidebarOpen, isMobile }: AppH
           <Bell size={20} />
         </button>
 
-        {/* Optional Theme Toggle */}
-        {/* <ModeToggle /> */}
+        {/* Theme Toggle */}
+       
 
         {/* User Profile */}
         <div className="flex items-center gap-2 sm:gap-3">
-          
-          {/* Hide user info on small screens */}
+          {/* User name and role (hidden on small screens) */}
           <div className="hidden md:flex flex-col text-right">
-            <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{user.username}</span>
-            <span className="text-xs text-gray-500 dark:text-gray-400">{user.role_name}</span>
+            <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
+              {user.username}
+            </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              {user.role_name}
+            </span>
           </div>
 
           {/* Avatar + Dropdown */}
           <div className="relative inline-block cursor-pointer">
             <DropdownMenu open={open} onOpenChange={setOpen}>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger asChild aria-haspopup="menu" aria-expanded={open}>
                 <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
                   <AvatarImage src={user.profile_picture} alt={user.username} />
                   <AvatarFallback className="text-sm">

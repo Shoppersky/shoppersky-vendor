@@ -171,7 +171,7 @@ const filteredQueries = queries.filter(query =>
           </p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={fetchQueries} variant="outline" size="sm">
+          <Button onClick={fetchQueries} variant="outline" >
             <RefreshCw className="w-4 h-4 mr-2" />
             Refresh
           </Button>

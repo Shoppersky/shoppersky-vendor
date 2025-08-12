@@ -1,6 +1,6 @@
 "use client"
 
-import Header from "../../../components/Header"
+
 import ProfilePage from "../../../components/profile-page"
 
 export default function Profile() {
@@ -14,7 +14,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen">
-      <Header user={user} />
+     
       <ProfilePage />
     </div>
   )

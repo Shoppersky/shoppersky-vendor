@@ -273,7 +273,7 @@ export default function ProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Profile Picture Section */}
           <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-0 shadow-xl rounded-2xl overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-indigo-500/5 to-purple-500/5 border-b border-indigo-100 dark:border-indigo-800/30">
+            <CardHeader className="bg-gradient-to-r p-5 from-indigo-500/5 to-purple-500/5 border-b border-indigo-100 dark:border-indigo-800/30">
               <CardTitle className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl">
                   <Camera className="w-5 h-5 text-white" />
@@ -354,7 +354,7 @@ export default function ProfilePage() {
           {/* Profile Information Section */}
           <Card className="lg:col-span-2 backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-0 shadow-xl rounded-2xl overflow-hidden">
             <CardHeader className="bg-gradient-to-r from-indigo-500/5 to-purple-500/5 border-b border-indigo-100 dark:border-indigo-800/30">
-              <CardTitle className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent flex items-center gap-3">
+              <CardTitle className="text-xl pt-5 font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl">
                   <User className="w-5 h-5 text-white" />
                 </div>
@@ -437,11 +437,12 @@ export default function ProfilePage() {
               </div>
             </CardContent>
           </Card>
-
+</div>
           {/* Security Section */}
+          <div className="w-full">
           <Card className="lg:col-span-3 backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-0 shadow-xl rounded-2xl overflow-hidden">
             <CardHeader className="bg-gradient-to-r from-indigo-500/5 to-purple-500/5 border-b border-indigo-100 dark:border-indigo-800/30">
-              <CardTitle className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent flex items-center gap-3">
+              <CardTitle className="text-xl pt-5 font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent flex items-center gap-3">
                 <div className="p-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl">
                   <Key className="w-5 h-5 text-white" />
                 </div>
@@ -466,7 +467,8 @@ export default function ProfilePage() {
               </div>
             </CardContent>
           </Card>
-        </div>
+          </div>
+        
 
         {/* Change Password Modal */}
         <Dialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen}>

@@ -259,19 +259,21 @@ export default function CategoriesPage() {
     <>
       <TableRow className="hover:bg-gray-50 dark:hover:bg-slate-800/50">
         <TableCell className="py-3">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => toggleCategoryExpansion(category.category_id)}
-              className="p-1 h-auto"
-            >
-              {expandedCategories.includes(category.category_id) ? (
-                <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-600" />
-              ) : (
-                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-600" />
-              )}
-            </Button>
+          <div className="flex items-center gap-1 sm:gap-1 flex">
+           <Button
+  variant="ghost"
+  size="sm"
+  onClick={() => toggleCategoryExpansion(category.category_id)}
+  className="p-1 min-w-[32px] min-h-[32px] rounded-md transition-colors hover:bg-cyan-100 dark:hover:bg-cyan-900/20 sm:p-2 sm:min-w-[40px] sm:min-h-[40px]"
+  aria-label="Toggle category expansion"
+>
+  {expandedCategories.includes(category.category_id) ? (
+    <ChevronDown className="w-3.5 h-3.5 sm:w-5 sm:h-5 md:w-6 md:h-6 text-cyan-600" />
+  ) : (
+    <ChevronRight className="w-3.5 h-3.5 sm:w-5 sm:h-5 md:w-6 md:h-6 text-cyan-600" />
+  )}
+</Button>
+
             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white">
               <Tag className="w-3 h-3 sm:w-4 sm:h-4" />
             </div>
@@ -401,70 +403,77 @@ export default function CategoriesPage() {
 
         {/* Mobile Cards */}
         <div className="lg:hidden p-3 sm:p-4 space-y-3 sm:space-y-4">
-          {categoryList.map((category) => (
-            <div key={category.category_id} className="bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
-              {/* Category Header */}
-              <div className="p-3 sm:p-4 border-b border-gray-100 dark:border-gray-700">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => toggleCategoryExpansion(category.category_id)}
-                      className="p-1 h-auto"
-                    >
-                      {expandedCategories.includes(category.category_id) ? (
-                        <ChevronDown className="w-4 h-4 text-cyan-600" />
-                      ) : (
-                        <ChevronRight className="w-4 h-4 text-cyan-600" />
-                      )}
-                    </Button>
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white flex-shrink-0">
-                      <Tag className="w-3 h-3 sm:w-4 sm:h-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="font-semibold text-sm sm:text-base text-gray-800 dark:text-gray-100 truncate">
-                        {category.category_name}
-                      </h4>
-                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">
-                        {category.category_description}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <Badge
-                      className={`px-2 py-1 text-xs ${
-                        !category.category_status
-                          ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                          : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                      }`}
-                    >
-                      {!category.category_status ? (
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                      ) : (
-                        <XCircle className="w-3 h-3 mr-1" />
-                      )}
-                      {getStatusDisplay(category.category_status)}
-                    </Badge>
-                    <ToggleSwitch
-                      checked={isMapped(category.category_id)}
-                      onCheckedChange={() =>
-                        handleToggle(
-                          category.category_id,
-                          undefined,
-                          isMapped(category.category_id)
-                        )
-                      }
-                      className={
-                        isMapped(category.category_id)
-                          ? "bg-red-500"
-                          : "bg-green-500"
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
+  {categoryList.map((category) => (
+    <div
+      key={category.category_id}
+      className="bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm"
+    >
+      {/* Category Header */}
+      <div className="p-3 sm:p-4 border-b border-gray-100 dark:border-gray-700">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => toggleCategoryExpansion(category.category_id)}
+            className="p-1 min-w-[32px] min-h-[32px] rounded-md transition-colors hover:bg-cyan-100 dark:hover:bg-cyan-900/20 sm:p-2 sm:min-w-[40px] sm:min-h-[40px]"
+            aria-label="Toggle category expansion"
+          >
+            {expandedCategories.includes(category.category_id) ? (
+              <ChevronDown className="w-3.5 h-3.5 sm:w-5 sm:h-5 md:w-6 md:h-6 text-cyan-600" />
+            ) : (
+              <ChevronRight className="w-3.5 h-3.5 sm:w-5 sm:h-5 md:w-6 md:h-6 text-cyan-600" />
+            )}
+          </Button>
 
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white flex-shrink-0">
+            <Tag className="w-3 h-3 sm:w-4 sm:h-4" />
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <h4 className="font-semibold text-sm sm:text-base text-gray-800 dark:text-gray-100 truncate">
+              {category.category_name}
+            </h4>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">
+              {category.category_description}
+            </p>
+          </div>
+        </div>
+
+        {/* Second row: badge and toggle */}
+        <div className="mt-3 grid grid-cols-2 gap-3 sm:gap-4 items-center">
+          <Badge
+            className={`px-2 py-1 text-xs sm:text-sm flex items-center justify-center ${
+              !category.category_status
+                ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+            }`}
+            aria-label={`Category status: ${getStatusDisplay(category.category_status)}`}
+          >
+            {!category.category_status ? (
+              <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" aria-hidden="true" />
+            ) : (
+              <XCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" aria-hidden="true" />
+            )}
+            {getStatusDisplay(category.category_status)}
+          </Badge>
+
+          <div className="flex justify-end">
+            <ToggleSwitch
+              checked={isMapped(category.category_id)}
+              onCheckedChange={() =>
+                handleToggle(
+                  category.category_id,
+                  undefined,
+                  isMapped(category.category_id)
+                )
+              }
+              className={
+                isMapped(category.category_id) ? "bg-red-500" : "bg-green-500"
+              }
+            />
+          </div>
+        </div>
+      </div>
               {/* Subcategories */}
               {expandedCategories.includes(category.category_id) && (
                 <div className="p-2 sm:p-3 space-y-2 bg-gray-50 dark:bg-slate-900/50">

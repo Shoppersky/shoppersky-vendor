@@ -562,7 +562,7 @@ export default function ProductsPage() {
   const handleExportProducts = () => {
     const csvContent = [
       [
-        "ID",
+        
         "Name",
         "Price",
         "Category",
@@ -788,7 +788,7 @@ export default function ProductsPage() {
         
 
         {/* Header */}
-        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between animate-fade-in">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between md:gap-8 lg:gap-10 flex-wrap">
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <div className="rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 p-3 shadow-lg">
@@ -804,7 +804,7 @@ export default function ProductsPage() {
             </p>
           </div>
           <div
-            className="flex items-center gap-3 animate-fade-in"
+            className="flex items-center gap-3 animate-fade-in mr-50"
             style={{ animationDelay: "200ms" }}
           >
             <Button
@@ -812,16 +812,18 @@ export default function ProductsPage() {
               onClick={handleExportProducts}
               className="group relative overflow-hidden border-cyan-200 bg-white/70 backdrop-blur-sm transition-all hover:border-cyan-300 hover:bg-white hover:shadow-lg dark:border-zinc-700 dark:bg-zinc-800/70 dark:hover:bg-zinc-800"
             >
-              <Download className="mr-2 h-4 w-4 transition-transform group-hover:scale-110" />
+              <Download className="mr-2 h-2 w-4 transition-transform group-hover:scale-110" />
               Export CSV
             </Button>
             <Button
-              onClick={() => router.push("/add-product")} // Replace with your desired route
-              className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 transition-all hover:scale-105"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Product
-            </Button>
+  onClick={() => router.push("/add-product")}
+  className="flex items-center px-4 py-2 text-sm sm:text-base md:px-6 md:py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 transition-all hover:scale-105 rounded-md"
+>
+  <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+  <span className="hidden sm:inline">Add Product</span>
+  <span className="inline sm:hidden">Add</span>
+</Button>
+
           </div>
         </div>
 
@@ -859,7 +861,7 @@ export default function ProductsPage() {
           />
           <StatCard
             title="Total Sales"
-            value={stats.sold.toString()}
+            value={0}
             icon={<ShoppingCart className="h-5 w-5 text-indigo-600" />}
             color="indigo"
             trend="up"

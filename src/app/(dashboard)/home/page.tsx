@@ -213,15 +213,15 @@ export default function DashboardHome() {
 
       {/* --- BUSINESS & KPI SUMMARY --- */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-        <StatCard title="Total Revenue" value={stats.revenue} change={stats.orderChange} isPositive icon={<TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />} />
-        <StatCard title="Total Orders" value={stats.orders.toLocaleString()} change={stats.ordersChange} isPositive icon={<ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />} />
-        <StatCard title="Products Sold" value={stats.sold.toLocaleString()} change={stats.soldChange} icon={<Package className="w-5 h-5 sm:w-6 sm:h-6 text-rose-500" />} />
-        <StatCard title="Active Products" value={stats.activeProducts.toString()} change={stats.productsChange} isPositive icon={<Layers className="w-5 h-5 sm:w-6 sm:h-6 text-violet-500" />} />
+        <StatCard title="Total Revenue" value={0}  isPositive icon={<TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />} />
+        <StatCard title="Total Orders" value={0}  isPositive icon={<ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />} />
+        <StatCard title="Products Sold" value={0}  icon={<Package className="w-5 h-5 sm:w-6 sm:h-6 text-rose-500" />} />
+        <StatCard title="Active Products" value={0}  isPositive icon={<Layers className="w-5 h-5 sm:w-6 sm:h-6 text-violet-500" />} />
       </div>
 
       {/* --- GRAPHS & RECENT ORDERS --- */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-        <GlassCard className="lg:col-span-2">
+        {/* <GlassCard className="lg:col-span-2">
           <CardHeader>
             <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 text-base sm:text-lg lg:text-xl font-bold text-gray-700">
               <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-400 flex-shrink-0" />
@@ -266,9 +266,9 @@ export default function DashboardHome() {
               <Badge color="blue">Last Month +2.9%</Badge>
             </div>
           </CardContent>
-        </GlassCard>
+        </GlassCard> */}
         {/* Category Pie Chart */}
-        <GlassCard>
+        {/* <GlassCard>
           <CardHeader>
             <div className="flex items-center gap-2 sm:gap-3 text-sm sm:text-base lg:text-lg p-3 sm:p-4 font-bold">
               <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500 flex-shrink-0" />
@@ -311,11 +311,11 @@ export default function DashboardHome() {
               ))}
             </div>
           </CardContent>
-        </GlassCard>
+        </GlassCard> */}
       </div>
 
       {/* --- ORDER & ALERTS --- */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div className="w-full">
         {/* Recent Orders */}
         <GlassCard className="lg:col-span-2">
           <CardHeader>
@@ -347,7 +347,7 @@ export default function DashboardHome() {
         {/* Alerts & Best Sellers */}
         <div className="space-y-4 sm:space-y-6">
           {/* Inventory Alerts */}
-          <GlassCard>
+          {/* <GlassCard>
             <CardHeader>
               <div className="flex items-center justify-center gap-2 font-bold p-3 sm:p-4 text-sm sm:text-base text-gray-800 dark:text-gray-200">
                 <Bell className="w-4 h-4 text-amber-500 flex-shrink-0" />
@@ -359,9 +359,9 @@ export default function DashboardHome() {
                 <InventoryAlert key={alert.name} name={alert.name} level={alert.level} color={alert.color as any} />
               ))}
             </CardContent>
-          </GlassCard>
+          </GlassCard> */}
           {/* Best Sellers */}
-          <GlassCard>
+          {/* <GlassCard>
             <CardHeader>
               <div className="flex items-center gap-2 font-bold p-3 sm:p-4 text-sm sm:text-base">
                 <Star className="w-4 h-4 text-yellow-500 flex-shrink-0" />
@@ -373,14 +373,14 @@ export default function DashboardHome() {
                 <ProductItem key={p.name} name={p.name} price={p.price} sold={p.sold} />
               ))}
             </CardContent>
-          </GlassCard>
+          </GlassCard> */}
         </div>
       </div>
 
       {/* --- CUSTOMER INSIGHTS, ACTIONS, NOTIFICATIONS --- */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* Customer Insights */}
-        <GlassCard className="lg:col-span-2">
+        {/* <GlassCard className="lg:col-span-2">
           <CardHeader>
             <div className="flex gap-2 items-center p-3 sm:p-4 font-bold text-sm sm:text-base">
               <User2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
@@ -406,9 +406,9 @@ export default function DashboardHome() {
               <Button onClick={handleViewAllCustomers} size="sm" className="w-full text-sm">View All Customers</Button>
             </div>
           </CardContent>
-        </GlassCard>
+        </GlassCard> */}
         {/* Actions */}
-        <GlassCard>
+        {/* <GlassCard>
           <CardHeader>
             <div className="font-bold p-3 sm:p-4 text-sm sm:text-base flex items-center gap-2">
               <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500 flex-shrink-0" />
@@ -421,9 +421,9 @@ export default function DashboardHome() {
             <Button onClick={handleViewReports} variant="ghost" className="w-full text-xs sm:text-sm">View Reports</Button>
             <Button onClick={handleManageCampaigns} variant="ghost" className="w-full text-xs sm:text-sm">Manage Campaigns</Button>
           </CardContent>
-        </GlassCard>
+        </GlassCard> */}
         {/* Notifications */}
-        <GlassCard>
+        {/* <GlassCard>
           <CardHeader>
             <div className="font-bold flex items-center gap-2 p-3 sm:p-4 text-sm sm:text-base">
               <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 flex-shrink-0" />
@@ -441,7 +441,7 @@ export default function DashboardHome() {
               </div>
             ))}
           </CardContent>
-        </GlassCard>
+        </GlassCard> */}
       </div>
 
       {/* Order Details Modal */}
