@@ -27,8 +27,8 @@ export default function Verification() {
     }
 
     if (user.is_approved) {
-      console.log("User is approved, redirecting to /dashboard");
-      router.push("/dashboard");
+      console.log("User is approved, redirecting to /home");
+      router.push("/home");
       return;
     }
 
