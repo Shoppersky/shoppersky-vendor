@@ -108,8 +108,6 @@
  
 // export default AuthGuard;
 
-
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -137,6 +135,26 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     "/changepassword",
   ];
 
+  // Allowed routes based on onboarding status
+  const statusAllowedRoutes: Record<string, string[]> = {
+    approved: [
+      "/home",
+      "/categories",
+      "/employees",
+      "/customers",
+      "/products",
+      "/profile",
+      "/enquiries",
+      "/onboarding",
+      "/online-store", // dynamic route handled in check below
+      ...publicRoutes,
+    ],
+    not_started: ["/onboarding", ...publicRoutes],
+    under_review: ["/review", ...publicRoutes],
+    submitted: ["/verification", ...publicRoutes],
+    rejected: ["/rejected", ...publicRoutes],
+  };
+
   useEffect(() => {
     checkAuth();
     setIsLoading(false);
@@ -145,17 +163,26 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   useEffect(() => {
     if (isLoading) return;
 
-    // If not authenticated and not on a public route, redirect to login
+    // If not authenticated and not on a public route → go to login
     if (!isAuthenticated && !publicRoutes.includes(pathname)) {
       router.push("/");
       return;
     }
 
-    // If authenticated, check onboarding status
+    // If authenticated, enforce allowed routes
     if (isAuthenticated && user) {
-      const allowedPublic = publicRoutes.includes(pathname);
+      const allowedRoutes =
+        statusAllowedRoutes[user?.onboarding_status] || publicRoutes;
 
-      if (!allowedPublic) {
+      const isAllowed = allowedRoutes.some((route) => {
+        if (route === pathname) return true;
+        if (route === "/online-store" && pathname.startsWith("/online-store/"))
+          return true; // allow dynamic store_name paths
+        return false;
+      });
+
+      if (!isAllowed) {
+        // Redirect based on onboarding status
         switch (user?.onboarding_status) {
           case "approved":
             router.push("/home");
