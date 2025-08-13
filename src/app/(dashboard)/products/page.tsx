@@ -505,7 +505,7 @@ export default function ProductsPage() {
     if (productToDelete) {
       try {
         await axiosInstance.put(
-          `/products/slug/${productToDelete.slug}/delete`
+          `/products/slug/delete/${productToDelete.slug}`
         );
         setProducts((prev) =>
           prev.filter((product) => product.slug !== productToDelete.slug)
@@ -533,7 +533,7 @@ export default function ProductsPage() {
     if (productToRestore) {
       try {
         await axiosInstance.put(
-          `/products/slug/${productToRestore.slug}/restore`
+          `/products/slug/restore/${productToRestore.slug}`
         );
 
         setProducts((prev) =>
@@ -567,27 +567,27 @@ export default function ProductsPage() {
         "Price",
         "Category",
         "Subcategory",
-        "Purchases",
-        "Sold",
+        // "Purchases",
+        // "Sold",
         "Stock",
         "Status",
-        "Rating",
+        // "Rating",
         "Created Date",
-        "Last Updated",
+        
       ],
       ...filteredProducts.map((product) => [
-        product.id,
+       
         product.name,
         product.price,
         product.category || "",
         product.subcategory || "",
-        product.purchases.toString(),
-        product.sold.toString(),
+        // product.purchases.toString(),
+        // product.sold.toString(),
         (product.stock || 0).toString(),
         product.status,
-        (product.rating || 0).toFixed(1),
+        // (product.rating || 0).toFixed(1),
         product.createdDate || "",
-        product.lastUpdated || "",
+       
       ]),
     ]
       .map((row) => row.join(","))
@@ -999,7 +999,7 @@ export default function ProductsPage() {
                       Stock
                     </div>
                   </TableHead>
-                  <TableHead className="font-semibold text-gray-700 dark:text-gray-300">
+                  {/* <TableHead className="font-semibold text-gray-700 dark:text-gray-300">
                     <div className="flex items-center gap-2">
                       <ShoppingCart className="h-4 w-4" />
                       Sales
@@ -1010,7 +1010,7 @@ export default function ProductsPage() {
                       <Star className="h-4 w-4" />
                       Rating
                     </div>
-                  </TableHead>
+                  </TableHead> */}
                   <TableHead className="font-semibold text-gray-700 dark:text-gray-300">
                     Status
                   </TableHead>
@@ -1122,7 +1122,7 @@ export default function ProductsPage() {
                           )}
                       </div>
                     </TableCell>
-                    <TableCell className="py-4">
+                    {/* <TableCell className="py-4">
                       <div className="space-y-1">
                         <div className="font-semibold">{product.sold} sold</div>
                         <div className="text-xs text-muted-foreground">
@@ -1137,7 +1137,7 @@ export default function ProductsPage() {
                           {product.rating?.toFixed(1) || "N/A"}
                         </span>
                       </div>
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell className="py-4">
                       <Badge
                         className={`transition-all hover:scale-105 ${

@@ -101,7 +101,7 @@ const QueryDetailsPage = () => {
 
     try {
       setSubmitting(true);
-      const response = await axiosInstance.post(`/vendor/vendor_admin_queries/${params.id}/messages`, {
+      const response = await axiosInstance.post(`/vendor/vendor_admin_queries/messages/${params.id}`, {
         user_id: userId,
         message: followUpText,
         message_type: "followup",
@@ -132,7 +132,7 @@ const QueryDetailsPage = () => {
 
     try {
       setResolving(true);
-      const response = await axiosInstance.patch(`/vendor/vendor_admin_queries/${params.id}/status`, {
+      const response = await axiosInstance.patch(`/vendor/vendor_admin_queries/status/${params.id}`, {
         user_id: userId,
         query_status: "closed",
         message: "Marked as resolved by vendor",

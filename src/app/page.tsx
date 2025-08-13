@@ -27,128 +27,72 @@ export default function VendorLogin() {
     setEmailValid(emailRegex.test(email));
   };
 
-  // const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-
-  //   if (!emailValid) {
-  //     toast.error("Please enter a valid email address.");
-  //     return;
-  //   }
-
-  //   setLoading(true);
-
-  //   try {
-  //     const response = await axiosInstance.post("/vendor/login", {
-  //       email,
-  //       password,
-  //     });
-
-  //     const { access_token, user } = response.data;
-
-  //     if (access_token) {
-  //       login({ access_token, user });
-
-  //       toast.success("Login successful!");
-
-  //       // Handle based on onboarding status
-  //       switch (user?.onboarding_status) {
-  //         case "approved":
-  //           router.push("/home");
-  //           break;
-  //         case "not_started":
-  //           router.push("/onboarding");
-  //           break;
-  //         case "under_review":
-  //           router.push(
-  //             `/review?ref=${encodeURIComponent(user?.ref_number || "N/A")}`
-  //           );
-  //           break;
-  //         case "submitted":
-  //           router.push(
-  //             `/verification?ref=${encodeURIComponent(
-  //               user?.ref_number || "N/A"
-  //             )}`
-  //           );
-  //           break;
-  //         case "rejected":
-  //           router.push(
-  //             `/rejected?ref=${encodeURIComponent(
-  //               user?.ref_number || "N/A"
-  //             )}&comment=${encodeURIComponent(user?.reviewer_comment || "")}`
-  //           );
-
-  //           break;
-  //         default:
-  //           router.push("/error");
-  //           break;
-  //       }
-  //     }
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  if (!emailValid) {
-    toast.error("Please enter a valid email address.");
-    return;
-  }
+    if (!emailValid) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
 
-  setLoading(true);
+    setLoading(true);
 
-  try {
-    const response = await axiosInstance.post("/vendor/login", {
-      email,
-      password,
-    });
+    try {
+      const response = await axiosInstance.post("/vendor/login", {
+        email,
+        password,
+      });
 
-    const { access_token, user } = response.data;
+      const { access_token, user } = response.data;
 
-    if (access_token) {
-      login({ access_token, user });
-      toast.success("Login successful!");
+      if (access_token) {
+        login({ access_token, user });
+        toast.success("Login successful!");
 
-      // Handle based on onboarding status
-      switch (user?.onboarding_status) {
-        case "approved":
-          router.push("/home");
-          break;
-        case "not_started":
-          router.push("/onboarding");
-          break;
-        case "under_review":
-          router.push(`/review?ref=${encodeURIComponent(user?.ref_number || "N/A")}`);
-          break;
-        case "submitted":
-          router.push(`/verification?ref=${encodeURIComponent(user?.ref_number || "N/A")}`);
-          break;
-        case "rejected":
-          router.push(
-            `/rejected?ref=${encodeURIComponent(user?.ref_number || "N/A")}&comment=${encodeURIComponent(user?.reviewer_comment || "")}`
-          );
-          break;
-        default:
-          router.push("/home");
-          break;
+        // Handle based on onboarding status
+        switch (user?.onboarding_status) {
+          case "approved":
+            router.push("/home");
+            break;
+          case "not_started":
+            router.push("/onboarding");
+            break;
+          case "under_review":
+            router.push(
+              `/review?ref=${encodeURIComponent(user?.ref_number || "N/A")}`
+            );
+            break;
+          case "submitted":
+            router.push(
+              `/verification?ref=${encodeURIComponent(
+                user?.ref_number || "N/A"
+              )}`
+            );
+            break;
+          case "rejected":
+            router.push(
+              `/rejected?ref=${encodeURIComponent(
+                user?.ref_number || "N/A"
+              )}&comment=${encodeURIComponent(user?.reviewer_comment || "")}`
+            );
+            break;
+          default:
+            router.push("/home");
+            break;
+        }
       }
+    } catch (error: any) {
+      // Handle 403 or other errors
+      if (error.response?.status === 403) {
+        toast.info("Please change your default password.");
+        router.push(`/changepassword?email=${encodeURIComponent(email)}`);
+      } else {
+        toast.error("Login failed. Please check your credentials.");
+      }
+    } finally {
+      setLoading(false);
     }
-  } catch (error: any) {
-    // Handle 403 or other errors
-    if (error.response?.status === 403) {
-      toast.info("Please change your default password.");
-      router.push(`/changepassword?email=${encodeURIComponent(email)}`);
-    } else {
-      toast.error("Login failed. Please check your credentials.");
-    }
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2 bg-gradient-to-br from-blue-50 via-white to-blue-50">
@@ -232,8 +176,6 @@ export default function VendorLogin() {
                         }}
                         placeholder="Please enter your password"
                         className="h-12 border-2 border-gray-200 focus:border-emerald-500 transition-colors duration-200 pr-12"
-                        placeholder="Create a strong password"
-                        className="h-10 sm:h-12 border-2 border-gray-200 focus:border-emerald-500 transition-colors duration-200 pr-12 text-sm sm:text-base"
                         required
                       />
                       <button

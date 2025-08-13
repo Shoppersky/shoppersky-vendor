@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { Menu, Bell } from 'lucide-react';
 import DynamicBreadcrumb from './BreadCrump';
 import { Separator } from './ui/separator';
-import { ModeToggle } from './ThemToggle';
-import { SearchBarWithIcon } from './Searchbar';
+// import { ModeToggle } from './ThemToggle';
+// import { SearchBarWithIcon } from './Searchbar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +18,8 @@ import {
   AvatarImage,
 } from '@/components/ui/avatar';
 import { useRouter } from 'next/navigation';
+import useStore from "@/lib/Zustand";
+import { toast } from 'sonner';
 
 type AppHeaderProps = {
   toggleSidebar: () => void;
@@ -117,11 +119,30 @@ export default function AppHeader({ toggleSidebar }: AppHeaderProps) {
                   Profile
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => router.push('/')}
-                  className="cursor-pointer"
-                >
-                  Logout
-                </DropdownMenuItem>
+  onClick={async () => {
+    try {
+      const { logout } = useStore.getState();
+      logout();
+
+      // Clear any other stored IDs if needed
+      localStorage.removeItem('id');
+
+      // Redirect to login or home
+      router.push('/');
+    } catch (err) {
+      toast.error('Logout failed, applying fallback.');
+      try {
+        const { logout } = useStore.getState();
+        logout();
+        localStorage.removeItem('id');
+      } catch {}
+      window.location.href = '/';
+    }
+  }}
+>
+  Logout
+</DropdownMenuItem>
+
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

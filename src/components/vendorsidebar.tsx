@@ -19,26 +19,34 @@ import { useSidebar } from "./sidebarprovider";
 import { useEffect } from "react";
 import Link from "next/link";
 
-
 interface SidebarProps {
   isOpen?: boolean;
   onClose?: () => void;
   isMobile?: boolean;
-  collapsed?: boolean;            // desktop: icon-only when true
-  onToggleCollapse?: () => void;  // desktop: toggle collapse
+  collapsed?: boolean; // desktop: icon-only when true
+  onToggleCollapse?: () => void; // desktop: toggle collapse
 }
 
-export default function Sidebar({ isOpen, onClose, isMobile, collapsed = false, onToggleCollapse }: SidebarProps = {}) {
+export default function Sidebar({
+  isOpen,
+  onClose,
+  isMobile,
+  collapsed = false,
+  onToggleCollapse,
+}: SidebarProps = {}) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user } = useStore(); 
+  const { user } = useStore();
   const store_name = user?.vendor_store_slug;
   const { isOpen: contextIsOpen, toggleSidebar, closeSidebar } = useSidebar();
-  
+
   // Use props if provided, otherwise fall back to context
   const sidebarOpen = isOpen !== undefined ? isOpen : contextIsOpen;
   const handleClose = onClose || closeSidebar;
-  const isMobileDevice = isMobile !== undefined ? isMobile : (typeof window !== 'undefined' && window.innerWidth < 768);
+  const isMobileDevice =
+    isMobile !== undefined
+      ? isMobile
+      : typeof window !== "undefined" && window.innerWidth < 768;
 
   // Close sidebar on mobile when route changes
   // useEffect(() => {
@@ -50,18 +58,18 @@ export default function Sidebar({ isOpen, onClose, isMobile, collapsed = false, 
 
   // Prevent body scroll when sidebar is open on mobile
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       if (sidebarOpen && isMobileDevice) {
-        document.body.classList.add('sidebar-open');
+        document.body.classList.add("sidebar-open");
       } else {
-        document.body.classList.remove('sidebar-open');
+        document.body.classList.remove("sidebar-open");
       }
     }
 
     return () => {
-      document.body.classList.remove('sidebar-open');
+      document.body.classList.remove("sidebar-open");
     };
-  }, [sidebarOpen, isMobileDevice]); 
+  }, [sidebarOpen, isMobileDevice]);
 
   const navItems = [
     { label: "Home", icon: Home, path: "/home" },
@@ -78,13 +86,12 @@ export default function Sidebar({ isOpen, onClose, isMobile, collapsed = false, 
       icon: Settings,
       path: `/online-store/${encodeURIComponent(store_name || "default")}`, // Dynamically include store_name
     },
-     { label: "My Enquiries", icon: Settings, path: "/enquiries" },
-   
+    { label: "My Enquiries", icon: Settings, path: "/enquiries" },
   ];
 
   const handleLogout = () => {
     localStorage.clear(); // Clear session/token
-    router.push("/");     // Redirect to login
+    router.push("/"); // Redirect to login
   };
 
   const handleNavigation = (path: string) => {
@@ -104,7 +111,7 @@ export default function Sidebar({ isOpen, onClose, isMobile, collapsed = false, 
   return (
     <>
       {/* Sidebar */}
-      <aside 
+      <aside
         className={clsx(
           "bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950 border-r border-gray-200 dark:border-gray-700 backdrop-blur-xl flex flex-col transition-transform duration-300 ease-in-out shadow-lg",
           // Width - collapsible on desktop
@@ -112,29 +119,33 @@ export default function Sidebar({ isOpen, onClose, isMobile, collapsed = false, 
           // Desktop - always visible and sticky
           "md:sticky md:top-0 md:h-screen md:translate-x-0",
           // Mobile - slide in/out based on sidebarOpen state, overlay content
-          isMobileDevice 
-            ? (sidebarOpen ? "fixed top-0 left-0 h-screen z-50 translate-x-0" : "fixed top-0 left-0 h-screen z-50 -translate-x-full")
+          isMobileDevice
+            ? sidebarOpen
+              ? "fixed top-0 left-0 h-screen z-50 translate-x-0"
+              : "fixed top-0 left-0 h-screen z-50 -translate-x-full"
             : "sticky top-0 h-screen translate-x-0"
         )}
         style={{
           // Ensure the sidebar is always the right width
-          minWidth: collapsed ? '5rem' : '16rem',
-          maxWidth: collapsed ? '5rem' : '16rem'
+          minWidth: collapsed ? "5rem" : "16rem",
+          maxWidth: collapsed ? "5rem" : "16rem",
         }}
       >
         {/* Logo */}
         <div className="flex items-center justify-start gap-2 h-16 px-4 border-b">
-       <Link href="/home" className="inline-flex items-center">
-  <span className="text-2xl">
-    <Logo />
-  </span>
-</Link>
-          <span className={clsx(
-            "text-lg font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent transition-all",
-            collapsed && "opacity-0 w-0 overflow-hidden"
-          )}>
-            SHOPPERSKY
-          </span>
+          <Link href="/home" className="inline-flex items-center gap-2">
+            <span className="text-2xl">
+              <Logo />
+            </span>
+            <span
+              className={clsx(
+                "text-lg font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent transition-all",
+                collapsed && "opacity-0 w-0 overflow-hidden"
+              )}
+            >
+              SHOPPERSKY
+            </span>
+          </Link>
         </div>
 
         {/* Collapse/Expand button (desktop) and Close (mobile) */}
@@ -182,10 +193,14 @@ export default function Sidebar({ isOpen, onClose, isMobile, collapsed = false, 
                   )}
                 />
                 {/* Hide labels when collapsed on desktop */}
-                <span className={clsx(
-                  "font-medium transition-all",
-                  !isMobileDevice && collapsed && "opacity-0 w-0 overflow-hidden"
-                )}>
+                <span
+                  className={clsx(
+                    "font-medium transition-all",
+                    !isMobileDevice &&
+                      collapsed &&
+                      "opacity-0 w-0 overflow-hidden"
+                  )}
+                >
                   {item.label}
                 </span>
               </button>
@@ -194,7 +209,6 @@ export default function Sidebar({ isOpen, onClose, isMobile, collapsed = false, 
         </nav>
 
         {/* Logout Button */}
-     
       </aside>
     </>
   );
