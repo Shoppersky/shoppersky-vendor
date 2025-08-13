@@ -6,13 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { toast } from "sonner";
@@ -30,13 +24,14 @@ interface Product {
   purchases: number;
   sold: number;
   status: "Active" | "Inactive";
+  published?: string;
   category_id?: string; // Changed to category_id
 
   subcategory_id?: string; // Changed to subcategory_id
 
   category_name?: string; // Added for display
 
-  subcategory_name?: string; 
+  subcategory_name?: string;
   createdDate?: string;
   lastUpdated?: string;
   rating?: number;
@@ -53,7 +48,7 @@ interface Product {
   length?: string;
   width?: string;
   height?: string;
-  images?: string[]; // Added to store existing image URLs
+  images?: string[]; 
 }
 
 interface Category {
@@ -112,7 +107,7 @@ export default function ProductForm() {
     height: "",
     tags: "",
     featured: false,
-    isActive: true,
+    published: true,
     images: [null, null, null, null] as (File | null)[],
   });
   const [categories, setCategories] = useState<Category[]>([]);
@@ -141,19 +136,14 @@ export default function ProductForm() {
   }, [userId]);
 
   useEffect(() => {
-
     const fetchProduct = async () => {
-
       if (!slug) {
-
         setLoading(false);
 
         return;
-
       }
 
       try {
-
         const response = await axiosInstance.get(`/products/slug/${slug}`);
 
         const product = response.data;
@@ -172,43 +162,33 @@ export default function ProductForm() {
 
         let subcategoryName = product.subcategory_name;
 
-
-
         for (const category of categories) {
-
           if (category.category_name === product.category_name) {
-
             categoryId = category.category_id;
 
             for (const subcategory of category.subcategories) {
-
               if (subcategory.subcategory_name === product.subcategory_name) {
-
                 subcategoryId = subcategory.subcategory_id;
 
                 break;
-
               }
-
             }
 
             break;
-
           }
-
         }
 
-
-
         setEditingProduct({
-
           id: product.product_id,
 
           name: product.identification.product_name,
 
-          price: `$${Number.parseFloat(product.pricing.selling_price).toFixed(2)}`,
+          price: `$${Number.parseFloat(product.pricing.selling_price).toFixed(
+            2
+          )}`,
 
-          image: product.images?.urls?.[0] || "/placeholder.svg?height=56&width=56",
+          image:
+            product.images?.urls?.[0] || "/placeholder.svg?height=56&width=56",
 
           images: product.images?.urls || [],
 
@@ -242,7 +222,8 @@ export default function ProductForm() {
 
           fullDescription: product.descriptions.full_description,
 
-          seoKeywords: product.tags_and_relationships?.product_tags?.join(", ") || "",
+          seoKeywords:
+            product.tags_and_relationships?.product_tags?.join(", ") || "",
 
           seoTitle: "",
 
@@ -257,13 +238,9 @@ export default function ProductForm() {
           width: product.physical_attributes?.dimensions?.width || "",
 
           height: product.physical_attributes?.dimensions?.height || "",
-
         });
 
-
-
         setFormData((prev) => ({
-
           ...prev,
 
           name: product.identification.product_name,
@@ -278,7 +255,9 @@ export default function ProductForm() {
 
           price: Number.parseFloat(product.pricing.actual_price).toFixed(2),
 
-          salePrice: Number.parseFloat(product.pricing.selling_price).toFixed(2),
+          salePrice: Number.parseFloat(product.pricing.selling_price).toFixed(
+            2
+          ),
 
           sku: product.identification.product_sku || "",
 
@@ -286,7 +265,8 @@ export default function ProductForm() {
 
           fullDescription: product.descriptions.full_description || "",
 
-          seoKeywords: product.tags_and_relationships?.product_tags?.join(", ") || "",
+          seoKeywords:
+            product.tags_and_relationships?.product_tags?.join(", ") || "",
 
           seoTitle: "",
 
@@ -307,33 +287,20 @@ export default function ProductForm() {
           isActive: product.status_flags.product_status,
 
           images: [null, null, null, null],
-
         }));
-
       } catch (error) {
-
         console.error("Error fetching product:", error);
 
         setError("Failed to load product details.");
-
       } finally {
-
         setLoading(false);
-
       }
-
     };
 
-
-
     if (categories.length > 0) {
-
       fetchProduct();
-
     }
-
   }, [slug, categories]);
-
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -375,7 +342,6 @@ export default function ProductForm() {
   const handleSubmit = async () => {
     if (
       !formData.name.trim() ||
-     
       !formData.price.trim() ||
       !formData.stock.trim()
     ) {
@@ -449,8 +415,8 @@ export default function ProductForm() {
         "status_flags",
         JSON.stringify({
           featured_product: formData.featured,
-          published_product: formData.isActive,
-          product_status: formData.isActive,
+          published_product: formData.published,
+          
         })
       );
 
@@ -612,13 +578,9 @@ export default function ProductForm() {
                       Category *
                     </label>
                     <Input
-
                       value={formData.category_name || "Not selected"}
-
                       disabled
-
                       className="border-cyan-200 bg-white/50 dark:border-cyan-700 dark:bg-zinc-800/50 text-gray-900 dark:text-gray-100"
-
                     />
                   </div>
 
@@ -626,14 +588,10 @@ export default function ProductForm() {
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
                       Subcategory
                     </label>
-                     <Input
-
+                    <Input
                       value={formData.subcategory_name || "Not selected"}
-
                       disabled
-
                       className="border-cyan-200 bg-white/50 dark:border-cyan-700 dark:bg-zinc-800/50 text-gray-900 dark:text-gray-100"
-
                     />
                   </div>
                 </div>
@@ -866,12 +824,12 @@ export default function ProductForm() {
                   </div>
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Active Status
+                      Published Product
                     </label>
                     <Switch
-                      checked={formData.isActive}
+                      checked={formData.published}
                       onCheckedChange={(checked) =>
-                        setFormData((prev) => ({ ...prev, isActive: checked }))
+                        setFormData((prev) => ({ ...prev, published: checked }))
                       }
                     />
                   </div>
@@ -951,7 +909,3 @@ export default function ProductForm() {
     </div>
   );
 }
-
-
-
-

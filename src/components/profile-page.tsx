@@ -98,24 +98,28 @@ export default function ProfilePage() {
   }, [userId]);
 
   const fetchProfileData = async () => {
-    try {
-      const response = await axiosInstance.get(`/vendor/vendor-profile-details/${userId}`);
-      const { data } = response.data; // Assuming api_response structure
-      setProfileData({
-        name: data.username || "Unknown",
-        email: data.email || "",
-        role: data.role || "Unknown",
-        storeName: data.store_name || "",
-        avatar: data.profile_picture_url || "/placeholder.svg?height=120&width=120&text=JD",
-        joinDate: data.join_date || "Unknown",
-        store_url: data.store_url || "",
-      });
-     
-    } catch (error) {
-      
-      console.error("Error fetching profile:", error);
-    }
-  };
+  try {
+    const response = await axiosInstance.get(`/vendor/vendor-profile-details/${userId}`);
+    const { data } = response.data; // Assuming api_response structure
+
+    // Extract the part of the email before "@" if username is empty or "Unknown"
+    const displayName = data.username && data.username !== "Unknown User" 
+      ? data.username 
+      : data.email.split("@")[0] || "Unknown";
+
+    setProfileData({
+      name: displayName,
+      email: data.email || "",
+      role: data.role || "Unknown",
+      storeName: data.store_name || "",
+      avatar: data.profile_picture_url || "/placeholder.svg?height=120&width=120&text=JD",
+      joinDate: data.join_date || "Unknown",
+      store_url: data.store_url || "",
+    });
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+  }
+};
 
   // Password validation function
   const validatePassword = (password: string): PasswordValidation => {

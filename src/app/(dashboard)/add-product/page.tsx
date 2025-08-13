@@ -66,8 +66,13 @@ export default function AddProductPage() {
   const [height, setHeight] = useState("");
   const [tags, setTags] = useState("");
   const [featured, setFeatured] = useState(false);
-  const [isActive, setIsActive] = useState(true);
-  const [images, setImages] = useState<(File | null)[]>([null, null, null, null]);
+  const [published, setIsPublished] = useState(true);
+  const [images, setImages] = useState<(File | null)[]>([
+    null,
+    null,
+    null,
+    null,
+  ]);
   const [activeTab, setActiveTab] = useState("basic");
   const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState("");
@@ -91,14 +96,19 @@ export default function AddProductPage() {
         }
       } catch (error) {
         console.error("Error fetching vendor categories:", error);
-        setError("Failed to load categories and subcategories. Please try again.");
+        setError(
+          "Failed to load categories and subcategories. Please try again."
+        );
       }
     };
 
     fetchVendorCategories();
   }, [userId]);
 
-  const handleImageChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (
+    index: number,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
@@ -118,115 +128,125 @@ export default function AddProductPage() {
   };
 
   const handleAddProduct = async () => {
-  if (!productName.trim() || !category.trim() || !price.trim() || !stock.trim()) {
-    toast.error("Please fill in all required fields: Product Name, Category, Price, and Stock.");
-    return;
-  }
-
-//   if (parseFloat(salePrice) > parseFloat(price)) {
-//   toast.error("Sale Price cannot be greater than Actual Price.");
-//   return;
-// }
-
-
-  if (!userId) {
-    toast.error("Vendor ID is required");
-    return;
-  }
-
-  try {
-    const formData = new FormData();
-    formData.append("cat_id", category);
-    if (subcategory) {
-      formData.append("subcat_id", subcategory);
+    if (
+      !productName.trim() ||
+      !category.trim() ||
+      !price.trim() ||
+      !stock.trim()
+    ) {
+      toast.error(
+        "Please fill in all required fields: Product Name, Category, Price, and Stock."
+      );
+      return;
     }
-    formData.append("vendor_id", userId);
-    formData.append(
-      "identification",
-      JSON.stringify({
-        product_name: productName,
-        product_sku: sku,
-      })
-    );
-    formData.append(
-      "descriptions",
-      JSON.stringify({
-        short_description: shortDescription,
-        full_description: description,
-      })
-    );
-    formData.append(
-      "pricing",
-      JSON.stringify({
-        actual_price: price,
-        selling_price: salePrice,
-      })
-    );
-    formData.append(
-      "inventory",
-      JSON.stringify({
-        stock_quantity: stock,
-        stock_alert_status: stock ? "instock" : "outofstock",
-      })
-    );
-    formData.append(
-      "physical_attributes",
-      JSON.stringify({
-        weight,
-        dimensions: { length, width, height },
-        shipping_class: "standard",
-      })
-    );
-    formData.append(
-      "seo",
-      JSON.stringify({
-        keywords: seo,
-        title: seoTitle,
-      })
-    );
-    formData.append(
-      "tags_and_relationships",
-      JSON.stringify({
-        product_tags: tags
-          .split(",")
-          .map((tag) => tag.trim())
-          .filter((tag) => tag),
-        linkedproductid: "",
-      })
-    );
-    formData.append(
-      "status_flags",
-      JSON.stringify({
-        featured_product: featured,
-        published_product: isActive,
-        product_status: false,
-      })
-    );
 
-    // Append images as a list under the 'files' key
-    images.forEach((image) => {
-      if (image) {
-        formData.append("files", image); // Use 'files' as the key for all images
+    //   if (parseFloat(salePrice) > parseFloat(price)) {
+    //   toast.error("Sale Price cannot be greater than Actual Price.");
+    //   return;
+    // }
+
+    if (!userId) {
+      toast.error("Vendor ID is required");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("cat_id", category);
+      if (subcategory) {
+        formData.append("subcat_id", subcategory);
       }
-    });
+      formData.append("vendor_id", userId);
+      formData.append(
+        "identification",
+        JSON.stringify({
+          product_name: productName,
+          product_sku: sku,
+        })
+      );
+      formData.append(
+        "descriptions",
+        JSON.stringify({
+          short_description: shortDescription,
+          full_description: description,
+        })
+      );
+      formData.append(
+        "pricing",
+        JSON.stringify({
+          actual_price: price,
+          selling_price: salePrice,
+        })
+      );
+      formData.append(
+        "inventory",
+        JSON.stringify({
+          stock_quantity: stock,
+          stock_alert_status: stock ? "instock" : "outofstock",
+        })
+      );
+      formData.append(
+        "physical_attributes",
+        JSON.stringify({
+          weight,
+          dimensions: { length, width, height },
+          shipping_class: "standard",
+        })
+      );
+      formData.append(
+        "seo",
+        JSON.stringify({
+          keywords: seo,
+          title: seoTitle,
+        })
+      );
+      formData.append(
+        "tags_and_relationships",
+        JSON.stringify({
+          product_tags: tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter((tag) => tag),
+          linkedproductid: "",
+        })
+      );
+      formData.append(
+        "status_flags",
+        JSON.stringify({
+          featured_product: featured,
+          published_product: published,
+          product_status: false,
+        })
+      );
 
-    const response = await axiosInstance.post("/products/create-product/", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+      // Append images as a list under the 'files' key
+      images.forEach((image) => {
+        if (image) {
+          formData.append("files", image); // Use 'files' as the key for all images
+        }
+      });
 
-    if (response.status !== 201) {
-      throw new Error("Failed to create product");
+      const response = await axiosInstance.post(
+        "/products/create-product/",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status !== 201) {
+        throw new Error("Failed to create product");
+      }
+
+      toast.success("Product added successfully!");
+      resetForm();
+      router.push("/products");
+    } catch (error) {
+      toast.error(`Failed to add product: ${error.message}`);
     }
-
-    toast.success("Product added successfully!");
-    resetForm();
-    router.push("/products");
-  } catch (error) {
-    toast.error(`Failed to add product: ${error.message}`);
-  }
-};
+  };
 
   const resetForm = () => {
     setProductName("");
@@ -245,8 +265,8 @@ export default function AddProductPage() {
     setWidth("");
     setHeight("");
     setTags("");
-    setFeatured(false);
-    setIsActive(true);
+    setFeatured(true);
+    setIsPublished(true);
     setImages([null, null, null, null]);
     setActiveTab("basic");
     setError("");
@@ -262,7 +282,8 @@ export default function AddProductPage() {
 
   // Filter subcategories based on selected category
   const availableSubcategories = category
-    ? categories.find((cat) => cat.category_id === category)?.subcategories || []
+    ? categories.find((cat) => cat.category_id === category)?.subcategories ||
+      []
     : [];
 
   return (
@@ -273,7 +294,9 @@ export default function AddProductPage() {
         </h1>
 
         {error && (
-          <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">{error}</div>
+          <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+            {error}
+          </div>
         )}
 
         <div className="backdrop-blur-xl bg-white/40 dark:bg-white-900/40 border border-white/20 dark:border-white-700/20 overflow-hidden">
@@ -281,7 +304,11 @@ export default function AddProductPage() {
             <h2 className="text-xl font-semibold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-4">
               Product Information
             </h2>
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
+            >
               <TabsList className="grid w-full grid-cols-5 mb-6">
                 <TabsTrigger value="basic">Basic Info</TabsTrigger>
                 <TabsTrigger value="pricing">Pricing & Inventory</TabsTrigger>
@@ -317,7 +344,10 @@ export default function AddProductPage() {
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map((cat) => (
-                        <SelectItem key={cat.category_id} value={cat.category_id}>
+                        <SelectItem
+                          key={cat.category_id}
+                          value={cat.category_id}
+                        >
                           {cat.category_name}
                         </SelectItem>
                       ))}
@@ -338,7 +368,10 @@ export default function AddProductPage() {
                     </SelectTrigger>
                     <SelectContent>
                       {availableSubcategories.map((subcat) => (
-                        <SelectItem key={subcat.subcategory_id} value={subcat.subcategory_id}>
+                        <SelectItem
+                          key={subcat.subcategory_id}
+                          value={subcat.subcategory_id}
+                        >
                           {subcat.subcategory_name}
                         </SelectItem>
                       ))}
@@ -445,12 +478,12 @@ export default function AddProductPage() {
                         >
                           {image ? (
                             <div className="relative w-full h-full">
-                               <Image
-    src={URL.createObjectURL(image)}
-    alt={`Preview ${index + 1}`}
-    fill
-    className="object-cover rounded-lg"
-  />
+                              <Image
+                                src={URL.createObjectURL(image)}
+                                alt={`Preview ${index + 1}`}
+                                fill
+                                className="object-cover rounded-lg"
+                              />
                               <Button
                                 type="button"
                                 variant="destructive"
@@ -484,7 +517,8 @@ export default function AddProductPage() {
                     ))}
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Upload up to 4 images. First image will be the main product image.
+                    Upload up to 4 images. First image will be the main product
+                    image.
                   </p>
                 </div>
                 <div className="flex justify-end mt-6">
@@ -536,9 +570,12 @@ export default function AddProductPage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Active Status
+                    Published Product
                   </label>
-                  <Switch checked={isActive} onCheckedChange={setIsActive} />
+                  <Switch
+                    checked={published}
+                    onCheckedChange={setIsPublished}
+                  />
                 </div>
                 <div className="flex justify-end mt-6">
                   <Button

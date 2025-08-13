@@ -1,3 +1,4 @@
+// lib/auth.ts
 import axiosInstance from './axiosInstance';
 import useStore from './Zustand';
 import jwt from 'jsonwebtoken';
@@ -44,7 +45,7 @@ export const logoutUser = async () => {
     // Clear session storage and update store
     const { logout } = useStore.getState();
     logout();
-    sessionStorage.removeItem('id');
+    localStorage.removeItem('id'); // Keep this in localStorage as it's user data
    
     // Redirect to login page
     window.location.href = '/';

@@ -568,10 +568,10 @@ export default function ProductView() {
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-1">
+                  {/* <div className="flex items-center gap-1">
                     <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                     <span className="font-semibold text-lg">{product.rating?.toFixed(1)}</span>
-                  </div>
+                  </div> */}
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">

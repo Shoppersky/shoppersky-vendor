@@ -436,8 +436,8 @@ export default function ProductsPage() {
           case "50-100":
             matchesPrice = price >= 50 && price <= 100;
             break;
-          case "100-150":
-            matchesPrice = price >= 100 && price <= 150;
+          case "101-150":
+            matchesPrice = price >= 101 && price <= 150;
             break;
           case "150+":
             matchesPrice = price >= 150;
@@ -508,8 +508,12 @@ export default function ProductsPage() {
           `/products/slug/delete/${productToDelete.slug}`
         );
         setProducts((prev) =>
-          prev.filter((product) => product.slug !== productToDelete.slug)
-        );
+        prev.map((product) =>
+          product.slug === productToDelete.slug
+            ? { ...product, status: "Inactive" }
+            : product
+        )
+      );
         toast.success(
           `Product "${productToDelete.name}" has been deleted successfully`
         );
@@ -990,7 +994,7 @@ export default function ProductsPage() {
                     <div className="flex items-center gap-2">
                       <DollarSign className="h-4 w-4" />
                       Price
-                      <ArrowUpDown className="h-3 w-3" />
+                     
                     </div>
                   </TableHead>
                   <TableHead className="font-semibold text-gray-700 dark:text-gray-300">
@@ -1225,13 +1229,7 @@ export default function ProductsPage() {
                     <Filter className="mr-2 h-4 w-4" />
                     Clear Filters
                   </Button>
-                  <Button
-                    onClick={() => router.push("/add-product")} // Replace with your desired route
-                    className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 transition-all hover:scale-105"
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Product
-                  </Button>
+                  
                 </div>
               </div>
             )}

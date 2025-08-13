@@ -1,18 +1,42 @@
+"use client";
 
-
-"use client"
-
-import type React from "react"
-import { useState, useMemo, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import type React from "react";
+import { useState, useMemo, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Plus,
   Pencil,
@@ -39,9 +63,9 @@ import {
   TrendingUp,
   Activity,
   RotateCcw,
-} from "lucide-react"
-import axiosInstance from "@/lib/axiosInstance"
-import useStore from '@/lib/Zustand';
+} from "lucide-react";
+import axiosInstance from "@/lib/axiosInstance";
+import useStore from "@/lib/Zustand";
 import { toast } from "sonner";
 
 // Enhanced StatCard Component with better responsive design
@@ -53,15 +77,16 @@ function StatCard({
   trend,
   trendValue,
 }: {
-  title: string
-  value: string
-  icon: React.ReactNode
-  color?: "slate" | "emerald" | "red" | "blue" | "amber" | "violet" | "cyan"
-  trend?: "up" | "down"
-  trendValue?: string
+  title: string;
+  value: string;
+  icon: React.ReactNode;
+  color?: "slate" | "emerald" | "red" | "blue" | "amber" | "violet" | "cyan";
+  trend?: "up" | "down";
+  trendValue?: string;
 }) {
   const colorClasses = {
-    slate: "from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-slate-200 dark:border-slate-700",
+    slate:
+      "from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 border-slate-200 dark:border-slate-700",
     emerald:
       "from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20 border-emerald-200 dark:border-emerald-700",
     red: "from-red-50 to-red-100 dark:from-red-900/20 dark:to-red-800/20 border-red-200 dark:border-red-700",
@@ -71,7 +96,7 @@ function StatCard({
     violet:
       "from-violet-50 to-violet-100 dark:from-violet-900/20 dark:to-violet-800/20 border-violet-200 dark:border-violet-700",
     cyan: "from-cyan-50 to-cyan-100 dark:from-cyan-900/20 dark:to-cyan-800/20 border-cyan-200 dark:border-cyan-700",
-  }
+  };
 
   const iconColors = {
     slate: "text-slate-600 dark:text-slate-400",
@@ -81,7 +106,7 @@ function StatCard({
     amber: "text-amber-600 dark:text-amber-400",
     violet: "text-violet-600 dark:text-violet-400",
     cyan: "text-cyan-600 dark:text-cyan-400",
-  }
+  };
 
   return (
     <Card
@@ -90,15 +115,24 @@ function StatCard({
       <CardContent className="p-3 sm:p-4 lg:p-6">
         <div className="flex items-center justify-between">
           <div className="space-y-1 min-w-0 flex-1">
-            <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">{title}</p>
+            <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">
+              {title}
+            </p>
             <div className="flex items-baseline gap-1 sm:gap-2">
-              <p className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold truncate">{value}</p>
+              <p className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold truncate">
+                {value}
+              </p>
               {trend && trendValue && (
                 <div
-                  className={`flex items-center text-xs font-medium ${trend === "up" ? "text-emerald-600" : "text-red-600"
-                    }`}
+                  className={`flex items-center text-xs font-medium ${
+                    trend === "up" ? "text-emerald-600" : "text-red-600"
+                  }`}
                 >
-                  <TrendingUp className={`w-3 h-3 mr-1 ${trend === "down" ? "rotate-180" : ""}`} />
+                  <TrendingUp
+                    className={`w-3 h-3 mr-1 ${
+                      trend === "down" ? "rotate-180" : ""
+                    }`}
+                  />
                   <span className="hidden sm:inline">{trendValue}</span>
                 </div>
               )}
@@ -107,14 +141,12 @@ function StatCard({
           <div
             className={`p-2 sm:p-3 rounded-xl ${iconColors[color]} group-hover:scale-110 transition-transform duration-300 flex-shrink-0`}
           >
-            <div className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6">
-              {icon}
-            </div>
+            <div className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6">{icon}</div>
           </div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 // Mobile User Card Component
@@ -123,9 +155,9 @@ function UserCard({
   onEdit,
   onDelete,
   onRestore,
-}: { 
-  user: any; 
-  onEdit: (user: any) => void; 
+}: {
+  user: any;
+  onEdit: (user: any) => void;
   onDelete: (id: string) => void;
   onRestore: (id: string) => void;
 }) {
@@ -145,23 +177,29 @@ function UserCard({
                 .toUpperCase()}
             </div>
             <div className="min-w-0 flex-1">
-              <h3 className="font-semibold text-xs sm:text-sm truncate">{user.username}</h3>
+              <h3 className="font-semibold text-xs sm:text-sm truncate">
+                {user.username}
+              </h3>
             </div>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-7 w-7 sm:h-8 sm:w-8 flex-shrink-0">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 sm:h-8 sm:w-8 flex-shrink-0"
+              >
                 <MoreHorizontal className="w-3 h-3 sm:w-4 sm:h-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {user.is_active ? (
                 <>
-                  <DropdownMenuItem onClick={() => onEdit(user)}>
-                    <Pencil className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
-                    <span className="text-xs sm:text-sm">Edit Employee</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setRestoreDialogOpen(true)} className="text-emerald-600">
+                  
+                  <DropdownMenuItem
+                    onClick={() => setRestoreDialogOpen(true)}
+                    className="text-emerald-600"
+                  >
                     <RotateCcw className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                     <span className="text-xs sm:text-sm">Restore Employee</span>
                   </DropdownMenuItem>
@@ -172,7 +210,10 @@ function UserCard({
                     <Pencil className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                     <span className="text-xs sm:text-sm">Edit Employee</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setDeleteDialogOpen(true)} className="text-red-600">
+                  <DropdownMenuItem
+                    onClick={() => setDeleteDialogOpen(true)}
+                    className="text-red-600"
+                  >
                     <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                     <span className="text-xs sm:text-sm">Delete Employee</span>
                   </DropdownMenuItem>
@@ -191,10 +232,15 @@ function UserCard({
 
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1 sm:gap-2 min-w-0 flex-1">
-            <Badge variant={user.is_active ? "secondary" : "default"} className="text-xs flex-shrink-0">
+            <Badge
+              variant={user.is_active ? "secondary" : "default"}
+              className="text-xs flex-shrink-0"
+            >
               {user.is_active ? "Inactive" : "Active"}
             </Badge>
-            <span className="text-xs font-medium truncate">{user.role_name}</span>
+            <span className="text-xs font-medium truncate">
+              {user.role_name}
+            </span>
           </div>
         </div>
 
@@ -204,7 +250,8 @@ function UserCard({
             <DialogHeader>
               <DialogTitle>Confirm Delete</DialogTitle>
               <DialogDescription>
-                Are you sure you want to delete {user.username}? This action will mark the user as inactive.
+                Are you sure you want to delete {user.username}? This action
+                will mark the user as inactive.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
@@ -233,7 +280,8 @@ function UserCard({
             <DialogHeader>
               <DialogTitle>Confirm Restore</DialogTitle>
               <DialogDescription>
-                Are you sure you want to restore {user.username}? This action will mark the user as active.
+                Are you sure you want to restore {user.username}? This action
+                will mark the user as active.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
@@ -257,42 +305,44 @@ function UserCard({
         </Dialog>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 interface UserInterface {
-  user_id: string
-  username: string
-  email: string
-  role_id: string
-  role_name: string
-  vendor_ref_id: string
-  is_active: boolean
-  joinDate?: string
-  lastActive?: string
+  user_id: string;
+  username: string;
+  email: string;
+  role_id: string;
+  role_name: string;
+  vendor_ref_id: string;
+  is_active: boolean;
+  joinDate?: string;
+  lastActive?: string;
 }
 
 export default function UsersPage() {
   const { userId } = useStore();
-  const [users, setUsers] = useState<UserInterface[]>([])
-  const [open, setOpen] = useState(false)
-  const [editingUser, setEditingUser] = useState<any | null>(null)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [roleFilter, setRoleFilter] = useState("all")
-  const [viewMode, setViewMode] = useState<"table" | "grid">("table")
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState<string | null>(null)
-  const [restoreDialogOpen, setRestoreDialogOpen] = useState<string | null>(null)
+  const [users, setUsers] = useState<UserInterface[]>([]);
+  const [open, setOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<any | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [viewMode, setViewMode] = useState<"table" | "grid">("table");
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<string | null>(null);
+  const [restoreDialogOpen, setRestoreDialogOpen] = useState<string | null>(
+    null
+  );
 
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     role_id: "",
     is_active: false,
-  })
+  });
 
   interface RoleInterface {
     id: string;
@@ -326,67 +376,76 @@ export default function UsersPage() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        setLoading(true)
-        const response = await axiosInstance.get('/vendor/employee/?page=1&per_page=10')
+        setLoading(true);
+        const response = await axiosInstance.get(
+          "/vendor/employee/?page=1&per_page=10"
+        );
         const employees = response.data.data.employees.map((emp: any) => ({
           ...emp,
           is_active: emp.is_active || false, // Backend uses True for inactive, False for active
           joinDate: emp.joinDate || new Date().toISOString().split("T")[0],
           lastActive: emp.lastActive || new Date().toISOString().split("T")[0],
-        }))
-        setUsers(employees)
-        setError(null)
+        }));
+        setUsers(employees);
+        setError(null);
       } catch (err) {
-        setError('Failed to fetch users')
-        console.error(err)
+        setError("Failed to fetch users");
+        console.error(err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchUsers()
-  }, [])
+    };
+    fetchUsers();
+  }, []);
 
   // Filtered users based on search and filters
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
       const matchesSearch =
         user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())
-      const matchesStatus = 
-        statusFilter === "all" ? true :
-        statusFilter === "active" ? !user.is_active :
-        user.is_active
-      const matchesRole = roleFilter === "all" || user.role_name.toLowerCase() === roleFilter
+        user.email.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus =
+        statusFilter === "all"
+          ? true
+          : statusFilter === "active"
+          ? !user.is_active
+          : user.is_active;
+      const matchesRole =
+        roleFilter === "all" || user.role_name.toLowerCase() === roleFilter;
 
-      return matchesSearch && matchesStatus && matchesRole
-    })
-  }, [users, searchTerm, statusFilter, roleFilter])
+      return matchesSearch && matchesStatus && matchesRole;
+    });
+  }, [users, searchTerm, statusFilter, roleFilter]);
 
   // Enhanced statistics with trends
   const stats = useMemo(() => {
-    const totalUsers = users.length
-    const activeUsers = users.filter((u) => !u.is_active).length
-    const inactiveUsers = users.filter((u) => u.is_active).length
-    const adminUsers = users.filter((u) => u.role_name === "ADMIN").length
-    const managerUsers = users.filter((u) => u.role_name === "Manager").length
-    const employeeUsers = users.filter((u) => u.role_name === "Employee").length
-    const vendorUsers = users.filter((u) => u.role_name === "Vendor").length
+    const totalUsers = users.length;
+    const activeUsers = users.filter((u) => !u.is_active).length;
+    const inactiveUsers = users.filter((u) => u.is_active).length;
+    const adminUsers = users.filter((u) => u.role_name === "ADMIN").length;
+
+    const employeeUsers = users.filter(
+      (u) => u.role_name === "Employee"
+    ).length;
+    const vendorUsers = users.filter((u) => u.role_name === "Vendor").length;
 
     return {
       total: totalUsers,
       active: activeUsers,
       inactive: inactiveUsers,
       admin: adminUsers,
-      manager: managerUsers,
+
       employee: employeeUsers,
       vendor: vendorUsers,
-    }
-  }, [users])
+    };
+  }, [users]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleAddUser = async () => {
     try {
@@ -395,15 +454,21 @@ export default function UsersPage() {
         email: formData.email,
         role_id: formData.role_id,
         is_active: formData.is_active,
-      }
+      };
 
       let response;
       if (editingUser) {
         // Update existing user
-        response = await axiosInstance.put(`/vendor/employee/${editingUser.user_id}`, payload)
+        response = await axiosInstance.put(
+          `/vendor/employee/${editingUser.user_id}`,
+          payload
+        );
       } else {
         // Create new user
-        response = await axiosInstance.post(`/vendor/employee/create?vendor_id=${userId}`, payload)
+        response = await axiosInstance.post(
+          `/vendor/employee/create?vendor_id=${userId}`,
+          payload
+        );
       }
 
       const newUser: UserInterface = {
@@ -411,98 +476,108 @@ export default function UsersPage() {
         username: response.data.data.username,
         email: response.data.data.email,
         role_id: formData.role_id,
-        role_name: roles.find(r => r.id === formData.role_id)?.name || formData.role_id,
+        role_name:
+          roles.find((r) => r.id === formData.role_id)?.name ||
+          formData.role_id,
         vendor_ref_id: response.data.data.vendor_ref_id,
         is_active: response.data.data.is_active,
         joinDate: new Date().toISOString().split("T")[0],
         lastActive: new Date().toISOString().split("T")[0],
-      }
+      };
 
       if (editingUser) {
-        setUsers((prev) => prev.map((user) => (user.user_id === editingUser.user_id ? { ...user, ...newUser } : user)))
+        setUsers((prev) =>
+          prev.map((user) =>
+            user.user_id === editingUser.user_id
+              ? { ...user, ...newUser }
+              : user
+          )
+        );
       } else {
-        setUsers((prev) => [...prev, newUser])
+        setUsers((prev) => [...prev, newUser]);
       }
-      
-      setFormData({ username: "", email: "", role_id: "", is_active: false })
-      setEditingUser(null)
-      setOpen(false)
+
+      setFormData({ username: "", email: "", role_id: "", is_active: false });
+      setEditingUser(null);
+      setOpen(false);
     } catch (err: any) {
       const status = err.response?.status;
 
       if (status === 409) {
         toast.error(err.response?.data?.message || "Username already exists");
       } else {
-        setError(err.response?.data?.message || 'Failed to create/update user');
+        setError(err.response?.data?.message || "Failed to create/update user");
       }
 
       console.error(err);
     }
-  }
+  };
 
   const handleEditUser = (user: any) => {
-    setEditingUser(user)
+    setEditingUser(user);
     setFormData({
       username: user.username,
       email: user.email,
       role_id: user.role_id,
       is_active: user.is_active,
-    })
-    setOpen(true)
-  }
+    });
+    setOpen(true);
+  };
 
   const handleDeleteUser = async (userId: string) => {
     try {
-      await axiosInstance.patch(`/vendor/employee/soft-delete/${userId}`)
-      setUsers((prev) => prev.map((user) => 
-        user.user_id === userId ? { ...user, is_active: true } : user
-      ))
-      toast.success("User deleted successfully")
+      await axiosInstance.patch(`/vendor/employee/soft-delete/${userId}`);
+      setUsers((prev) =>
+        prev.map((user) =>
+          user.user_id === userId ? { ...user, is_active: true } : user
+        )
+      );
+      toast.success("User deleted successfully");
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to delete user')
-      console.error(err)
-      toast.error(err.response?.data?.message || 'Failed to delete user')
+      setError(err.response?.data?.message || "Failed to delete user");
+      console.error(err);
+      toast.error(err.response?.data?.message || "Failed to delete user");
     }
-  }
+  };
 
   const handleRestoreUser = async (userId: string) => {
     try {
-      await axiosInstance.patch(`/vendor/employee/restore/${userId}`)
-      setUsers((prev) => prev.map((user) => 
-        user.user_id === userId ? { ...user, is_active: false } : user
-      ))
-      toast.success("User restored successfully")
+      await axiosInstance.patch(`/vendor/employee/restore/${userId}`);
+      setUsers((prev) =>
+        prev.map((user) =>
+          user.user_id === userId ? { ...user, is_active: false } : user
+        )
+      );
+      toast.success("User restored successfully");
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to restore user')
-      console.error(err)
-      toast.error(err.response?.data?.message || 'Failed to restore user')
+      setError(err.response?.data?.message || "Failed to restore user");
+      console.error(err);
+      toast.error(err.response?.data?.message || "Failed to restore user");
     }
-  }
+  };
 
   const handleExportUsers = () => {
     const csvContent = [
       ["Username", "Email", "Role", "Status", "Join Date"],
       ...filteredUsers.map((user) => [
-       
         user.username,
         user.email,
         user.role_name,
         user.is_active ? "Inactive" : "Active",
         user.joinDate,
-       
       ]),
     ]
       .map((row) => row.join(","))
-      .join("\n")
+      .join("\n");
 
-    const blob = new Blob([csvContent], { type: "text/csv" })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = "users.csv"
-    a.click()
-    window.URL.revokeObjectURL(url)
-  }
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "users.csv";
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
 
   if (loading) {
     return (
@@ -510,11 +585,13 @@ export default function UsersPage() {
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-violet-600 mx-auto mb-4"></div>
-            <p className="text-sm sm:text-base text-muted-foreground">Loading employees...</p>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Loading employees...
+            </p>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -525,12 +602,16 @@ export default function UsersPage() {
             <div className="w-8 h-8 sm:w-12 sm:h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <X className="w-4 h-4 sm:w-6 sm:h-6 text-red-600" />
             </div>
-            <h3 className="text-base sm:text-lg font-semibold text-red-600 mb-2">Error Loading Data</h3>
-            <p className="text-sm sm:text-base text-muted-foreground">{error}</p>
+            <h3 className="text-base sm:text-lg font-semibold text-red-600 mb-2">
+              Error Loading Data
+            </h3>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              {error}
+            </p>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -561,8 +642,13 @@ export default function UsersPage() {
               <Button
                 className="bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700 text-white transition-all duration-300 shadow-lg hover:shadow-xl text-xs sm:text-sm px-2 sm:px-4 py-1 sm:py-2"
                 onClick={() => {
-                  setEditingUser(null)
-                  setFormData({ username: "", email: "", role_id: "", is_active: false })
+                  setEditingUser(null);
+                  setFormData({
+                    username: "",
+                    email: "",
+                    role_id: "",
+                    is_active: false,
+                  });
                 }}
               >
                 <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
@@ -639,7 +725,9 @@ export default function UsersPage() {
                         </label>
                         <Select
                           value={formData.role_id}
-                          onValueChange={(value) => setFormData((prev) => ({ ...prev, role_id: value }))}
+                          onValueChange={(value) =>
+                            setFormData((prev) => ({ ...prev, role_id: value }))
+                          }
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select role" />
@@ -657,14 +745,21 @@ export default function UsersPage() {
                               roles.map((role) => (
                                 <SelectItem key={role.id} value={role.id}>
                                   <div className="flex items-center gap-2">
-                                    {role.name.toUpperCase() === "ADMIN" && <Crown className="w-4 h-4 text-amber-600" />}
-                                    {role.name.toUpperCase() === "MANAGER" && <Shield className="w-4 h-4 text-blue-600" />}
-                                    {role.name.toUpperCase() === "EMPLOYEE" && <User className="w-4 h-4 text-emerald-600" />}
-                                    {role.name.toUpperCase() === "VENDOR" && <Store className="w-4 h-4 text-violet-600" />}
+                                    {role.name.toUpperCase() === "ADMIN" && (
+                                      <Crown className="w-4 h-4 text-amber-600" />
+                                    )}
+
+                                    {role.name.toUpperCase() === "EMPLOYEE" && (
+                                      <User className="w-4 h-4 text-emerald-600" />
+                                    )}
+                                    {role.name.toUpperCase() === "VENDOR" && (
+                                      <Store className="w-4 h-4 text-violet-600" />
+                                    )}
                                     {role.name.toUpperCase() !== "ADMIN" &&
-                                      role.name.toUpperCase() !== "MANAGER" &&
                                       role.name.toUpperCase() !== "EMPLOYEE" &&
-                                      role.name.toUpperCase() !== "VENDOR" && <User className="w-4 h-4 text-gray-600" />}
+                                      role.name.toUpperCase() !== "VENDOR" && (
+                                        <User className="w-4 h-4 text-gray-600" />
+                                      )}
                                     {role.name}
                                   </div>
                                 </SelectItem>
@@ -680,9 +775,12 @@ export default function UsersPage() {
                         <div className="flex items-start gap-3">
                           <Info className="w-5 h-5 text-blue-600 mt-0.5" />
                           <div>
-                            <p className="text-sm font-medium text-blue-800 dark:text-blue-300">Welcome Email</p>
+                            <p className="text-sm font-medium text-blue-800 dark:text-blue-300">
+                              Welcome Email
+                            </p>
                             <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                              A welcome email with login credentials will be sent to the user&apos;s email address.
+                              A welcome email with login credentials will be
+                              sent to the user&apos;s email address.
                             </p>
                           </div>
                         </div>
@@ -696,9 +794,14 @@ export default function UsersPage() {
                 <Button
                   variant="outline"
                   onClick={() => {
-                    setOpen(false)
-                    setEditingUser(null)
-                    setFormData({ username: "", email: "", role_id: "", is_active: false })
+                    setOpen(false);
+                    setEditingUser(null);
+                    setFormData({
+                      username: "",
+                      email: "",
+                      role_id: "",
+                      is_active: false,
+                    });
                   }}
                   className="flex-1 sm:flex-none"
                 >
@@ -707,7 +810,9 @@ export default function UsersPage() {
                 </Button>
                 <Button
                   onClick={handleAddUser}
-                  disabled={!formData.username || !formData.email || !formData.role_id}
+                  disabled={
+                    !formData.username || !formData.email || !formData.role_id
+                  }
                   className="flex-1 sm:flex-none bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700"
                 >
                   {editingUser ? (
@@ -752,7 +857,6 @@ export default function UsersPage() {
           icon={<UserX className="w-6 h-6" />}
           color="red"
         />
-        
       </div>
 
       {/* Enhanced Filters and Search */}
@@ -790,7 +894,7 @@ export default function UsersPage() {
                 <SelectContent>
                   <SelectItem value="all">All Roles</SelectItem>
                   <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="manager">Manager</SelectItem>
+
                   <SelectItem value="employee">Employee</SelectItem>
                   <SelectItem value="vendor">Vendor</SelectItem>
                 </SelectContent>
@@ -869,7 +973,7 @@ export default function UsersPage() {
                 <SelectContent>
                   <SelectItem value="all">All Roles</SelectItem>
                   <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="manager">Manager</SelectItem>
+
                   <SelectItem value="employee">Employee</SelectItem>
                   <SelectItem value="vendor">Vendor</SelectItem>
                 </SelectContent>
@@ -885,9 +989,14 @@ export default function UsersPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Users className="w-4 h-4 sm:w-5 sm:h-5 text-violet-600" />
-              <h3 className="text-sm sm:text-base lg:text-lg font-semibold">Users ({filteredUsers.length})</h3>
+              <h3 className="text-sm sm:text-base lg:text-lg font-semibold">
+                Users ({filteredUsers.length})
+              </h3>
             </div>
-            <Badge variant="secondary" className="hidden sm:inline-flex text-xs">
+            <Badge
+              variant="secondary"
+              className="hidden sm:inline-flex text-xs"
+            >
               {filteredUsers.length} of {users.length}
             </Badge>
           </div>
@@ -898,10 +1007,10 @@ export default function UsersPage() {
             <div className="p-3 sm:p-4 lg:p-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
                 {filteredUsers.map((user) => (
-                  <UserCard 
-                    key={user.user_id} 
-                    user={user} 
-                    onEdit={handleEditUser} 
+                  <UserCard
+                    key={user.user_id}
+                    user={user}
+                    onEdit={handleEditUser}
                     onDelete={handleDeleteUser}
                     onRestore={handleRestoreUser}
                   />
@@ -939,7 +1048,9 @@ export default function UsersPage() {
                                 .toUpperCase()}
                             </div>
                             <div>
-                              <div className="font-semibold">{user.username}</div>
+                              <div className="font-semibold">
+                                {user.username}
+                              </div>
                             </div>
                           </div>
                         </TableCell>
@@ -947,17 +1058,27 @@ export default function UsersPage() {
                           <div className="space-y-1">
                             <div className="flex items-center gap-2 text-sm">
                               <Mail className="w-3 h-3 text-muted-foreground" />
-                              <span className="truncate max-w-[200px]">{user.email}</span>
+                              <span className="truncate max-w-[200px]">
+                                {user.email}
+                              </span>
                             </div>
                           </div>
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            {user.role_name === "ADMIN" && <Crown className="w-4 h-4 text-amber-600" />}
-                            {user.role_name === "Manager" && <Shield className="w-4 h-4 text-blue-600" />}
-                            {user.role_name === "Employee" && <User className="w-4 h-4 text-emerald-600" />}
-                            {user.role_name === "Vendor" && <Store className="w-4 h-4 text-violet-600" />}
-                            <span className="font-medium">{user.role_name}</span>
+                            {user.role_name === "ADMIN" && (
+                              <Crown className="w-4 h-4 text-amber-600" />
+                            )}
+
+                            {user.role_name === "Employee" && (
+                              <User className="w-4 h-4 text-emerald-600" />
+                            )}
+                            {user.role_name === "Vendor" && (
+                              <Store className="w-4 h-4 text-violet-600" />
+                            )}
+                            <span className="font-medium">
+                              {user.role_name}
+                            </span>
                           </div>
                         </TableCell>
                         <TableCell>
@@ -976,11 +1097,21 @@ export default function UsersPage() {
                           <div className="space-y-1">
                             <div className="flex items-center gap-2 text-sm">
                               <Calendar className="w-3 h-3 text-muted-foreground" />
-                              <span>Joined {new Date(user.joinDate!).toLocaleDateString('en-GB')}</span>
+                              <span>
+                                Joined{" "}
+                                {new Date(user.joinDate!).toLocaleDateString(
+                                  "en-GB"
+                                )}
+                              </span>
                             </div>
                             <div className="flex items-center gap-2 text-xs text-muted-foreground">
                               <Activity className="w-3 h-3" />
-                              <span>Active {new Date(user.lastActive!).toLocaleDateString('en-GB')}</span>
+                              <span>
+                                Active{" "}
+                                {new Date(user.lastActive!).toLocaleDateString(
+                                  "en-GB"
+                                )}
+                              </span>
                             </div>
                           </div>
                         </TableCell>
@@ -990,7 +1121,9 @@ export default function UsersPage() {
                               <Button
                                 size="icon"
                                 variant="ghost"
-                                onClick={() => setRestoreDialogOpen(user.user_id)}
+                                onClick={() =>
+                                  setRestoreDialogOpen(user.user_id)
+                                }
                                 className="h-8 w-8 hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-900/30"
                               >
                                 <RotateCcw className="w-4 h-4" />
@@ -1008,7 +1141,9 @@ export default function UsersPage() {
                                 <Button
                                   size="icon"
                                   variant="ghost"
-                                  onClick={() => setDeleteDialogOpen(user.user_id)}
+                                  onClick={() =>
+                                    setDeleteDialogOpen(user.user_id)
+                                  }
                                   className="h-8 w-8 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/30"
                                 >
                                   <Trash2 className="w-4 h-4" />
@@ -1026,10 +1161,10 @@ export default function UsersPage() {
               {/* Mobile Cards */}
               <div className="lg:hidden p-3 sm:p-4 space-y-3 sm:space-y-4">
                 {filteredUsers.map((user) => (
-                  <UserCard 
-                    key={user.user_id} 
-                    user={user} 
-                    onEdit={handleEditUser} 
+                  <UserCard
+                    key={user.user_id}
+                    user={user}
+                    onEdit={handleEditUser}
                     onDelete={handleDeleteUser}
                     onRestore={handleRestoreUser}
                   />
@@ -1041,27 +1176,33 @@ export default function UsersPage() {
           {filteredUsers.length === 0 && (
             <div className="text-center py-8 sm:py-12">
               <Users className="w-8 h-8 sm:w-12 sm:h-12 text-muted-foreground mx-auto mb-3 sm:mb-4" />
-              <h3 className="text-base sm:text-lg font-semibold text-muted-foreground mb-1 sm:mb-2">No users found</h3>
-              <p className="text-sm sm:text-base text-muted-foreground">Try adjusting your search or filter criteria</p>
+              <h3 className="text-base sm:text-lg font-semibold text-muted-foreground mb-1 sm:mb-2">
+                No users found
+              </h3>
+              <p className="text-sm sm:text-base text-muted-foreground">
+                Try adjusting your search or filter criteria
+              </p>
             </div>
           )}
         </CardContent>
       </Card>
 
       {/* Delete Confirmation Dialog for Table */}
-      <Dialog open={!!deleteDialogOpen} onOpenChange={() => setDeleteDialogOpen(null)}>
+      <Dialog
+        open={!!deleteDialogOpen}
+        onOpenChange={() => setDeleteDialogOpen(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Confirm Delete</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete {users.find(u => u.user_id === deleteDialogOpen)?.username}? This action will mark the user as inactive.
+              Are you sure you want to delete{" "}
+              {users.find((u) => u.user_id === deleteDialogOpen)?.username}?
+              This action will mark the user as inactive.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setDeleteDialogOpen(null)}
-            >
+            <Button variant="outline" onClick={() => setDeleteDialogOpen(null)}>
               Cancel
             </Button>
             <Button
@@ -1080,12 +1221,17 @@ export default function UsersPage() {
       </Dialog>
 
       {/* Restore Confirmation Dialog for Table */}
-      <Dialog open={!!restoreDialogOpen} onOpenChange={() => setRestoreDialogOpen(null)}>
+      <Dialog
+        open={!!restoreDialogOpen}
+        onOpenChange={() => setRestoreDialogOpen(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Confirm Restore</DialogTitle>
             <DialogDescription>
-              Are you sure you want to restore {users.find(u => u.user_id === restoreDialogOpen)?.username}? This action will mark the user as active.
+              Are you sure you want to restore{" "}
+              {users.find((u) => u.user_id === restoreDialogOpen)?.username}?
+              This action will mark the user as active.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -1110,5 +1256,5 @@ export default function UsersPage() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }
