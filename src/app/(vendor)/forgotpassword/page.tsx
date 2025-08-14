@@ -93,9 +93,12 @@ export default function ForgotPasswordPage() {
     setIsLoading(true);
     setError("");
 
+    const formData = new FormData();
+    formData.append("email", email);
+
     try {
       // Resend email by calling the same endpoint
-      const response = await axiosInstance.post("/vendor/forgot-password", { email });
+      const response = await axiosInstance.post("/vendor/forgot-password", formData);
 
       if (response.data.statusCode === 200) {
         setError(""); // Clear any previous errors
