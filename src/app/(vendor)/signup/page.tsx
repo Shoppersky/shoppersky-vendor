@@ -1,274 +1,3 @@
-// "use client";
-
-// import Link from "next/link";
-// import { FormEvent, useState } from "react";
-// import { Eye, EyeOff, Rocket } from "lucide-react";
-
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
-// import { Card, CardContent } from "@/components/ui/card";
-// import VendorSignupComponent from "@/components/vendor/auth/signup";
-// import { useRouter } from "next/navigation";
-// import axiosInstance from "@/lib/axiosInstance";
-// import { toast } from "sonner";
-
-// export default function VendorSignup() {
-//   const [showPassword, setShowPassword] = useState(false);
-//   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-//   const [emailValid, setEmailValid] = useState<boolean>(false);
-//   const [passwordValidations, setPasswordValidations] = useState({
-//     length: false,
-//     uppercase: false,
-//     lowercase: false,
-//     number: false,
-//     special: false,
-//   });
-//   const router = useRouter();
-
-//   const [confirmPassword, setConfirmPassword] = useState<string>("");
-
-//   // Change these initializations:
-//   const [email, setEmail] = useState<string>("");
-//   const [password, setPassword] = useState<string>("");
-//   const [loading, setLoading] = useState<boolean>(false);
-
-//   const validateEmail = (email: string) => {
-//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//     setEmailValid(emailRegex.test(email));
-//   };
-
-//   // Validate password
-//   const validatePassword = (password: string) => {
-//     const validations = {
-//       length: password.length >= 8 && password.length <= 12,
-//       uppercase: /[A-Z]/.test(password),
-//       lowercase: /[a-z]/.test(password),
-//       number: /[0-9]/.test(password),
-//       special: /[\W_]/.test(password),
-//     };
-
-//     setPasswordValidations(validations);
-//   };
-
-//   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-//     event.preventDefault();
-
-//     if (!emailValid) {
-//       toast.error("Please enter a valid email address.");
-//       return;
-//     }
-
-//     const allPasswordValidationsCompleted =
-//       Object.values(passwordValidations).every(Boolean);
-//     if (!allPasswordValidationsCompleted) {
-//       toast.error("Please ensure your password meets all requirements.");
-//       return;
-//     }
-
-//     if (password !== confirmPassword) {
-//       toast.error("Passwords do not match.");
-//       return;
-//     }
-
-//     setLoading(true);
-
-//     try {
-//       const response = await axiosInstance.post("/vendor/register", {
-//         email,
-//         password,
-//       });
-
-//       if (response.status === 201) {
-//         toast.success("Registration successful! Please check your email.");
-//         setTimeout(() => {
-//           router.push("/");
-//         }, 2000);
-//       }
-//     } catch (error: any) {
-//       const errorMessage =
-//         error.response?.data?.detail.message ||
-//         error.response?.data?.message ||
-//         "Something went wrong. Please try again.";
-
-//          console.log(errorMessage)
-
-       
-
-//       toast.error(errorMessage);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen w-full lg:grid lg:grid-cols-2 from-cyan-600 to-blue-600 via-white to-blue-50">
-//       <VendorSignupComponent />
-//       {/* Signup Form Side */}
-//       <div className="flex items-center justify-center p-6 lg:p-8 relative">
-//         {/* Floating elements for visual interest */}
-//         <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full opacity-10 animate-pulse"></div>
-//         <div className="absolute bottom-20 right-10 w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full opacity-10 animate-pulse delay-1000"></div>
-//         <div className="absolute top-1/2 left-20 w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-400 rounded-full opacity-10 animate-pulse delay-500"></div>
-
-//         <div className="mx-auto w-full max-w-md space-y-8 relative z-10">
-//           <div className="text-center space-y-4">
-//             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-2xl mb-4 shadow-lg">
-//               <Rocket className="w-8 h-8 text-white" />
-//             </div>
-//             <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-//               Start Your Journey!
-//             </h1>
-//             <p className="text-lg text-gray-600">
-//               Join thousands of successful vendors and turn your passion into a
-//               thriving business.
-//             </p>
-//           </div>
-//           <form onSubmit={handleSubmit}>
-//             <Card className="border-0 shadow-2xl bg-white/80 backdrop-blur-sm">
-//               <CardContent className="p-8 space-y-6">
-//                 <div className="text-center mb-6">
-//                   <h2 className="text-2xl font-semibold text-gray-800">
-//                     Create Your Account
-//                   </h2>
-//                   <p className="text-gray-500 mt-1">
-//                     Let's get your store set up in minutes
-//                   </p>
-//                 </div>
-
-//                 <div className="space-y-5">
-//                   <div className="space-y-2">
-//                     <Label
-//                       htmlFor="email"
-//                       className="text-sm font-medium text-gray-700"
-//                     >
-//                       Email Address
-//                     </Label>
-//                     <Input
-//                       id="email"
-//                       type="email"
-//                       value={email}
-//                       onChange={(e) => {
-//                         const val = e.target.value;
-//                         setEmail(val);
-//                         validateEmail(val);
-//                       }}
-//                       placeholder="your.business@example.com"
-//                       className="h-12 border-2 border-gray-200 focus:border-cyan-500 transition-colors duration-200"
-//                       required
-//                     />
-//                   </div>
-
-//                   <div className="space-y-2">
-//                     <Label
-//                       htmlFor="password"
-//                       className="text-sm font-medium text-gray-700"
-//                     >
-//                       Password
-//                     </Label>
-//                     <div className="relative">
-//                       <Input
-//                         id="password"
-//                         type={showPassword ? "text" : "password"}
-//                         value={password}
-//                         onChange={(e) => {
-//                           const val = e.target.value;
-//                           setPassword(val);
-//                           validatePassword(val);
-//                         }}
-//                         placeholder="Create a strong password"
-//                         className="h-12 border-2 border-gray-200 focus:border-cyan-500 transition-colors duration-200 pr-12"
-//                         required
-//                       />
-//                       <button
-//                         type="button"
-//                         onClick={() => setShowPassword(!showPassword)}
-//                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-//                       >
-//                         {showPassword ? (
-//                           <EyeOff className="w-5 h-5" />
-//                         ) : (
-//                           <Eye className="w-5 h-5" />
-//                         )}
-//                       </button>
-//                     </div>
-//                   </div>
-
-//                   <div className="space-y-2">
-//                     <Label
-//                       htmlFor="confirmPassword"
-//                       className="text-sm font-medium text-gray-700"
-//                     >
-//                       Confirm Password
-//                     </Label>
-//                     <div className="relative">
-//                       <Input
-//                         id="confirmPassword"
-//                         type={showConfirmPassword ? "text" : "password"}
-//                         value={confirmPassword}
-//                         onChange={(e) => setConfirmPassword(e.target.value)}
-//                         placeholder="Confirm your password"
-//                         className="h-12 border-2 border-gray-200 focus:border-cyan-500 transition-colors duration-200 pr-12"
-//                         required
-//                       />
-//                       <button
-//                         type="button"
-//                         onClick={() =>
-//                           setShowConfirmPassword(!showConfirmPassword)
-//                         }
-//                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-//                       >
-//                         {showConfirmPassword ? (
-//                           <EyeOff className="w-5 h-5" />
-//                         ) : (
-//                           <Eye className="w-5 h-5" />
-//                         )}
-//                       </button>
-//                     </div>
-//                   </div>
-
-//                   <Button
-//                     type="submit"
-//                     disabled={loading}
-//                     className="w-full h-12 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
-//                   >
-//                     {loading
-//                       ? "Creating Account..."
-//                       : "Create My Vendor Account"}
-//                   </Button>
-//                 </div>
-
-//                 <div className="text-center pt-4">
-//                   <p className="text-gray-600">
-//                     Already have an account?{" "}
-//                     <Link
-//                       href="/"
-//                       className="text-cyan-600 hover:text-cyan-800 font-semibold transition-colors"
-//                     >
-//                       Sign In Here
-//                     </Link>
-//                   </p>
-//                 </div>
-//               </CardContent>
-//             </Card>
-//           </form>
-
-//           {/* <div className="text-center">
-//             <Link
-//               href="/signup"
-//               className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
-//             >
-//               Looking to shop? Customer signup →
-//             </Link>
-//           </div> */}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
 "use client";
 
 import Link from "next/link";
@@ -323,7 +52,10 @@ export default function VendorSignup() {
   };
 
   // New function to validate password match
-  const validatePasswordsMatch = (password: string, confirmPassword: string) => {
+  const validatePasswordsMatch = (
+    password: string,
+    confirmPassword: string
+  ) => {
     setPasswordsMatch(password === confirmPassword || confirmPassword === "");
   };
 
@@ -335,7 +67,8 @@ export default function VendorSignup() {
       return;
     }
 
-    const allPasswordValidationsCompleted = Object.values(passwordValidations).every(Boolean);
+    const allPasswordValidationsCompleted =
+      Object.values(passwordValidations).every(Boolean);
     if (!allPasswordValidationsCompleted) {
       toast.error("Please ensure your password meets all requirements.");
       return;
@@ -361,11 +94,17 @@ export default function VendorSignup() {
         }, 2000);
       }
     } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.detail.message ||
-        error.response?.data?.message ||
-        "Something went wrong. Please try again.";
-      toast.error(errorMessage);
+      if (error.response?.status === 409) {
+        toast.error(
+          "A vendor with this email already exists. Please log in instead."
+        );
+      } else {
+        const errorMessage =
+          error.response?.data?.detail?.message ||
+          error.response?.data?.message ||
+          "Something went wrong. Please try again.";
+        toast.error(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
@@ -388,7 +127,8 @@ export default function VendorSignup() {
               Start Your Journey!
             </h1>
             <p className="text-lg text-gray-600">
-              Join thousands of successful vendors and turn your passion into a thriving business.
+              Join thousands of successful vendors and turn your passion into a
+              thriving business.
             </p>
           </div>
           <form onSubmit={handleSubmit}>
@@ -588,7 +328,9 @@ export default function VendorSignup() {
                       />
                       <button
                         type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                       >
                         {showConfirmPassword ? (
@@ -611,7 +353,9 @@ export default function VendorSignup() {
                     disabled={loading}
                     className="w-full h-12 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]"
                   >
-                    {loading ? "Creating Account..." : "Create My Vendor Account"}
+                    {loading
+                      ? "Creating Account..."
+                      : "Create My Vendor Account"}
                   </Button>
                 </div>
 
