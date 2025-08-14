@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useRouter } from "next/navigation";
+
 import {
   Mail,
   ArrowLeft,
@@ -19,113 +19,194 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import axiosInstance from "@/lib/axiosInstance";
-
+import { toast } from "sonner";
 
 export default function ForgotPasswordPage() {
-  const router = useRouter();
+  
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState("");
 
- const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  //  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //     e.preventDefault();
+  //     setIsLoading(true);
+  //     setError("");
+
+  //     // Validate email format client-side
+  //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //     if (!emailRegex.test(email)) {
+  //       setError("Please enter a valid email address.");
+  //       setIsLoading(false);
+  //       return;
+  //     }
+
+  //     // Create form data for API request
+  //     const formData = new FormData();
+  //     formData.append("email", email);
+
+  //     try {
+  //       // Make API call to forgot-password endpoint with form data
+  //       const response = await axiosInstance.post("/vendor/forgot-password", formData, {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       });
+
+  //       // Check if the response indicates success
+  //       if (response.data.statusCode === 200) {
+  //         setIsSuccess(true);
+  //       } else {
+  //         setError(response.data.message || "Something went wrong. Please try again.");
+  //       }
+  //     } catch (err: any) {
+  //       setIsLoading(false);
+  //       if (err.response) {
+  //         const { status, data } = err.response;
+  //         if (status === 404) {
+  //           setError("No account found with this email address.");
+  //         } else if (status === 403 && data.message?.includes("inactive")) {
+  //           setError("This account is inactive. Please contact support.");
+  //         } else if (status === 403 && data.message?.includes("verified")) {
+  //           setError("This account is not verified. Please verify your account.");
+  //         } else if (status === 422) {
+  //           // Handle validation errors (e.g., missing or invalid email)
+  //           const errors = data.detail || [];
+  //           const emailError = errors.find((e: any) => e.loc.includes("email"));
+  //           if (emailError) {
+  //             setError(emailError.msg || "Please enter a valid email address.");
+  //           } else {
+  //             setError("Invalid request. Please try again.");
+  //           }
+  //         } else {
+  //           setError(data.message || "An error occurred. Please try again.");
+  //         }
+  //       } else {
+  //         setError("Network error. Please check your connection and try again.");
+  //       }
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   const handleResendEmail = async () => {
+  //     setIsLoading(true);
+  //     setError("");
+
+  //     const formData = new FormData();
+  //     formData.append("email", email);
+
+  //      try {
+  //       // Make API call to forgot-password endpoint with form data
+  //       const response = await axiosInstance.post("/vendor/forgot-password", formData, {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       });
+
+  //       if (response.data.statusCode === 200) {
+  //         setError(""); // Clear any previous errors
+  //       } else {
+  //         setError(response.data.message || "Failed to resend email. Please try again.");
+  //       }
+  //     } catch (err: any) {
+  //       setIsLoading(false);
+  //       if (err.response) {
+  //         const { status, data } = err.response;
+  //         if (status === 404) {
+  //           setError("No account found with this email address.");
+  //         } else if (status === 403 && data.message.includes("inactive")) {
+  //           setError("This account is inactive. Please contact support.");
+  //         } else if (status === 403 && data.message.includes("verified")) {
+  //           setError("This account is not verified. Please verify your account.");
+  //         } else if (status === 422) {
+  //           setError("Please enter a valid email address.");
+  //         } else {
+  //           setError(data.message || "Failed to resend email. Please try again.");
+  //         }
+  //       } else {
+  //         setError("Network error. Please check your connection and try again.");
+  //       }
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  const sendForgotPasswordRequest = async (isResend = false) => {
     setIsLoading(true);
     setError("");
 
-    // Validate email format client-side
+    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError("Please enter a valid email address.");
+      const msg = "Please enter a valid email address.";
+      setError(msg);
+      toast.error(msg);
       setIsLoading(false);
       return;
     }
 
-    // Create form data for API request
     const formData = new FormData();
     formData.append("email", email);
 
     try {
-      // Make API call to forgot-password endpoint with form data
-      const response = await axiosInstance.post("/vendor/forgot-password", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axiosInstance.post(
+        "/vendor/forgot-password",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
 
-      // Check if the response indicates success
       if (response.data.statusCode === 200) {
-        setIsSuccess(true);
+        if (!isResend) setIsSuccess(true);
+        toast.success(
+          isResend
+            ? "Confirmation email resent successfully!"
+            : "Password reset link sent! Please check your email."
+        );
       } else {
-        setError(response.data.message || "Something went wrong. Please try again.");
+        const msg =
+          response.data.message || "Something went wrong. Please try again.";
+        setError(msg);
+        toast.error(msg);
       }
     } catch (err: any) {
-      setIsLoading(false);
+      let msg = "An error occurred. Please try again.";
       if (err.response) {
         const { status, data } = err.response;
         if (status === 404) {
-          setError("No account found with this email address.");
+          msg = "No account found with this email address.";
         } else if (status === 403 && data.message?.includes("inactive")) {
-          setError("This account is inactive. Please contact support.");
+          msg = "This account is inactive. Please contact support.";
         } else if (status === 403 && data.message?.includes("verified")) {
-          setError("This account is not verified. Please verify your account.");
+          msg = "This account is not verified. Please verify your account.";
         } else if (status === 422) {
-          // Handle validation errors (e.g., missing or invalid email)
           const errors = data.detail || [];
           const emailError = errors.find((e: any) => e.loc.includes("email"));
-          if (emailError) {
-            setError(emailError.msg || "Please enter a valid email address.");
-          } else {
-            setError("Invalid request. Please try again.");
-          }
+          msg = emailError
+            ? emailError.msg
+            : "Invalid request. Please try again.";
         } else {
-          setError(data.message || "An error occurred. Please try again.");
+          msg = data.message || msg;
         }
       } else {
-        setError("Network error. Please check your connection and try again.");
+        msg = "Network error. Please check your connection and try again.";
       }
+      setError(msg);
+      toast.error(msg);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleResendEmail = async () => {
-    setIsLoading(true);
-    setError("");
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    sendForgotPasswordRequest(false);
+  };
 
-    const formData = new FormData();
-    formData.append("email", email);
-
-    try {
-      // Resend email by calling the same endpoint
-      const response = await axiosInstance.post("/vendor/forgot-password", formData);
-
-      if (response.data.statusCode === 200) {
-        setError(""); // Clear any previous errors
-      } else {
-        setError(response.data.message || "Failed to resend email. Please try again.");
-      }
-    } catch (err: any) {
-      setIsLoading(false);
-      if (err.response) {
-        const { status, data } = err.response;
-        if (status === 404) {
-          setError("No account found with this email address.");
-        } else if (status === 403 && data.message.includes("inactive")) {
-          setError("This account is inactive. Please contact support.");
-        } else if (status === 403 && data.message.includes("verified")) {
-          setError("This account is not verified. Please verify your account.");
-        } else if (status === 422) {
-          setError("Please enter a valid email address.");
-        } else {
-          setError(data.message || "Failed to resend email. Please try again.");
-        }
-      } else {
-        setError("Network error. Please check your connection and try again.");
-      }
-    } finally {
-      setIsLoading(false);
-    }
+  const handleResendEmail = () => {
+    sendForgotPasswordRequest(true);
   };
 
   if (isSuccess) {
@@ -239,7 +320,7 @@ export default function ForgotPasswordPage() {
         <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-0 shadow-2xl rounded-3xl overflow-hidden">
           <CardContent className="grid lg:grid-cols-2 p-0 min-h-[600px]">
             {/* Left Side - Forgot Password Form */}
-         <div className="bg-gradient-to-br from-cyan-500/10 via-blue-500/10 to-cyan-500/10 dark:from-cyan-950/30 dark:via-blue-950/30 dark:to-cyan-950/30 p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden">
+            <div className="bg-gradient-to-br from-cyan-500/10 via-blue-500/10 to-cyan-500/10 dark:from-cyan-950/30 dark:via-blue-950/30 dark:to-cyan-950/30 p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden">
               {/* Background Pattern */}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_70%)] dark:bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent_70%)]" />
 
@@ -330,7 +411,7 @@ export default function ForgotPasswordPage() {
             </div>
 
             {/* Right Side - Security Information */}
-               <div className="flex flex-col justify-center p-8 lg:p-12">
+            <div className="flex flex-col justify-center p-8 lg:p-12">
               {/* Header */}
               <div className="text-center mb-8">
                 <div className="inline-flex items-center gap-3 mb-6">

@@ -290,10 +290,10 @@ const QueryDetailsPage = () => {
               </div>
               
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
+                {/* <div>
                   <Label className="text-xs font-medium text-muted-foreground">Vendor Email</Label>
                   <p>{query.vendor_email || 'N/A'}</p>
-                </div>
+                </div> */}
                 <div>
                   <Label className="text-xs font-medium text-muted-foreground">Last Updated</Label>
                   <p>{new Date(query.updated_at).toLocaleString()}</p>

@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import axiosInstance from "@/lib/axiosInstance";
 import SuspenseSearchParamsWrapper from "@/components/SuspenseSearchParamsWrapper";
+import { toast } from "sonner";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -32,7 +33,7 @@ export default function ResetPasswordPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  
   const [error, setError] = useState("");
   const [passwordStrength, setPasswordStrength] = useState(0);
 
@@ -107,7 +108,7 @@ export default function ResetPasswordPage() {
       });
 
       if (response.data.statusCode === 200) {
-        setIsSuccess(true);
+       toast.success("Password reset successful, please login")
         router.push("/");
       } else {
         setError(response.data.message || "Something went wrong. Please try again.");
@@ -137,35 +138,35 @@ export default function ResetPasswordPage() {
     }
   };
 
-  // Success state
-  if (isSuccess) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950 flex items-center justify-center p-4">
-        <div className="w-full max-w-md mx-auto">
-          <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-0 shadow-2xl rounded-3xl">
-            <CardContent className="p-8 lg:p-12 text-center">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-500 rounded-3xl shadow-2xl mb-6">
-                <CheckCircle className="w-10 h-10 text-white" />
-              </div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent mb-4">
-                Password Reset Successfully
-              </h1>
-              <p className="text-slate-600 dark:text-slate-400 text-lg mb-8">
-                Your password has been updated successfully. You can now sign in with your new password.
-              </p>
-              <Button
-                onClick={() => router.push("/")}
-                className="w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-base font-semibold"
-              >
-                <ArrowRight className="w-5 h-5 mr-2" />
-                Continue to Sign In
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
+  // // Success state
+  // if (isSuccess) {
+  //   return (
+  //     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950 flex items-center justify-center p-4">
+  //       <div className="w-full max-w-md mx-auto">
+  //         <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-0 shadow-2xl rounded-3xl">
+  //           <CardContent className="p-8 lg:p-12 text-center">
+  //             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-500 rounded-3xl shadow-2xl mb-6">
+  //               <CheckCircle className="w-10 h-10 text-white" />
+  //             </div>
+  //             <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent mb-4">
+  //               Password Reset Successfully
+  //             </h1>
+  //             <p className="text-slate-600 dark:text-slate-400 text-lg mb-8">
+  //               Your password has been updated successfully. You can now sign in with your new password.
+  //             </p>
+  //             <Button
+  //               onClick={() => router.push("/")}
+  //               className="w-full h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-base font-semibold"
+  //             >
+  //               <ArrowRight className="w-5 h-5 mr-2" />
+  //               Continue to Sign In
+  //             </Button>
+  //           </CardContent>
+  //         </Card>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

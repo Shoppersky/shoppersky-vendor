@@ -148,7 +148,8 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
       "/profile",
       "/enquiries",
       "/onboarding",
-      "/online-store", // dynamic route handled in check below
+      "/online-store", 
+      "/add-product",
       ...publicRoutes,
     ],
     not_started: ["/onboarding", ...publicRoutes],
