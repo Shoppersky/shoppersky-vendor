@@ -263,27 +263,26 @@ export default function ProfilePage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
+    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-cyan-950">
       <div className="container mx-auto p-6 space-y-8">
         {/* Header */}
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-full border border-indigo-200/50 dark:border-indigo-800/50">
-            <Sparkles className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-            <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Profile Settings
-            </h1>
-          </div>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Manage your account settings and preferences
+
+        <div className="space-y-1 sm:space-y-2 flex-1">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-gray-800 via-blue-700 to-blue-700 bg-clip-text text-transparent leading-tight">
+            Profile Settings
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 text-xs sm:text-sm lg:text-base leading-relaxed">
+             Manage your account settings and preferences
           </p>
         </div>
+       
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Profile Picture Section */}
           <Card className="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-0 shadow-xl rounded-2xl overflow-hidden">
-            <CardHeader className="bg-gradient-to-r p-5 from-indigo-500/5 to-purple-500/5 border-b border-indigo-100 dark:border-indigo-800/30">
-              <CardTitle className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl">
+            <CardHeader className="bg-gradient-to-r p-5 from-cyan-500/5 to-blue-500/5 border-b border-cyan-100 dark:border-cyan-800/30">
+              <CardTitle className="text-xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent flex items-center gap-3">
+                <div className="p-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl">
                   <Camera className="w-5 h-5 text-white" />
                 </div>
                 Profile Picture
@@ -297,7 +296,7 @@ export default function ProfilePage() {
                     alt={profileData.name}
                     className="object-cover"
                   />
-                  <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-500 text-white text-2xl font-bold">
+                  <AvatarFallback className="bg-gradient-to-br from-cyan-500 to-blue-500 text-white text-2xl font-bold">
                     {profileData.name.split(" ").map((n) => n[0]).join("")}
                   </AvatarFallback>
                 </Avatar>
@@ -319,7 +318,7 @@ export default function ProfilePage() {
               <div className="space-y-4">
                 <label
                   htmlFor="avatar-upload"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 border border-indigo-200 dark:border-indigo-800 rounded-xl cursor-pointer hover:from-indigo-200 hover:to-purple-200 dark:hover:from-indigo-800/50 dark:hover:to-purple-800/50 transition-all duration-300 text-indigo-700 dark:text-indigo-300 font-medium"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-100 to-blue-100 dark:from-cyan-900/30 dark:to-blue-900/30 border border-cyan-200 dark:border-cyan-800 rounded-xl cursor-pointer hover:from-cyan-200 hover:to-blue-200 dark:hover:from-cyan-800/50 dark:hover:to-blue-800/50 transition-all duration-300 text-cyan-700 dark:text-cyan-300 font-medium"
                 >
                   <Upload className="w-4 h-4" />
                   Choose New Photo
@@ -350,7 +349,7 @@ export default function ProfilePage() {
                   </Button>
                   <Button
                     onClick={handleUpdateProfilePicture}
-                    className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+                    className="flex-1 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700"
                   >
                     Update Photo
                   </Button>
@@ -361,9 +360,9 @@ export default function ProfilePage() {
 
           {/* Profile Information Section */}
           <Card className="lg:col-span-2 backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-0 shadow-xl rounded-2xl overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-indigo-500/5 to-purple-500/5 border-b border-indigo-100 dark:border-indigo-800/30">
-              <CardTitle className="text-xl pt-5 font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl">
+            <CardHeader className="bg-gradient-to-r from-cyan-500/5 to-blue-500/5 border-b border-cyan-100 dark:border-cyan-800/30">
+              <CardTitle className="text-xl pt-5 font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent flex items-center gap-3">
+                <div className="p-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl">
                   <User className="w-5 h-5 text-white" />
                 </div>
                 Profile Information
@@ -400,7 +399,7 @@ export default function ProfilePage() {
                     Role
                   </Label>
                   <div className="h-12 px-4 bg-gray-50/80 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl flex items-center">
-                    <Badge className="bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 border-indigo-200 dark:from-indigo-900/30 dark:to-purple-900/30 dark:text-indigo-300 dark:border-indigo-800">
+                    <Badge className="bg-gradient-to-r from-cyan-100 to-blue-100 text-cyan-700 border-cyan-200 dark:from-cyan-900/30 dark:to-blue-900/30 dark:text-cyan-300 dark:border-cyan-800">
                       {profileData.role}
                     </Badge>
                   </div>
@@ -437,7 +436,7 @@ export default function ProfilePage() {
               </div>
 
               {/* Additional Info */}
-              <div className="bg-gradient-to-r from-indigo-50/50 to-purple-50/50 dark:from-indigo-950/30 dark:to-purple-950/30 rounded-xl p-4 border border-indigo-100 dark:border-indigo-800/30">
+              <div className="bg-gradient-to-r from-cyan-50/50 to-blue-50/50 dark:from-cyan-950/30 dark:to-blue-950/30 rounded-xl p-4 border border-cyan-100 dark:border-cyan-800/30">
                 <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                   <Calendar className="w-4 h-4" />
                   <span>Member since {profileData.joinDate}</span>
@@ -449,16 +448,16 @@ export default function ProfilePage() {
           {/* Security Section */}
           <div className="w-full">
           <Card className="lg:col-span-3 backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-0 shadow-xl rounded-2xl overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-indigo-500/5 to-purple-500/5 border-b border-indigo-100 dark:border-indigo-800/30">
-              <CardTitle className="text-xl pt-5 font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent flex items-center gap-3">
-                <div className="p-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl">
+            <CardHeader className="bg-gradient-to-r from-cyan-500/5 to-blue-500/5 border-b border-cyan-100 dark:border-cyan-800/30">
+              <CardTitle className="text-xl pt-5 font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent flex items-center gap-3">
+                <div className="p-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl">
                   <Key className="w-5 h-5 text-white" />
                 </div>
                 Security Settings
               </CardTitle>
             </CardHeader>
             <CardContent className="p-8">
-              <div className="flex items-center justify-between p-6 bg-gradient-to-r from-indigo-50/50 to-purple-50/50 dark:from-indigo-950/30 dark:to-purple-950/30 rounded-xl border border-indigo-100 dark:border-indigo-800/30">
+              <div className="flex items-center justify-between p-6 bg-gradient-to-r from-cyan-50/50 to-blue-50/50 dark:from-cyan-950/30 dark:to-blue-950/30 rounded-xl border border-cyan-100 dark:border-cyan-800/30">
                 <div className="space-y-1">
                   <h3 className="font-semibold text-gray-900 dark:text-gray-100">Password</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -467,7 +466,7 @@ export default function ProfilePage() {
                 </div>
                 <Button
                   onClick={() => setChangePasswordOpen(true)}
-                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   <Key className="w-4 h-4 mr-2" />
                   Change Password
@@ -483,7 +482,7 @@ export default function ProfilePage() {
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-3 text-xl font-bold">
-                <div className="p-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl">
+                <div className="p-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl">
                   <Key className="w-5 h-5 text-white" />
                 </div>
                 Change Password
@@ -502,7 +501,7 @@ export default function ProfilePage() {
                     type={showPasswords.old ? "text" : "password"}
                     value={passwordData.oldPassword}
                     onChange={(e) => handlePasswordChange("oldPassword", e.target.value)}
-                    className="h-12 pr-12 bg-white/80 dark:bg-slate-800/80 border-indigo-200 dark:border-indigo-800 rounded-xl"
+                    className="h-12 pr-12 bg-white/80 dark:bg-slate-800/80 border-cyan-200 dark:border-cyan-800 rounded-xl"
                     placeholder="Enter current password"
                   />
                   <Button
@@ -530,7 +529,7 @@ export default function ProfilePage() {
                     type={showPasswords.new ? "text" : "password"}
                     value={passwordData.newPassword}
                     onChange={(e) => handlePasswordChange("newPassword", e.target.value)}
-                    className="h-12 pr-12 bg-white/80 dark:bg-slate-800/80 border-indigo-200 dark:border-indigo-800 rounded-xl"
+                    className="h-12 pr-12 bg-white/80 dark:bg-slate-800/80 border-cyan-200 dark:border-cyan-800 rounded-xl"
                     placeholder="Enter new password"
                   />
                   <Button
@@ -556,7 +555,7 @@ export default function ProfilePage() {
                     type={showPasswords.confirm ? "text" : "password"}
                     value={passwordData.confirmPassword}
                     onChange={(e) => handlePasswordChange("confirmPassword", e.target.value)}
-                    className="h-12 pr-12 bg-white/80 dark:bg-slate-800/80 border-indigo-200 dark:border-indigo-800 rounded-xl"
+                    className="h-12 pr-12 bg-white/80 dark:bg-slate-800/80 border-cyan-200 dark:border-cyan-800 rounded-xl"
                     placeholder="Confirm new password"
                   />
                   <Button
@@ -573,9 +572,9 @@ export default function ProfilePage() {
 
               {/* Password Requirements */}
               {passwordData.newPassword && (
-                <div className="bg-gradient-to-r from-gray-50/50 to-indigo-50/50 dark:from-slate-800/50 dark:to-indigo-950/50 rounded-xl p-4 border border-gray-200/50 dark:border-slate-700/50">
+                <div className="bg-gradient-to-r from-gray-50/50 to-cyan-50/50 dark:from-slate-800/50 dark:to-cyan-950/50 rounded-xl p-4 border border-gray-200/50 dark:border-slate-700/50">
                   <div className="flex items-center gap-2 mb-3">
-                    <AlertCircle className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                    <AlertCircle className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
                     <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                       Password Requirements
                     </span>
@@ -639,7 +638,7 @@ export default function ProfilePage() {
                   !Object.values(passwordValidation).every(Boolean) ||
                   passwordData.newPassword !== passwordData.confirmPassword
                 }
-                className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Key className="w-4 h-4 mr-2" />
                 Change Password

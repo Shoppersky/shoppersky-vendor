@@ -246,11 +246,11 @@ const filteredQueries = queries.filter(query =>
                     <TableCell>
                       <div className="flex flex-col gap-1">
                         <Badge className={getStatusColor(query.status)}>{query.status}</Badge>
-                        {query.follow_up_query && (
+                        {/* {query.follow_up_query && (
                           <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400">
                             Follow-up
                           </Badge>
-                        )}
+                        )} */}
                       </div>
                     </TableCell>
                     <TableCell>

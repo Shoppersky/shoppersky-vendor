@@ -73,7 +73,7 @@ export default function Sidebar({
 
   const navItems = [
     { label: "Home", icon: Home, path: "/home" },
-    { label: "Employees", icon: Users, path: "/employees" },
+    // { label: "Employees", icon: Users, path: "/employees" },
     // { label: "Customers", icon: Box, path: "/customers" },
     { label: "Categories", icon: Folder, path: "/categories" },
     { label: "Products", icon: ShoppingBag, path: "/products" },

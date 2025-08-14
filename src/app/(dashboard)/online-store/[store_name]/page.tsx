@@ -21,7 +21,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import axiosInstance from "@/lib/axiosInstance";
 import useStore from "@/lib/Zustand";
 import { toast } from "sonner";
-import { useParams } from "next/navigation";
+
 
 interface Product {
   product_id: number;
@@ -73,8 +73,8 @@ const OnlineStorePage: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [productss, setProductss] = useState<Product[]>([]);
   const { userId } = useStore();
-  const params = useParams(); // Get URL parameters
-  const store_name = params.store_name as string;
+  
+  
 
   // Store Settings
   const [storeSettings, setStoreSettings] = useState<StoreSettings>({
