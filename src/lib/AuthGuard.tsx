@@ -108,6 +108,8 @@
  
 // export default AuthGuard;
 
+
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -177,7 +179,11 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
       const isAllowed = allowedRoutes.some((route) => {
         if (route === pathname) return true;
         if (route === "/online-store" && pathname.startsWith("/online-store/"))
-          return true; // allow dynamic store_name paths
+          return true; 
+        if (route === "/enquiries" && pathname.startsWith("/enquiries/"))
+          return true; 
+        if (route === "/products" && pathname.startsWith("/products/"))
+          return true; 
         return false;
       });
 

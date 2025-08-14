@@ -838,9 +838,9 @@ export default function ProductsPage() {
             value={stats.total.toString()}
             icon={<Package className="h-5 w-5 text-cyan-600" />}
             color="cyan"
-            trend="up"
-            trendValue="+12%"
-            subtitle="All time"
+            // trend="up"
+            // trendValue="+12%"
+            // subtitle="All time"
             delay={0}
           />
           <StatCard
@@ -848,9 +848,9 @@ export default function ProductsPage() {
             value={stats.active.toString()}
             icon={<CheckCircle className="h-5 w-5 text-green-600" />}
             color="green"
-            trend="up"
-            trendValue="+8%"
-            subtitle="Currently selling"
+            // trend="up"
+            // trendValue="+8%"
+            // subtitle="Currently selling"
             delay={100}
           />
           <StatCard
@@ -858,9 +858,9 @@ export default function ProductsPage() {
             value={stats.lowStock.toString()}
             icon={<AlertTriangle className="h-5 w-5 text-red-600" />}
             color="red"
-            trend="down"
-            trendValue="-3"
-            subtitle="≤ 5 items remaining"
+            // trend="down"
+            // trendValue="-3"
+            // subtitle="≤ 5 items remaining"
             delay={200}
           />
           <StatCard
@@ -868,9 +868,9 @@ export default function ProductsPage() {
             value={0}
             icon={<ShoppingCart className="h-5 w-5 text-indigo-600" />}
             color="indigo"
-            trend="up"
-            trendValue="+15%"
-            subtitle="Units sold"
+            // trend="up"
+            // trendValue="+15%"
+            // subtitle="Units sold"
             delay={300}
           />
         
@@ -946,7 +946,7 @@ export default function ProductsPage() {
                   <SelectContent className="bg-white/95 backdrop-blur-sm dark:bg-zinc-900/95">
                     <SelectItem value="all">All Prices</SelectItem>
                     <SelectItem value="50-100">$50 - $100</SelectItem>
-                    <SelectItem value="100-150">$100 - $150</SelectItem>
+                    <SelectItem value="101-150">$101 - $150</SelectItem>
                     <SelectItem value="150+">$150+</SelectItem>
                   </SelectContent>
                 </Select>
