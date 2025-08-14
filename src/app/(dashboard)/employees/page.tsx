@@ -374,29 +374,37 @@ export default function UsersPage() {
 
   // Fetch users from API
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        setLoading(true);
-        const response = await axiosInstance.get(
-          "/vendor/employee/?page=1&per_page=10"
-        );
-        const employees = response.data.data.employees.map((emp: any) => ({
-          ...emp,
-          is_active: emp.is_active || false, // Backend uses True for inactive, False for active
-          joinDate: emp.joinDate || new Date().toISOString().split("T")[0],
-          lastActive: emp.lastActive || new Date().toISOString().split("T")[0],
-        }));
-        setUsers(employees);
-        setError(null);
-      } catch (err) {
-        setError("Failed to fetch users");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUsers();
-  }, []);
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const response = await axiosInstance.get(
+        `/vendor/employee/vendor/${userId}?page=1&per_page=10`
+      );
+
+      const employees = response.data.data.employees.map((emp: any) => ({
+        ...emp,
+        is_active: emp.is_active ?? false, // keep as boolean from backend
+        joinDate: emp.created_at
+          ? emp.created_at.split("T")[0]
+          : new Date().toISOString().split("T")[0],
+        lastActive: emp.created_at
+          ? emp.created_at.split("T")[0]
+          : new Date().toISOString().split("T")[0],
+      }));
+
+      setUsers(employees);
+      setError(null);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to fetch users");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchUsers();
+}, [userId]); 
+
 
   // Filtered users based on search and filters
   const filteredUsers = useMemo(() => {

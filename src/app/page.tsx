@@ -82,10 +82,17 @@ export default function VendorLogin() {
         }
       }
     } catch (error: any) {
-      // Handle 403 or other errors
       if (error.response?.status === 403) {
         toast.info("Please change your default password.");
         router.push(`/changepassword?email=${encodeURIComponent(email)}`);
+      } else if (error.response?.status === 401) {
+        toast.info("Please verify your email before logging in.");
+      } else if (error.response?.status === 404) {
+        toast.info("Account not found, please signup.");
+      } else if (error.response?.status === 423) {
+        toast.info("Account locked, please contact support");
+      } else if (error.response?.status === 409) {
+        toast.info("Account is inactive, please contact support");
       } else {
         toast.error("Login failed. Please check your credentials.");
       }
@@ -240,15 +247,6 @@ export default function VendorLogin() {
               </div>
             </div>
           </div>
-
-          {/* <div className="text-center">
-            <Link
-              href="/"
-              className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              Shopping as a customer? Customer login →
-            </Link>
-          </div> */}
         </div>
       </div>
     </div>
