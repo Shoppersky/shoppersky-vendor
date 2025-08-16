@@ -91,7 +91,10 @@ export default function VendorLogin() {
         toast.info("Account not found, please signup.");
       } else if (error.response?.status === 423) {
         toast.info("Account locked, please contact support");
-      } else if (error.response?.status === 409) {
+      }else if (error.response?.status === 422) {
+        toast.info("Account verification pending");
+      } 
+       else if (error.response?.status === 409) {
         toast.info("Account is inactive, please contact support");
       } else {
         toast.error("Login failed. Please check your credentials.");

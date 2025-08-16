@@ -52,12 +52,10 @@ import {
   TrendingUp,
   DollarSign,
   BarChart3,
-  Star,
   CheckCircle,
   XCircle,
   Tag,
   Filter,
-  ArrowUpDown,
   Sparkles,
   Package2,
   ExternalLink,
@@ -68,6 +66,16 @@ import {
 } from "lucide-react";
 import axiosInstance from "@/lib/axiosInstance";
 import { useRouter } from "next/navigation";
+
+interface VendorResponse {
+  vendor_id: string;
+  store_name: string;
+  banner_image: string;
+  banner_title: string;
+  banner_subtitle: string;
+  total_count: number;
+  products: ProductResponse[];
+}
 
 interface ProductResponse {
   product_id: string;
@@ -99,7 +107,7 @@ interface ProductResponse {
   };
   images: {
     urls: string[];
-  } | null; // Updated to match API response
+  } | null;
   tags_and_relationships?: {
     product_tags?: string[];
     linkedproductid?: string;
@@ -113,12 +121,13 @@ interface ProductResponse {
   category_name?: string;
   subcategory_name?: string;
 }
+
 interface Product {
   id: string;
   name: string;
   price: string;
-  image: string; // Primary image
-  images?: string[]; // All image URLs
+  image: string;
+  images?: string[];
   purchases: number;
   sold: number;
   status: "Active" | "Inactive";
@@ -341,31 +350,31 @@ export default function ProductsPage() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await axiosInstance.get<ProductResponse[]>(
+        const response = await axiosInstance.get<VendorResponse>(
           `/products/by-vendor-id/${userId}`
         );
-        const mappedProducts: Product[] = response.data.map((product) => ({
+        const mappedProducts: Product[] = response.data.products.map((product) => ({
           id: product.product_id,
           name: product.identification.product_name,
           price: product.pricing?.selling_price
             ? `$${Number.parseFloat(product.pricing.selling_price).toFixed(2)}`
-            : "$0.00", // Fallback price
+            : "$0.00",
           image:
             product.images?.urls?.[0]?.replace(/\\/g, "/") ||
             "/placeholder.svg?height=56&width=56",
           images:
             product.images?.urls?.map((url) => url.replace(/\\/g, "/")) || [],
-          purchases: Math.floor(Math.random() * 100),
-          sold: Math.floor(Math.random() * 50),
+          purchases: Math.floor(Math.random() * 100), // Placeholder; replace with actual data if available
+          sold: Math.floor(Math.random() * 50), // Placeholder; replace with actual data if available
           status: product.status_flags.product_status ? "Inactive" : "Active",
           category: product.category_name,
           subcategory: product.subcategory_name,
           createdDate: product.timestamp.split("T")[0],
           lastUpdated: product.timestamp.split("T")[0],
-          rating: Math.random() * 5,
+          rating: Math.random() * 5, // Placeholder; replace with actual data if available
           stock: product.inventory?.quantity
             ? Number.parseInt(product.inventory.quantity)
-            : 0, // Fallback stock
+            : 0,
           slug: product.slug,
           sku: product.identification.product_sku,
           shortDescription: product.descriptions?.short_description || "",
@@ -415,6 +424,9 @@ export default function ProductsPage() {
     fetchProducts();
     fetchVendorCategories();
   }, [userId]);
+
+
+
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
@@ -873,10 +885,7 @@ export default function ProductsPage() {
             // subtitle="Units sold"
             delay={300}
           />
-        
-        
-        
-      
+
         </div>
 
         {/* Filters */}
@@ -1034,33 +1043,25 @@ export default function ProductsPage() {
                       <div className="flex items-center gap-4">
                         <div className="flex space-x-2">
                           {product.images?.length > 0 ? (
-                            product.images.slice(0, 3).map(
-                              (
-                                imgUrl,
-                                index // Limit to 3 images for brevity
-                              ) => (
-                                <div
-                                  key={index}
-                                  className="relative overflow-hidden rounded-xl shadow-sm"
-                                >
-                                  <Image
-                                    src={product.image || "/placeholder.svg"}
-                                    alt={product.name}
-                                    width={56}
-                                    height={56}
-                                    className="h-14 w-14 object-cover transition-transform duration-300 group-hover:scale-110"
-                                  />
-
-                                  {(product.stock || 0) <= 5 &&
-                                    product.status === "Active" &&
-                                    index === 0 && (
-                                      <div className="absolute -right-1 -top-1 h-4 w-4 animate-pulse rounded-full bg-red-500 shadow-lg">
-                                        <div className="absolute inset-0 rounded-full bg-red-500 animate-ping" />
-                                      </div>
-                                    )}
-                                </div>
-                              )
-                            )
+                            product.images.slice(0, 3).map((imgUrl, index) => (
+                              <div
+                                key={index}
+                                className="relative overflow-hidden rounded-xl shadow-sm"
+                              >
+                                <Image
+                                  src={imgUrl}
+                                  alt={product.name}
+                                  width={56}
+                                  height={56}
+                                  className="h-14 w-14 object-cover transition-transform duration-300 group-hover:scale-110"
+                                />
+                                {(product.stock || 0) <= 5 && product.status === "Active" && index === 0 && (
+                                  <div className="absolute -right-1 -top-1 h-4 w-4 animate-pulse rounded-full bg-red-500 shadow-lg">
+                                    <div className="absolute inset-0 rounded-full bg-red-500 animate-ping" />
+                                  </div>
+                                )}
+                              </div>
+                            ))
                           ) : (
                             <div className="relative overflow-hidden rounded-xl shadow-sm">
                               <Image
