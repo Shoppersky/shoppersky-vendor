@@ -177,7 +177,8 @@ export default function Step1StoreSetup({
             <p className="text-lg text-gray-600">Now, create your store.</p>
           </div>
 
-          <div className="relative">
+          <div className="relative space-y-2">
+           <Label htmlFor="storeName">Store Name</Label>
             <Input
               id="storeName"
               placeholder="My Awesome Store"
