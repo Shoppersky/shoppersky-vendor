@@ -11,6 +11,7 @@ import {
   Menu,
   ChevronLeft,
   ChevronRight,
+  Box,
 } from "lucide-react";
 import clsx from "clsx";
 import Logo from "./logo";
@@ -74,7 +75,7 @@ export default function Sidebar({
   const navItems = [
     { label: "Home", icon: Home, path: "/home" },
     // { label: "Employees", icon: Users, path: "/employees" },
-    // { label: "Customers", icon: Box, path: "/customers" },
+    { label: "Customers", icon: Box, path: "/customers" },
     { label: "Categories", icon: Folder, path: "/categories" },
     { label: "Products", icon: ShoppingBag, path: "/products" },
     // { label: "Orders", icon: PackageCheck, path: "/orders" },

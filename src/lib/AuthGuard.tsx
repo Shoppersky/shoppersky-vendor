@@ -38,6 +38,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
       "/onboarding",
       "/online-store", 
       "/add-product",
+      
       ...publicRoutes,
     ],
     not_started: ["/onboarding", ...publicRoutes],
@@ -72,6 +73,9 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
         if (route === "/enquiries" && pathname.startsWith("/enquiries/"))
           return true; 
         if (route === "/products" && pathname.startsWith("/products/"))
+          return true;
+
+        if (route === "/customers" && pathname.startsWith("/customers/"))
           return true; 
         return false;
       });
