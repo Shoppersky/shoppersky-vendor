@@ -597,6 +597,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import axiosInstance from "@/lib/axiosInstance";
 import useStore from "@/lib/Zustand";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog"
 
 interface Product {
   product_id: number;
@@ -745,44 +756,89 @@ const OnlineStorePage: React.FC = () => {
     }
   };
 
+  // const handleSaveBannerChanges = async () => {
+  //   try {
+  //     const formData = new FormData();
+  //     if (selectedBannerFile) {
+  //       formData.append("file", selectedBannerFile);
+  //     }
+  //     formData.append("banner_title", storeSettings.bannerTitle);
+  //     formData.append("banner_subtitle", storeSettings.bannerSubtitle);
+
+  //     const response = await axiosInstance.post(
+  //       `/vendor/banner-image/${userId}`,
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+
+  //     const { banner_image_url, banner_title, banner_subtitle } = response.data.data;
+  //     if (banner_image_url || banner_title || banner_subtitle) {
+  //       saveStoreSettings({
+  //         bannerImage: banner_image_url || storeSettings.bannerImage,
+  //         bannerTitle: banner_title || storeSettings.bannerTitle,
+  //         bannerSubtitle: banner_subtitle || storeSettings.bannerSubtitle,
+  //       });
+  //       toast.success("Banner settings updated successfully");
+  //     } else {
+  //       throw new Error("No valid data returned from the server");
+  //     }
+
+  //     setEditingBanner(false);
+  //     setSelectedBannerFile(null);
+  //   } catch (error) {
+  //     console.error("Error saving banner changes:", error);
+  //     toast.error("Failed to save banner changes");
+  //   }
+  // };
+
   const handleSaveBannerChanges = async () => {
-    try {
-      const formData = new FormData();
-      if (selectedBannerFile) {
-        formData.append("file", selectedBannerFile);
-      }
-      formData.append("banner_title", storeSettings.bannerTitle);
-      formData.append("banner_subtitle", storeSettings.bannerSubtitle);
+  try {
+    const formData = new FormData();
 
-      const response = await axiosInstance.post(
-        `/vendor/banner-image/${userId}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      const { banner_image_url, banner_title, banner_subtitle } = response.data.data;
-      if (banner_image_url || banner_title || banner_subtitle) {
-        saveStoreSettings({
-          bannerImage: banner_image_url || storeSettings.bannerImage,
-          bannerTitle: banner_title || storeSettings.bannerTitle,
-          bannerSubtitle: banner_subtitle || storeSettings.bannerSubtitle,
-        });
-        toast.success("Banner settings updated successfully");
-      } else {
-        throw new Error("No valid data returned from the server");
-      }
-
-      setEditingBanner(false);
-      setSelectedBannerFile(null);
-    } catch (error) {
-      console.error("Error saving banner changes:", error);
-      toast.error("Failed to save banner changes");
+    if (selectedBannerFile) {
+      // ✅ New file selected
+      formData.append("file", selectedBannerFile);
+    } else if (storeSettings.bannerImage) {
+      // ✅ No new file → send current banner image URL (or blob if backend expects file)
+      formData.append("file", storeSettings.bannerImage);
+      // ⚠️ use "file_url" (or whatever your backend expects for existing images)
     }
-  };
+
+    formData.append("banner_title", storeSettings.bannerTitle);
+    formData.append("banner_subtitle", storeSettings.bannerSubtitle);
+
+    const response = await axiosInstance.post(
+      `/vendor/banner-image/${userId}`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+
+    const { banner_image_url, banner_title, banner_subtitle } = response.data.data;
+
+    if (banner_image_url || banner_title || banner_subtitle) {
+      saveStoreSettings({
+        bannerImage: banner_image_url || storeSettings.bannerImage,
+        bannerTitle: banner_title || storeSettings.bannerTitle,
+        bannerSubtitle: banner_subtitle || storeSettings.bannerSubtitle,
+      });
+      toast.success("Banner settings updated successfully");
+    } else {
+      throw new Error("No valid data returned from the server");
+    }
+
+    setEditingBanner(false);
+    setSelectedBannerFile(null);
+  } catch (error) {
+    console.error("Error saving banner changes:", error);
+    toast.error("Failed to save banner changes");
+  }
+};
 
   useEffect(() => {
     fetchCategories();
@@ -794,13 +850,17 @@ const OnlineStorePage: React.FC = () => {
       {/* Hero Banner */}
       <section className="relative bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
         {isAdminMode && (
-          <button
-            onClick={() => setEditingBanner(true)}
-            className="absolute top-4 right-4 z-10 bg-yellow-500 text-white p-3 rounded-full shadow-md hover:bg-yellow-600 transition duration-300"
-            title="Edit Banner"
-          >
-            <Edit3 className="h-5 w-5" />
-          </button>
+          <AlertDialog open={editingBanner} onOpenChange={setEditingBanner}>
+  <AlertDialogTrigger asChild>
+  <button
+    className="absolute top-4 right-4 z-10 bg-yellow-500 text-white p-3 rounded-full shadow-md hover:bg-yellow-600 transition duration-300"
+    title="Edit Banner"
+  >
+    <Edit3 className="h-5 w-5" />
+  </button>
+</AlertDialogTrigger>
+  </AlertDialog>
+
         )}
 
         {storeSettings.bannerImage && (
@@ -824,14 +884,14 @@ const OnlineStorePage: React.FC = () => {
             <p className="text-xl md:text-2xl mb-8 opacity-90">
               {storeSettings.bannerSubtitle}
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button className="bg-white text-indigo-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
                 Shop Now
               </button>
               <button className="border border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-indigo-600 transition duration-300">
                 Learn More
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
@@ -887,7 +947,7 @@ const OnlineStorePage: React.FC = () => {
               Preview how customers see your products
             </p>
           </div>
-          <div className="flex items-center space-x-4 mt-4 sm:mt-0">
+          <div className="flex items-center space-x-4 mt-4 sm:mt-0 flex-wrap space-y-2">
             <div className="flex items-center space-x-2">
               <Filter className="h-4 w-4 text-gray-500" />
               <select
@@ -920,11 +980,11 @@ const OnlineStorePage: React.FC = () => {
             No products found.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 lg:gap-6">
             {filteredProducts.map((product) => (
               <Card
                 key={product.product_id}
-                className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-0 shadow-md bg-white rounded-xl"
+                className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-0 shadow-md bg-white rounded-xl p-0"
               >
                 {/* Product Image Container */}
                 <div className="relative overflow-hidden">
@@ -945,25 +1005,12 @@ const OnlineStorePage: React.FC = () => {
                         Featured
                       </span>
                     )}
-                    {product.pricing?.actual_price &&
-                      product.pricing?.selling_price &&
-                      !isNaN(parseFloat(product.pricing.actual_price)) &&
-                      !isNaN(parseFloat(product.pricing.selling_price)) && (
-                        <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-2 py-1 text-xs font-bold rounded-full shadow-lg">
-                          -
-                          {(
-                            ((parseFloat(product.pricing.selling_price) -
-                              parseFloat(product.pricing.actual_price)) /
-                              parseFloat(product.pricing.selling_price)) *
-                            100
-                          ).toFixed(0)}
-                          % OFF
-                        </span>
-                      )}
+
+
                   </div>
 
                   {/* Wishlist Button */}
-                  <button
+                  {/* <button
                     onClick={() => toggleWishlist(product.product_id)}
                     className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-lg hover:bg-white hover:scale-110 transition-all duration-300"
                   >
@@ -974,11 +1021,11 @@ const OnlineStorePage: React.FC = () => {
                           : "text-gray-600"
                       }`}
                     />
-                  </button>
+                  </button> */}
                 </div>
 
                 {/* Product Information */}
-                <CardContent className="p-4 space-y-3">
+                <CardContent className="p-4 space-y-1">
                   {/* Product Category */}
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-medium text-gray-500 uppercase tracking-wide">
@@ -987,12 +1034,12 @@ const OnlineStorePage: React.FC = () => {
                   </div>
 
                   {/* Product Name */}
-                  <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 min-h-[2.5rem] leading-tight">
+                  <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 min-h-[2rem] leading-tight">
                     {product.identification?.product_name || "Unnamed Product"}
                   </h3>
 
                   {/* Rating */}
-                  <div className="flex items-center gap-2">
+                  {/* <div className="flex items-center gap-2">
                     <div className="flex items-center">
                       {[...Array(5)].map((_, i) => (
                         <Star
@@ -1005,7 +1052,7 @@ const OnlineStorePage: React.FC = () => {
                         />
                       ))}
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* Price Section */}
                   <div className="flex items-center justify-between">
@@ -1033,27 +1080,10 @@ const OnlineStorePage: React.FC = () => {
       </section>
 
       {/* Newsletter Section */}
-      <section className="bg-gray-900 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Stay Updated</h2>
-          <p className="text-xl mb-8 opacity-90">
-            Subscribe to our newsletter for exclusive deals and new arrivals
-          </p>
-          <div className="flex flex-col sm:flex-row max-w-md mx-auto gap-4">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="flex-1 px-4 py-3 rounded-md text-gray-900 h-10"
-            />
-            <Button className="bg-indigo-600 hover:bg-indigo-700 h-10">
-              Subscribe
-            </Button>
-          </div>
-        </div>
-      </section>
+  
 
       {/* Admin Edit Overlays */}
-      {editingBanner && (
+      {/* {editingBanner && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
@@ -1155,7 +1185,97 @@ const OnlineStorePage: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
+
+      {/* Admin Edit Overlays */}
+<AlertDialog open={editingBanner} onOpenChange={setEditingBanner}>
+  <AlertDialogContent className="max-w-md">
+    <AlertDialogHeader>
+      <AlertDialogTitle>Edit Store Banner</AlertDialogTitle>
+      <AlertDialogDescription>
+        Update your store banner details and upload a new image if required.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+
+    <div className="space-y-4 mt-4">
+      {/* Banner Title */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Banner Title
+        </label>
+        <input
+          type="text"
+          value={storeSettings.bannerTitle}
+          onChange={(e) => saveStoreSettings({ bannerTitle: e.target.value })}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+      </div>
+
+      {/* Banner Subtitle */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Banner Subtitle
+        </label>
+        <textarea
+          value={storeSettings.bannerSubtitle}
+          onChange={(e) =>
+            saveStoreSettings({ bannerSubtitle: e.target.value })
+          }
+          rows={3}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+      </div>
+
+      {/* Banner Background Image */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Banner Background Image
+        </label>
+        <div className="flex items-center space-x-2">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              if (file) handleImageUpload(file, "banner")
+            }}
+            className="hidden"
+            id="banner-upload"
+          />
+          <label
+            htmlFor="banner-upload"
+            className="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-md cursor-pointer"
+          >
+            <Camera className="h-4 w-4" />
+            <span className="text-sm">Upload Image</span>
+          </label>
+          {storeSettings.bannerImage && (
+            <div className="w-12 h-12 rounded overflow-hidden">
+              <Image
+                src={storeSettings.bannerImage}
+                alt="Banner preview"
+                width={48}
+                height={48}
+                className="object-cover w-full h-full"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <AlertDialogFooter className="mt-6">
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+      <AlertDialogAction
+        onClick={handleSaveBannerChanges}
+        className="bg-indigo-600 hover:bg-indigo-700 text-white"
+      >
+        Save Changes
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+
     </div>
   );
 };
