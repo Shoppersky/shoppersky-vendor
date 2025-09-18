@@ -592,6 +592,7 @@ import {
   Save,
   Camera,
 } from "lucide-react";
+import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import axiosInstance from "@/lib/axiosInstance";
@@ -689,6 +690,11 @@ const OnlineStorePage: React.FC = () => {
     try {
       const response = await axiosInstance.get(`/products/by-vendor-id/${userId}`);
       console.log("API Response for Store Data:", response.data);
+
+      // If no store exists, trigger 404
+      if (!response.data || !response.data.store_name) {
+        notFound(); // this shows app/not-found.tsx
+      }
 
       // Map store settings from API response
       setStoreSettings((prev) => ({
