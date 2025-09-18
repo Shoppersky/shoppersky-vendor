@@ -832,7 +832,7 @@ export default function ProductsPage() {
               Export CSV
             </Button>
             <Button
-  onClick={() => router.push("/add-product")}
+  onClick={() => router.push("/products/add-product")}
   className="flex items-center px-4 py-2 text-sm sm:text-base md:px-6 md:py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 transition-all hover:scale-105 rounded-md"
 >
   <Plus className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />

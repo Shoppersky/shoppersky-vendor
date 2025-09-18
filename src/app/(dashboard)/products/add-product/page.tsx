@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import axiosInstance from "@/lib/axiosInstance";
-import useStore from "../../../lib/Zustand";
+import useStore from "../../../../lib/Zustand";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 

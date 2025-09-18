@@ -75,7 +75,7 @@ export default function Sidebar({
   const navItems = [
     { label: "Home", icon: Home, path: "/home" },
     // { label: "Employees", icon: Users, path: "/employees" },
-    { label: "Customers", icon: Box, path: "/customers" },
+    { label: "Orders", icon: Box, path: "/orders" },
     { label: "Categories", icon: Folder, path: "/categories" },
     { label: "Products", icon: ShoppingBag, path: "/products" },
     // { label: "Orders", icon: PackageCheck, path: "/orders" },
@@ -85,7 +85,7 @@ export default function Sidebar({
     {
       label: "Onlinestore",
       icon: Settings,
-      path: `/online-store/${encodeURIComponent(store_name || "default")}`, // Dynamically include store_name
+      path: '/online-store', // Dynamically include store_name
     },
     { label: "My Enquiries", icon: Settings, path: "/enquiries" },
   ];
@@ -174,7 +174,8 @@ export default function Sidebar({
         {/* Nav Items */}
         <nav className="flex-1 overflow-y-auto mt-4 space-y-1">
           {navItems.map((item) => {
-            const active = pathname === item.path;
+    const active = pathname === item.path || pathname.startsWith(item.path + "/");
+
             return (
               <button
                 key={item.label}
