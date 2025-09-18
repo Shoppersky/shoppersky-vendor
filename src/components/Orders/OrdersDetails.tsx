@@ -125,10 +125,7 @@ export const OrderDetails: React.FC<OrderDetailsProps> = ({ order, onBack }) => 
                       {order.address.label}
                     </p>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Address ID</label>
-                    <p className="text-gray-900">#{order.address.id}</p>
-                  </div>
+           
                 </div>
                 <div className="mt-4">
                   <label className="text-sm font-medium text-gray-500">Full Address</label>
