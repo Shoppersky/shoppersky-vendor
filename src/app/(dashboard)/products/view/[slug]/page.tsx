@@ -286,7 +286,7 @@ export default function ProductView() {
           image: productData.images?.urls?.[0] || "/placeholder.svg?height=500&width=500",
           purchases: Math.floor(Math.random() * 1000) + 100,
           sold: Math.floor(Math.random() * 500) + 50,
-          status: productData.status_flags.product_status ? "Active" : "Inactive", // Fixed logic
+          status: productData.status_flags.product_status ? "Inactive" : "Active", // Fixed logic
           category: productData.category_name,
           subcategory: productData.subcategory_name,
           createdDate: productData.timestamp.split("T")[0],
