@@ -1980,56 +1980,60 @@ type SortDirection = 'asc' | 'desc';
   }, []);
 
   const filteredAndSortedOrders = useMemo(() => {
-    let filtered = orders?.filter(order => {
-      const searchLower = searchTerm.toLowerCase();
-      return (
-        order.order_id.toLowerCase().includes(searchLower) ||
-        order.username.toLowerCase().includes(searchLower) ||
-        `${order.address.details.first_name} ${order.address.details.last_name}`.toLowerCase().includes(searchLower) ||
-        order.address.details.email.toLowerCase().includes(searchLower) ||
-        Object.values(order.item_details).some(item => 
-          item.name.toLowerCase().includes(searchLower)
-        )
-      );
-    });
+  const searchLower = searchTerm.toLowerCase();
 
-    return filtered?.sort((a, b) => {
-      let aValue: string | number;
-      let bValue: string | number;
+  const safeLower = (val?: string) => (val || "").toLowerCase();
 
-      switch (sortField) {
-        case 'order_id':
-          aValue = a.order_id;
-          bValue = b.order_id;
-          break;
-        case 'amount':
-          aValue = a.amount;
-          bValue = b.amount;
-          break;
-        case 'customer_name':
-          aValue = `${a.address.details.first_name} ${a.address.details.last_name}`;
-          bValue = `${b.address.details.first_name} ${b.address.details.last_name}`;
-          break;
-        case 'date':
-          aValue = a.order_id; // Using order_id as proxy for date since timestamp isn't in individual orders
-          bValue = b.order_id;
-          break;
-        default:
-          aValue = a.order_id;
-          bValue = b.order_id;
-      }
+  const filtered = orders?.filter(order => {
+    return (
+      safeLower(order.order_id).includes(searchLower) ||
+      safeLower(order.username).includes(searchLower) ||
+      safeLower(`${order.address?.details?.first_name ?? ""} ${order.address?.details?.last_name ?? ""}`).includes(searchLower) ||
+      safeLower(order.address?.details?.email).includes(searchLower) ||
+      Object.values(order.item_details).some(item =>
+        safeLower(item.name).includes(searchLower)
+      )
+    );
+  });
 
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortDirection === 'asc' 
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      } else {
-        return sortDirection === 'asc' 
-          ? (aValue as number) - (bValue as number)
-          : (bValue as number) - (aValue as number);
-      }
-    });
-  }, [orders, searchTerm, sortField, sortDirection]);
+  return filtered?.sort((a, b) => {
+    let aValue: string | number;
+    let bValue: string | number;
+
+    switch (sortField) {
+      case 'order_id':
+        aValue = a.order_id;
+        bValue = b.order_id;
+        break;
+      case 'amount':
+        aValue = a.amount;
+        bValue = b.amount;
+        break;
+      case 'customer_name':
+        aValue = `${a.address?.details?.first_name ?? ""} ${a.address?.details?.last_name ?? ""}`;
+        bValue = `${b.address?.details?.first_name ?? ""} ${b.address?.details?.last_name ?? ""}`;
+        break;
+      case 'date':
+        aValue = a.order_id; // Keep your current proxy
+        bValue = b.order_id;
+        break;
+      default:
+        aValue = a.order_id;
+        bValue = b.order_id;
+    }
+
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      return sortDirection === 'asc'
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    } else {
+      return sortDirection === 'asc'
+        ? (aValue as number) - (bValue as number)
+        : (bValue as number) - (aValue as number);
+    }
+  });
+}, [orders, searchTerm, sortField, sortDirection]);
+
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -2088,7 +2092,7 @@ type SortDirection = 'asc' | 'desc';
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <div className=" px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
