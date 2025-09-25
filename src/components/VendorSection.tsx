@@ -1,132 +1,140 @@
-import React from 'react';
-import { Store, BarChart3, Globe, Zap, Users, Star, ArrowRight } from 'lucide-react';
+"use client";
+import React from "react";
+import dynamic from "next/dynamic";
+import { motion } from "motion/react";
+import { Store, BarChart3, Globe, ArrowRight } from "lucide-react";
+import {useRouter} from "next/navigation";
 
-const VendorSection = () => {
+const World = dynamic(() => import("./ui/globe").then((m) => m.World), {
+  ssr: false,
+});
+
+export default function GlobeWithVendors() {
+  const router = useRouter();
+  const globeConfig = {
+    pointSize: 4,
+    globeColor: "#062056",
+    showAtmosphere: true,
+    atmosphereColor: "#a855f7",
+    atmosphereAltitude: 0.15,
+    emissive: "#ffffff",
+    emissiveIntensity: 0.5,
+    shininess: 1,
+    polygonColor: "rgba(255, 255, 255, 0.15)",
+    ambientLight: "#ffffff",
+    directionalLeftLight: "#8b5cf6",
+    directionalTopLight: "#3b82f6",
+    pointLight: "#ffffff",
+    arcTime: 1200,
+    arcLength: 0.9,
+    rings: 1,
+    maxRings: 3,
+    initialPosition: { lat: 22.3193, lng: 114.1694 },
+    autoRotate: true,
+    autoRotateSpeed: 0.7,
+  };
+
+  const colors = ["#f0f0f0", "#8b5cf6", "#3b82f6", "#a855f7", "#38bdf8"];
+  const sampleArcs = Array.from({ length: 6 }, () => ({
+    startLat: Math.random() * 180 - 90,
+    startLng: Math.random() * 360 - 180,
+    endLat: Math.random() * 180 - 90,
+    endLng: Math.random() * 360 - 180,
+    arcAlt: 0.2 + Math.random() * 0.3,
+    color: colors[Math.floor(Math.random() * colors.length)],
+  }));
+
   return (
-    <section id="vendors" className="py-24 bg-gradient-to-r from-purple-50 to-purple-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left content */}
-          <div className="space-y-8 animate-slide-in-left">
-            <div className="space-y-4">
-              <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
-                Build Your Digital
-                <span className="block bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent">
-                  Empire
-                </span>
-              </h2>
-              <p className="text-xl text-gray-600 leading-relaxed">
-                Transform your business with a powerful online storefront. Reach millions of customers, 
-                track your success, and grow your revenue with our comprehensive vendor platform.
-              </p>
-            </div>
+    <section className="relative w-8xl h-screen overflow-hidden bg-black">
+     {/* Globe Background */}
+<div className="absolute ml-36 inset-0 right-10">
+  <div className=" h-full w-40 translate-x-32 scale-110">
+    <World data={sampleArcs} globeConfig={globeConfig} />
+  </div>
+  {/* Dark overlay */}
+  <div className="absolute w-full inset-0 bg-black/40" />
+</div>
 
-            <div className="space-y-6">
-              <div className="flex items-start space-x-4">
-                <div className="bg-purple-100 p-3 rounded-lg hover:bg-purple-200 transition-colors duration-300 hover:scale-110 transform">
-                  <Store className="h-6 w-6 text-purple-600" />
+
+      {/* Left Side Content */}
+      <div className="relative z-10 flex items-center  h-full max-w-8xl mx-auto px-6 lg:px-12">
+        <div className="w-full ml-35 lg:w-1/2 space-y-8 text-left">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1 }}
+            className="space-y-4"
+          >
+            <p className="text-sm uppercase tracking-widest text-purple-400 font-semibold">
+              Empowering Businesses Worldwide
+            </p>
+            <h2 className="text-4xl lg:text-6xl font-extrabold text-white leading-tight">
+              Build Your Digital{" "}
+              <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+                Empire
+              </span>
+            </h2>
+            <p className="text-lg text-white/80">
+              Transform your business with a powerful online storefront. Reach
+              millions of customers, track growth, and scale globally.
+            </p>
+          </motion.div>
+
+          {/* Features */}
+          <div className="space-y-6">
+            {[
+              {
+                icon: <Store className="h-6 w-6 text-white" />,
+                title: "Custom Storefront",
+                desc: "Design your unique brand experience with customizable layouts.",
+              },
+              {
+                icon: <BarChart3 className="h-6 w-6 text-white" />,
+                title: "Analytics Dashboard",
+                desc: "Track sales, customer insights, and optimize strategy.",
+              },
+              {
+                icon: <Globe className="h-6 w-6 text-white" />,
+                title: "Global Reach",
+                desc: "Expand worldwide through seamless integrations.",
+              },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 + i * 0.2 }}
+                className="flex items-start space-x-4 group hover:scale-105 transition-transform duration-300"
+              >
+                <div className="bg-gradient-to-r from-blue-500 to-purple-500 p-3 rounded-lg shadow-lg shadow-purple-500/20">
+                  {item.icon}
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Custom Storefront</h3>
-                  <p className="text-gray-600">Design your unique brand experience with customizable themes and layouts</p>
+                  <h3 className="text-lg font-semibold text-purple-400 group-hover:text-purple-300">
+                    {item.title}
+                  </h3>
+                  <p className="text-white/70 group-hover:text-white">
+                    {item.desc}
+                  </p>
                 </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="bg-purple-100 p-3 rounded-lg hover:bg-purple-200 transition-colors duration-300 hover:scale-110 transform">
-                  <BarChart3 className="h-6 w-6 text-purple-600" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Analytics Dashboard</h3>
-                  <p className="text-gray-600">Track sales, customer behavior, and optimize your performance</p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="bg-purple-100 p-3 rounded-lg hover:bg-purple-200 transition-colors duration-300 hover:scale-110 transform">
-                  <Globe className="h-6 w-6 text-purple-600" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">Global Reach</h3>
-                  <p className="text-gray-600">Access to our worldwide customer base and marketing channels</p>
-                </div>
-              </div>
-            </div>
-
-            <button className="group bg-gradient-to-r from-purple-600 to-purple-700 text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center space-x-2 hover-glow animate-shimmer">
-              <span>Open Your Store</span>
-              <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
-            </button>
+              </motion.div>
+            ))}
           </div>
 
-          {/* Right side dashboard mockup */}
-          <div className="relative animate-slide-in-right">
-            <div className="bg-white rounded-2xl shadow-2xl p-8 transform rotate-1 hover:rotate-0 transition-transform duration-500 animate-fade-in-up">
-              
-              {/* Dashboard Header */}
-              <h4 className="text-xl font-bold text-gray-900 mb-6">Sarah's Boutique</h4>
-              
-              {/* Main Dashboard Widgets */}
-              <div className="grid grid-cols-2 gap-6">
-                {/* Revenue Widget */}
-                <div className="bg-gray-50 rounded-xl p-4 shadow-inner">
-                  <p className="text-sm text-gray-600">Monthly Revenue</p>
-                  <p className="text-lg font-semibold text-green-600">$12,500</p>
-                  <div className="bg-gray-200 rounded-full h-2 mt-2">
-                    <div className="bg-gradient-to-r from-purple-600 to-blue-600 h-2 rounded-full w-3/4"></div>
-                  </div>
-                </div>
-
-                {/* Orders Widget */}
-                <div className="bg-gray-50 rounded-xl p-4 shadow-inner">
-                  <p className="text-sm text-gray-600">Orders This Month</p>
-                  <p className="text-lg font-semibold text-purple-600">342</p>
-                </div>
-
-                {/* Customers Widget */}
-                <div className="bg-gray-50 rounded-xl p-4 shadow-inner">
-                  <p className="text-sm text-gray-600">New Customers</p>
-                  <p className="text-lg font-semibold text-blue-600">+250</p>
-                </div>
-
-                {/* Rating Widget */}
-                <div className="bg-gray-50 rounded-xl p-4 shadow-inner">
-                  <p className="text-sm text-gray-600">Customer Satisfaction</p>
-                  <p className="text-lg font-semibold text-yellow-500">95%</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Floating success indicators */}
-            <div className="absolute -bottom-4 -right-4 bg-gradient-to-r from-purple-500 to-blue-500 p-4 rounded-full">
-              <Zap className="h-8 w-8 text-white animate-pulse" />
-            </div>
-
-            {/* Floating Customers Badge */}
-            <div className="absolute -top-6 -left-6 bg-white rounded-full p-3 shadow-lg animate-bounce text-center">
-              <Users className="h-6 w-6 text-blue-500 mx-auto" />
-              <span className="block text-xs text-gray-700 font-medium mt-1">+250</span>
-            </div>
-
-            {/* Floating Top Seller Badge */}
-            <div className="absolute -right-8 top-1/4 bg-white rounded-xl shadow-lg p-4 w-40 animate-float delay-300">
-              <div className="flex items-center space-x-2">
-                <Star className="h-6 w-6 text-yellow-500" />
-                <span className="font-semibold text-gray-900 text-sm">Top Seller</span>
-              </div>
-              <p className="text-xs text-gray-600 mt-1">Badge Earned</p>
-            </div>
-
-            {/* Floating Orders Badge */}
-            <div className="absolute -left-8 bottom-1/4 bg-gradient-to-r from-green-100 to-green-200 rounded-xl shadow-lg p-4 w-40 animate-float delay-700">
-              <p className="text-sm font-semibold text-green-700">+120 Orders</p>
-              <p className="text-xs text-gray-600">this week</p>
-            </div>
-          </div>
+          {/* CTA */}
+        <button
+      type="button"
+      onClick={() => router.push("/signin")}
+      className="group relative cursor-pointer bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-4 rounded-full text-lg font-semibold overflow-hidden hover:scale-105 transition-transform duration-300"
+    >
+      <span className="relative z-10 flex items-center space-x-2">
+        <span>Open Your Store</span>
+        <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+      </span>
+      <div className="absolute inset-0 bg-white/10 animate-pulse rounded-full" />
+    </button>
         </div>
       </div>
     </section>
   );
-};
-
-export default VendorSection;
+}

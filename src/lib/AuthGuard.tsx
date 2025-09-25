@@ -17,6 +17,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   // Public routes that don't require authentication
   const publicRoutes = [
     "/",
+    "/signin",
     "/signup",
     "/forgotpassword",
     "/resetpassword",
