@@ -428,6 +428,15 @@ export default function ProductView() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50 to-blue-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-800 p-8">
       <div className="mx-auto max-w-7xl space-y-8">
         {/* Header */}
+         <div className="flex items-center gap-3 flex-wrap">
+              <div className="rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 p-3 shadow-lg">
+                <Package2 className="h-6 w-6 text-white" />
+              </div>
+              <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+                Product Details
+              </h1>
+              <Sparkles className="h-5 w-5 animate-pulse text-yellow-500" />
+            </div>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-fade-in">
           <div className="flex items-center gap-4">
             <Button
@@ -438,15 +447,7 @@ export default function ProductView() {
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Products
             </Button>
-            <div className="flex items-center gap-3">
-              <div className="rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 p-3 shadow-lg">
-                <Package2 className="h-6 w-6 text-white" />
-              </div>
-              <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-                Product Details
-              </h1>
-              <Sparkles className="h-5 w-5 animate-pulse text-yellow-500" />
-            </div>
+           
           </div>
           <div className="flex items-center gap-3">
             {/* <Button

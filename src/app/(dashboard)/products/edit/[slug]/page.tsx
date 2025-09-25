@@ -477,7 +477,7 @@ export default function ProductForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50 to-blue-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-800 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50 to-blue-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-800 p-2">
       <div className="mx-auto max-w-4xl space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -514,397 +514,379 @@ export default function ProductForm() {
         )}
 
         {/* Form */}
-        <Card className="border-0 bg-white/70 shadow-xl backdrop-blur-sm dark:bg-zinc-900/70">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 p-2">
-                {editingProduct ? (
-                  <Pencil className="h-5 w-5 text-white" />
-                ) : (
-                  <Plus className="h-5 w-5 text-white" />
-                )}
+      
+<Card className="border-0 bg-white/70 shadow-xl backdrop-blur-sm dark:bg-zinc-900/70">
+  <CardHeader>
+    <div className="flex items-center gap-3">
+      <div className="rounded-lg bg-gradient-to-r from-cyan-600 to-blue-600 p-2">
+        {editingProduct ? (
+          <Pencil className="h-5 w-5 text-white" />
+        ) : (
+          <Plus className="h-5 w-5 text-white" />
+        )}
+      </div>
+      <h2 className="text-xl font-semibold">
+        {editingProduct ? "Update Product Details" : "Create a New Product"}
+      </h2>
+    </div>
+  </CardHeader>
+  <CardContent>
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-6 bg-cyan-50/50 dark:bg-cyan-900/20">
+        <TabsTrigger value="basic" className="whitespace-wrap">Basic Info</TabsTrigger>
+        <TabsTrigger value="pricing" className="whitespace-wrap">Pricing & Stock </TabsTrigger>
+        <TabsTrigger value="images-tags" className="whitespace-wrap">Images & Tags</TabsTrigger>
+        <TabsTrigger value="physical" className="whitespace-wrap">Physical Attributes</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="basic" className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+              Product Name *
+            </label>
+            <Input
+              name="name"
+              placeholder="Enter product name"
+              value={formData.name}
+              onChange={handleInputChange}
+              className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+              SKU
+            </label>
+            <Input
+              name="sku"
+              placeholder="Optional SKU"
+              value={formData.sku}
+              onChange={handleInputChange}
+              className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+              Category *
+            </label>
+            <Input
+              value={formData.category_name || "Not selected"}
+              disabled
+              className="border-cyan-200 bg-white/50 dark:border-cyan-700 dark:bg-zinc-800/50 text-gray-900 dark:text-gray-100"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+              Subcategory
+            </label>
+            <Input
+              value={formData.subcategory_name || "Not selected"}
+              disabled
+              className="border-cyan-200 bg-white/50 dark:border-cyan-700 dark:bg-zinc-800/50 text-gray-900 dark:text-gray-100"
+            />
+          </div>
+        </div>
+        <div>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+            Short Description
+          </label>
+          <Input
+            name="shortDescription"
+            placeholder="Short description"
+            value={formData.shortDescription}
+            onChange={handleInputChange}
+            className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+            Description
+          </label>
+          <Textarea
+            name="fullDescription"
+            placeholder="Detailed product description"
+            value={formData.fullDescription}
+            onChange={handleInputChange}
+            className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50 min-h-[120px]"
+          />
+        </div>
+        <div className="flex justify-end gap-3">
+          <Button
+            onClick={() => setActiveTab("pricing")}
+            className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700"
+          >
+            Next
+          </Button>
+        </div>
+      </TabsContent>
+
+      <TabsContent value="pricing" className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+              Price *
+            </label>
+            <Input
+              name="price"
+              type="number"
+              placeholder="0.00"
+              value={formData.price}
+              onChange={handleInputChange}
+              className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+              Sale Price
+            </label>
+            <Input
+              name="salePrice"
+              type="number"
+              placeholder="0.00"
+              value={formData.salePrice}
+              onChange={handleInputChange}
+              className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
+            />
+          </div>
+        </div>
+        <div>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+            Stock Quantity *
+          </label>
+          <Input
+            name="stock"
+            type="number"
+            placeholder="0"
+            value={formData.stock}
+            onChange={handleInputChange}
+            className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
+          />
+        </div>
+        <div className="flex justify-end gap-3">
+          <Button
+            onClick={() => setActiveTab("images-tags")}
+            className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700"
+          >
+            Next
+          </Button>
+        </div>
+      </TabsContent>
+
+      <TabsContent value="images-tags" className="space-y-6">
+        <div>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+            Product Images
+          </label>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {formData.images.map((image, index) => (
+              <div key={index} className="relative">
+                <label
+                  htmlFor={`image-upload-${index}`}
+                  className="flex items-center justify-center h-32 w-full border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-cyan-500 dark:hover:border-cyan-400 transition-all duration-300 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 group"
+                >
+                  {image ? (
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={URL.createObjectURL(image)}
+                        alt={`Preview ${index + 1}`}
+                        width={128}
+                        height={128}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-1 right-1 h-6 w-6 p-0"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          removeImage(index);
+                        }}
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  ) : existingImages[index] ? (
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={existingImages[index]}
+                        alt={`Existing Image ${index + 1}`}
+                        width={128}
+                        height={128}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-1 right-1 h-6 w-6 p-0"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          removeImage(index);
+                        }}
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center text-gray-500 dark:text-gray-400 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+                      <Upload className="w-6 h-6 mb-1" />
+                      <p className="text-xs font-medium">
+                        {index === 0 ? "Main Image" : `Image ${index + 1}`}
+                      </p>
+                    </div>
+                  )}
+                </label>
+                <input
+                  type="file"
+                  id={`image-upload-${index}`}
+                  className="hidden"
+                  accept="image/*"
+                  onChange={(e) => handleImageChange(index, e)}
+                />
               </div>
-              <h2 className="text-xl font-semibold">
-                {editingProduct
-                  ? "Update Product Details"
-                  : "Create a New Product"}
-              </h2>
+            ))}
+          </div>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            Upload up to 4 images. First image will be the main product image. Max 5MB each.
+          </p>
+        </div>
+        <div className="space-y-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <div>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+              SEO Keywords
+            </label>
+            <Input
+              name="seoKeywords"
+              placeholder="Comma-separated SEO keywords"
+              value={formData.seoKeywords}
+              onChange={handleInputChange}
+              className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+              SEO Title
+            </label>
+            <Input
+              name="seoTitle"
+              placeholder="SEO title"
+              value={formData.seoTitle}
+              onChange={handleInputChange}
+              className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+              Tags
+            </label>
+            <Input
+              name="tags"
+              placeholder="Comma-separated tags"
+              value={formData.tags}
+              onChange={handleInputChange}
+              className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Featured Product
+              </label>
+              <Switch
+                checked={formData.featured}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({ ...prev, featured: checked }))
+                }
+              />
             </div>
-          </CardHeader>
-          <CardContent>
-            <Tabs
-              value={activeTab}
-              onValueChange={setActiveTab}
-              className="w-full"
-            >
-              <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 mb-6 bg-cyan-50/50 dark:bg-cyan-900/20">
-                <TabsTrigger value="basic">Basic Info</TabsTrigger>
-                <TabsTrigger value="pricing">Pricing & Inventory</TabsTrigger>
-                <TabsTrigger value="images">Images</TabsTrigger>
-                <TabsTrigger value="seo">SEO & Tags</TabsTrigger>
-                <TabsTrigger value="physical">Physical Attributes</TabsTrigger>
-              </TabsList>
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Published Product
+              </label>
+              <Switch
+                checked={formData.published}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({ ...prev, published: checked }))
+                }
+              />
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-end gap-3">
+          <Button
+            onClick={() => setActiveTab("physical")}
+            className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700"
+          >
+            Next
+          </Button>
+        </div>
+      </TabsContent>
 
-              <TabsContent value="basic" className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
-                      Product Name *
-                    </label>
-                    <Input
-                      name="name"
-                      placeholder="Enter product name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
-                      SKU
-                    </label>
-                    <Input
-                      name="sku"
-                      placeholder="Optional SKU"
-                      value={formData.sku}
-                      onChange={handleInputChange}
-                      className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
-                      Category *
-                    </label>
-                    <Input
-                      value={formData.category_name || "Not selected"}
-                      disabled
-                      className="border-cyan-200 bg-white/50 dark:border-cyan-700 dark:bg-zinc-800/50 text-gray-900 dark:text-gray-100"
-                    />
-                  </div>
+      <TabsContent value="physical" className="space-y-6">
+        <div>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
+            Weight (kg)
+          </label>
+          <Input
+            name="weight"
+            type="number"
+            placeholder="0.0"
+            value={formData.weight}
+            onChange={handleInputChange}
+            className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+            Dimensions (cm)
+          </label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Input
+              name="length"
+              placeholder="Length"
+              value={formData.length}
+              onChange={handleInputChange}
+              className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
+            />
+            <Input
+              name="width"
+              placeholder="Width"
+              value={formData.width}
+              onChange={handleInputChange}
+              className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
+            />
+            <Input
+              name="height"
+              placeholder="Height"
+              value={formData.height}
+              onChange={handleInputChange}
+              className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
+            />
+          </div>
+        </div>
+        <div className="flex justify-end gap-3">
+          <Button
+            variant="outline"
+            onClick={() => router.push("/products")}
+            className="border-cyan-200 bg-white/50 hover:bg-white dark:border-cyan-700 dark:bg-zinc-800/50 dark:hover:bg-zinc-800"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700"
+          >
+            {editingProduct ? "Save Changes" : "Add Product"}
+          </Button>
+        </div>
+      </TabsContent>
+    </Tabs>
+  </CardContent>
+</Card>
 
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
-                      Subcategory
-                    </label>
-                    <Input
-                      value={formData.subcategory_name || "Not selected"}
-                      disabled
-                      className="border-cyan-200 bg-white/50 dark:border-cyan-700 dark:bg-zinc-800/50 text-gray-900 dark:text-gray-100"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
-                    Short Description
-                  </label>
-                  <Input
-                    name="shortDescription"
-                    placeholder="Short description"
-                    value={formData.shortDescription}
-                    onChange={handleInputChange}
-                    className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
-                    Description
-                  </label>
-                  <Textarea
-                    name="fullDescription"
-                    placeholder="Detailed product description"
-                    value={formData.fullDescription}
-                    onChange={handleInputChange}
-                    className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50 min-h-[120px]"
-                  />
-                </div>
-                <div className="flex justify-end gap-3">
-                  <Button
-                    onClick={() => setActiveTab("pricing")}
-                    className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700"
-                  >
-                    Next
-                  </Button>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="pricing" className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
-                      Price *
-                    </label>
-                    <Input
-                      name="price"
-                      type="number"
-                      placeholder="0.00"
-                      value={formData.price}
-                      onChange={handleInputChange}
-                      className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
-                      Sale Price
-                    </label>
-                    <Input
-                      name="salePrice"
-                      type="number"
-                      placeholder="0.00"
-                      value={formData.salePrice}
-                      onChange={handleInputChange}
-                      className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
-                    Stock Quantity *
-                  </label>
-                  <Input
-                    name="stock"
-                    type="number"
-                    placeholder="0"
-                    value={formData.stock}
-                    onChange={handleInputChange}
-                    className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
-                  />
-                </div>
-                <div className="flex justify-end gap-3">
-                  <Button
-                    onClick={() => setActiveTab("images")}
-                    className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700"
-                  >
-                    Next
-                  </Button>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="images" className="space-y-6">
-                <div>
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
-                    Product Images
-                  </label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {formData.images.map((image, index) => (
-                      <div key={index} className="relative">
-                        <label
-                          htmlFor={`image-upload-${index}`}
-                          className="flex items-center justify-center h-32 w-full border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-cyan-500 dark:hover:border-cyan-400 transition-all duration-300 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 group"
-                        >
-                          {image ? (
-                            <div className="relative w-full h-full">
-                              <Image
-                                src={URL.createObjectURL(image)}
-                                alt={`Preview ${index + 1}`}
-                                width={128}
-                                height={128}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
-                              <Button
-                                type="button"
-                                variant="destructive"
-                                size="sm"
-                                className="absolute top-1 right-1 h-6 w-6 p-0"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  removeImage(index);
-                                }}
-                              >
-                                <X className="w-3 h-3" />
-                              </Button>
-                            </div>
-                          ) : existingImages[index] ? (
-                            <div className="relative w-full h-full">
-                              <Image
-                                src={existingImages[index]}
-                                alt={`Existing Image ${index + 1}`}
-                                width={128}
-                                height={128}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
-                              <Button
-                                type="button"
-                                variant="destructive"
-                                size="sm"
-                                className="absolute top-1 right-1 h-6 w-6 p-0"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  removeImage(index);
-                                }}
-                              >
-                                <X className="w-3 h-3" />
-                              </Button>
-                            </div>
-                          ) : (
-                            <div className="flex flex-col items-center text-gray-500 dark:text-gray-400 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
-                              <Upload className="w-6 h-6 mb-1" />
-                              <p className="text-xs font-medium">
-                                {index === 0
-                                  ? "Main Image"
-                                  : `Image ${index + 1}`}
-                              </p>
-                            </div>
-                          )}
-                        </label>
-                        <input
-                          type="file"
-                          id={`image-upload-${index}`}
-                          className="hidden"
-                          accept="image/*"
-                          onChange={(e) => handleImageChange(index, e)}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                    Upload up to 4 images. First image will be the main product
-                    image. Max 5MB each.
-                  </p>
-                </div>
-                <div className="flex justify-end gap-3">
-                  <Button
-                    onClick={() => setActiveTab("seo")}
-                    className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700"
-                  >
-                    Next
-                  </Button>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="seo" className="space-y-6">
-                <div>
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
-                    SEO Keywords
-                  </label>
-                  <Input
-                    name="seoKeywords"
-                    placeholder="Comma-separated SEO keywords"
-                    value={formData.seoKeywords}
-                    onChange={handleInputChange}
-                    className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
-                    SEO Title
-                  </label>
-                  <Input
-                    name="seoTitle"
-                    placeholder="SEO title"
-                    value={formData.seoTitle}
-                    onChange={handleInputChange}
-                    className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
-                    Tags
-                  </label>
-                  <Input
-                    name="tags"
-                    placeholder="Comma-separated tags"
-                    value={formData.tags}
-                    onChange={handleInputChange}
-                    className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
-                  />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Featured Product
-                    </label>
-                    <Switch
-                      checked={formData.featured}
-                      onCheckedChange={(checked) =>
-                        setFormData((prev) => ({ ...prev, featured: checked }))
-                      }
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Published Product
-                    </label>
-                    <Switch
-                      checked={formData.published}
-                      onCheckedChange={(checked) =>
-                        setFormData((prev) => ({ ...prev, published: checked }))
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-end gap-3">
-                  <Button
-                    onClick={() => setActiveTab("physical")}
-                    className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700"
-                  >
-                    Next
-                  </Button>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="physical" className="space-y-6">
-                <div>
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
-                    Weight (kg)
-                  </label>
-                  <Input
-                    name="weight"
-                    type="number"
-                    placeholder="0.0"
-                    value={formData.weight}
-                    onChange={handleInputChange}
-                    className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
-                    Dimensions (cm)
-                  </label>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <Input
-                      name="length"
-                      placeholder="Length"
-                      value={formData.length}
-                      onChange={handleInputChange}
-                      className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
-                    />
-                    <Input
-                      name="width"
-                      placeholder="Width"
-                      value={formData.width}
-                      onChange={handleInputChange}
-                      className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
-                    />
-                    <Input
-                      name="height"
-                      placeholder="Height"
-                      value={formData.height}
-                      onChange={handleInputChange}
-                      className="border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-end gap-3">
-                  <Button
-                    variant="outline"
-                    onClick={() => router.push("/products")}
-                    className="border-cyan-200 bg-white/50 hover:bg-white dark:border-cyan-700 dark:bg-zinc-800/50 dark:hover:bg-zinc-800"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleSubmit}
-                    className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700"
-                  >
-                    {editingProduct ? "Save Changes" : "Add Product"}
-                  </Button>
-                </div>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

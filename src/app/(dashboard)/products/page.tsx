@@ -909,15 +909,15 @@ export default function ProductsPage() {
                   placeholder="Search products by name or category..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50"
+                  className="pl-10 border-cyan-200 bg-white/50 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50 w-fit"
                 />
               </div>
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-3 w-fit">
                 <Select
                   value={categoryFilter}
                   onValueChange={setCategoryFilter}
                 >
-                  <SelectTrigger className="w-40 border-cyan-200 bg-white/50 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50">
+                  <SelectTrigger className="w-40 border-cyan-200 bg-white/50 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50 w-fit">
                     <Tag className="mr-2 h-4 w-4 text-cyan-600" />
                     <SelectValue placeholder="Category" />
                   </SelectTrigger>
@@ -934,7 +934,7 @@ export default function ProductsPage() {
                   </SelectContent>
                 </Select>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-32 border-cyan-200 bg-white/50 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50">
+                  <SelectTrigger className="w-32 border-cyan-200 bg-white/50 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50 w-fit">
                     <Activity className="mr-2 h-4 w-4 text-cyan-600" />
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
@@ -948,7 +948,7 @@ export default function ProductsPage() {
                   value={priceRangeFilter}
                   onValueChange={setPriceRangeFilter}
                 >
-                  <SelectTrigger className="w-40 border-cyan-200 bg-white/50 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50">
+                  <SelectTrigger className="w-40 border-cyan-200 bg-white/50 focus:ring-2 focus:ring-cyan-500/20 dark:border-cyan-700 dark:bg-zinc-800/50 w-fit">
                     <DollarSign className="mr-2 h-4 w-4 text-cyan-600" />
                     <SelectValue placeholder="Price Range" />
                   </SelectTrigger>
