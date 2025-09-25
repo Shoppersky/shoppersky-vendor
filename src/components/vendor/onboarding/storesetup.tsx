@@ -200,11 +200,11 @@ export default function Step1StoreSetup({
             />
 
             {storeNameStatus === "checking" && (
-              <Loader2 className="absolute right-3 top-3 w-5 h-5 text-blue-500 animate-spin" />
+              <Loader2 className="absolute right-3 top-3 w-5 h-5 mt-6 text-blue-500 animate-spin" />
             )}
 
             {storeNameStatus === "available" && (
-              <CheckCircle className="absolute right-3 top-3 w-5 h-5 text-green-500" />
+              <CheckCircle className="absolute right-3 top-3 w-5 h-5 mt-6 text-green-500" />
             )}
 
             {storeNameStatus === "unavailable" && (
