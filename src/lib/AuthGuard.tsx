@@ -59,7 +59,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
 
     // If not authenticated and not on a public route → go to login
     if (!isAuthenticated && !publicRoutes.includes(pathname)) {
-      router.push("/");
+      router.push("/signin");
       return;
     }
 

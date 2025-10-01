@@ -134,7 +134,7 @@ export default function Step1StoreSetup({
     localStorage.clear();
     console.log("User logged out!");
 
-    router.push("/");
+    router.push("/signin");
   };
 
   return (

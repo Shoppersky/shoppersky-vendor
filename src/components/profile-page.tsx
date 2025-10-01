@@ -232,7 +232,7 @@ export default function ProfilePage() {
         special: false,
       });
       toast.success(response.data.message || "Password changed successfully! Please login again");
-      router.push("/")
+      router.push("/signin")
 
 
     } catch (error: any) {

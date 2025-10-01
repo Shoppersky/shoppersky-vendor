@@ -138,7 +138,7 @@ export default function VerificationRejected() {
   const handleLogout = () => {
     localStorage.clear();
     console.log("User logged out!");
-    router.push("/");
+    router.push("/signin");
   };
 
   return (

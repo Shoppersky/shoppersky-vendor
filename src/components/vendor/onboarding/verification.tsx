@@ -103,7 +103,7 @@ export default function Step3AbnVerification({
 
   const handleLogout = () => {
     localStorage.clear();
-    router.push("/");
+    router.push("/signin");
   };
 
   return (

@@ -108,7 +108,7 @@ export default function ChangePasswordPage() {
           "Password Changed successfully, please login.")
         // Redirect to login page after 3 seconds
         setTimeout(() => {
-          router.push("/")
+          router.push("/signin")
         }, 3000)
       }
     } catch (err: any) {

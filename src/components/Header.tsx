@@ -157,10 +157,10 @@ export default function AppHeader({ toggleSidebar }: AppHeaderProps) {
                     const { logout } = useStore.getState();
                     logout();
                     localStorage.removeItem("id");
-                    router.push("/");
+                    router.push("/signin");
                   } catch {
                     toast.error("Logout failed, applying fallback.");
-                    window.location.href = "/";
+                    window.location.href = "/signin";
                   }
                 }}
               >

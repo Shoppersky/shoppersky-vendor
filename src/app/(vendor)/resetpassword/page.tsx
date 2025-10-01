@@ -109,7 +109,7 @@ export default function ResetPasswordPage() {
 
       if (response.data.statusCode === 200) {
        toast.success("Password reset successful, please login")
-        router.push("/");
+        router.push("/signin");
       } else {
         setError(response.data.message || "Something went wrong. Please try again.");
       }

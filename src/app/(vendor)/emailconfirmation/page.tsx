@@ -117,7 +117,7 @@ export default function EmailConfirmation() {
 
                   <div className="text-center space-y-4">
                     {status === "success" ? (
-                      <Link href="/">
+                      <Link href="/signin">
                         <Button className="w-full h-12 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02]">
                           Sign In to Your Account
                         </Button>

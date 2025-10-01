@@ -59,7 +59,7 @@ export default function Step2Goals({
       localStorage.clear();
       console.log("User logged out!");
   
-      router.push("/");
+      router.push("/signin");
     };
 
   return (

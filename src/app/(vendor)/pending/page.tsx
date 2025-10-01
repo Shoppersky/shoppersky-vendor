@@ -122,7 +122,7 @@ export default function VerificationPending() {
   const handleLogout = () => {
     localStorage.clear();
     console.log("User logged out!");
-    router.push("/");
+    router.push("/signin");
   };
 
   return (

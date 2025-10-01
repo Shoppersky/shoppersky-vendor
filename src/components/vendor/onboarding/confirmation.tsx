@@ -19,7 +19,7 @@ export default function Step5VerificationConfirmation({
     localStorage.clear();
     console.log("User logged out!");
 
-    router.push("/");
+    router.push("/signin");
   };
   return (
     <div className="w-full h-screen lg:grid lg:grid-cols-2">

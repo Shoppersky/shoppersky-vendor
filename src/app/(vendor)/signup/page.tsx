@@ -90,7 +90,7 @@ export default function VendorSignup() {
       if (response.status === 201) {
         toast.success("Registration successful! Please check your email.");
         setTimeout(() => {
-          router.push("/");
+          router.push("/signin");
         }, 2000);
       }
     } catch (error: any) {
@@ -363,7 +363,7 @@ export default function VendorSignup() {
                   <p className="text-gray-600">
                     Already have an account?{" "}
                     <Link
-                      href="/"
+                      href="/signin"
                       className="text-cyan-600 hover:text-cyan-800 font-semibold transition-colors"
                     >
                       Sign In Here

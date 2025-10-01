@@ -92,7 +92,7 @@ export default function Sidebar({
 
   const handleLogout = () => {
     localStorage.clear(); // Clear session/token
-    router.push("/"); // Redirect to login
+    router.push("/signin"); // Redirect to login
   };
 
   const handleNavigation = (path: string) => {

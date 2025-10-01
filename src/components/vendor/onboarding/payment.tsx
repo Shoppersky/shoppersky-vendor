@@ -83,7 +83,7 @@ export default function Step4PaymentPreferences({
       localStorage.clear();
       console.log("User logged out!");
   
-      router.push("/");
+      router.push("/signin");
     };
     
   return (

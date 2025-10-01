@@ -293,7 +293,7 @@ export default function ForgotPasswordPage() {
 
               {/* Back to Login */}
               <div className="text-center">
-                <Link href="/">
+                <Link href="/signin">
                   <Button
                     variant="outline"
                     className="w-full h-14 border-2 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all duration-200 text-base font-semibold bg-transparent"
@@ -502,7 +502,7 @@ export default function ForgotPasswordPage() {
                 </div>
 
                 {/* Back to Sign In */}
-                <Link href="/">
+                <Link href="/signin">
                   <Button
                     type="button"
                     variant="outline"

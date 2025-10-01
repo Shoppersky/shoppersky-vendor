@@ -121,7 +121,7 @@ export default function ResendConfirmation() {
                 <p className="text-gray-600">
                   Remember your login details?{" "}
                   <Link
-                    href="/"
+                    href="/signin"
                     className="text-emerald-600 hover:text-emerald-800 font-semibold transition-colors"
                   >
                     Sign In Here

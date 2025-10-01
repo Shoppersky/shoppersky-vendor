@@ -12,7 +12,7 @@ export default function Verification() {
   const [shouldRender, setShouldRender] = useState(false);
 
   const handleGoHome = () => {
-    router.push("/");
+    router.push("/signin");
   };
 
   const handleRetry = () => {
@@ -22,7 +22,7 @@ export default function Verification() {
   useEffect(() => {
     if (!user) {
       console.log("No user data, redirecting to login");
-      router.push("/");
+      router.push("/signin");
       return;
     }
 
