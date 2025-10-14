@@ -289,14 +289,14 @@ export default function Step1StoreSetup({
                 <SelectValue placeholder="Select your country" />
               </SelectTrigger>
               <SelectContent>
-  <SelectItem value="new-south-wales">New South Wales</SelectItem>
-  <SelectItem value="victoria">Victoria</SelectItem>
-  <SelectItem value="queensland">Queensland</SelectItem>
-  <SelectItem value="western-australia">Western Australia</SelectItem>
-  <SelectItem value="south-australia">South Australia</SelectItem>
-  <SelectItem value="tasmania">Tasmania</SelectItem>
-  <SelectItem value="northern-territory">Northern Territory</SelectItem>
-  <SelectItem value="australian-capital-territory">Australian Capital Territory</SelectItem>
+  <SelectItem value="NSW">New South Wales</SelectItem>
+  <SelectItem value="VIC">Victoria</SelectItem>
+  <SelectItem value="QLD">Queensland</SelectItem>
+  <SelectItem value="WA">Western Australia</SelectItem>
+  <SelectItem value="SA">South Australia</SelectItem>
+  <SelectItem value="TAS">Tasmania</SelectItem>
+  <SelectItem value="NT">Northern Territory</SelectItem>
+  <SelectItem value="ACT">Australian Capital Territory</SelectItem>
 </SelectContent>
 
             </Select>
