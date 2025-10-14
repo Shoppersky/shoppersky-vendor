@@ -289,15 +289,16 @@ export default function Step1StoreSetup({
                 <SelectValue placeholder="Select your country" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="sydney">Sydney</SelectItem>
-                <SelectItem value="melbourne">Melbourne</SelectItem>
-                <SelectItem value="brisbane">Brisbane</SelectItem>
-                <SelectItem value="perth">Perth</SelectItem>
-                <SelectItem value="adelaide">Adelaide</SelectItem>
-                <SelectItem value="hobart">Hobart</SelectItem>
-                <SelectItem value="darwin">Darwin</SelectItem>
-                <SelectItem value="canberra">Canberra</SelectItem>
-              </SelectContent>
+  <SelectItem value="new-south-wales">New South Wales</SelectItem>
+  <SelectItem value="victoria">Victoria</SelectItem>
+  <SelectItem value="queensland">Queensland</SelectItem>
+  <SelectItem value="western-australia">Western Australia</SelectItem>
+  <SelectItem value="south-australia">South Australia</SelectItem>
+  <SelectItem value="tasmania">Tasmania</SelectItem>
+  <SelectItem value="northern-territory">Northern Territory</SelectItem>
+  <SelectItem value="australian-capital-territory">Australian Capital Territory</SelectItem>
+</SelectContent>
+
             </Select>
             <p className="text-sm text-muted-foreground mt-1">
               The location where you or your business is legally registered
