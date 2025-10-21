@@ -1087,7 +1087,7 @@ export default function ProductsPage() {
                           <div className="flex items-center gap-2 text-xs text-muted-foreground">
                            
                             <span>
-                              SKU: {product.sku || product.id.toUpperCase()}
+                              SKU: {product.sku}
                             </span>
                           </div>
                         </div>

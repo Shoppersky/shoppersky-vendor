@@ -637,6 +637,7 @@ interface StoreSettings {
   storeTagline: string;
   bannerTitle: string;
   bannerSubtitle: string;
+  aboutUs: string;
   bannerImage: string;
   ownerName: string;
   ownerImage: string;
@@ -666,6 +667,7 @@ const OnlineStorePage: React.FC = () => {
     storeTagline: "Your Premium Shopping Destination",
     bannerTitle: "Discover Amazing Products",
     bannerSubtitle: "Shop the latest trends with unbeatable prices and quality",
+    aboutUs: "",
     bannerImage: "/api/placeholder/1200/600",
     ownerName: "Unknown Owner",
     ownerImage: "/api/placeholder/150/150",
@@ -810,6 +812,7 @@ const OnlineStorePage: React.FC = () => {
 
     formData.append("banner_title", storeSettings.bannerTitle);
     formData.append("banner_subtitle", storeSettings.bannerSubtitle);
+    formData.append("about_us", storeSettings.aboutUs);
 
     const response = await axiosInstance.post(
       `/vendor/banner-image/${userId}`,
@@ -819,13 +822,14 @@ const OnlineStorePage: React.FC = () => {
       }
     );
 
-    const { banner_image_url, banner_title, banner_subtitle } = response.data.data;
+    const { banner_image_url, banner_title, banner_subtitle, about_us } = response.data.data;
 
     if (banner_image_url || banner_title || banner_subtitle) {
       saveStoreSettings({
         bannerImage: banner_image_url || storeSettings.bannerImage,
         bannerTitle: banner_title || storeSettings.bannerTitle,
         bannerSubtitle: banner_subtitle || storeSettings.bannerSubtitle,
+        aboutUs: about_us || storeSettings.aboutUs,
       });
       toast.success("Banner settings updated successfully");
     } else {
@@ -1220,6 +1224,22 @@ const OnlineStorePage: React.FC = () => {
           value={storeSettings.bannerSubtitle}
           onChange={(e) =>
             saveStoreSettings({ bannerSubtitle: e.target.value })
+          }
+          rows={3}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+      </div>
+
+      
+      {/* About us */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          About Us
+        </label>
+        <textarea
+          value={storeSettings.aboutUs}
+          onChange={(e) =>
+            saveStoreSettings({ aboutUs: e.target.value })
           }
           rows={3}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
