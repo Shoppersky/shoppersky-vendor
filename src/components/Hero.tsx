@@ -24,19 +24,26 @@ const Hero = () => {
               <span className="text-sm bg text bg-gradient-to-r from-blue-500  to-purple-500 bg-clip-text text-transparent font-medium">Trusted by 10,000+ vendors</span>
             </div>
             
-            <div className="space-y-6">
-              <h1 className="text-5xl text-white lg:text-7xl font-bold leading-tight">
-                Grow Your
-                <span className="bg-gradient-to-r from-blue-500  to-purple-500 bg-clip-text text-transparent"> Business</span>
-                <br />
-                With ShopperSky
-              </h1>
-              
-              <p className="text-xl text-white max-w-lg leading-relaxed">
-                Join thousands of successful vendors on ShopperSky. Get powerful analytics, 
-                seamless inventory management, and access to millions of customers.
-              </p>
-            </div>
+           <div className="space-y-6">
+  <h1 className="text-5xl text-white lg:text-7xl font-bold leading-tight">
+    <span>The </span>
+    <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+      AI
+    </span>{" "}
+    Powered{" "}
+    <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+      future
+    </span>
+    <br />
+    of Commerce
+  </h1>
+
+  <p className="text-xl text-white max-w-lg leading-relaxed">
+    Join thousands of successful vendors on ShopperSky. Get powerful analytics, 
+    seamless inventory management, and access to millions of customers.
+  </p>
+</div>
+
             
             <div className="flex flex-col sm:flex-row gap-4">
                 <Button
@@ -44,7 +51,7 @@ const Hero = () => {
         className="shadow-button bg-gradient-to-r from-blue-500 to-purple-500 hover:shadow-xl transition-all duration-300 group"
         onClick={() => router.push("/signup")}
       >
-        Start Selling Today
+        Open your storefront
         <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
       </Button>
               <Button variant="outline" size="lg" className="border-2">
