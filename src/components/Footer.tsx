@@ -76,20 +76,20 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center space-x-2 text-gray-400">
                 <Mail className="h-4 w-4" />
-                <span>support@shoppersky.com</span>
+                <span>info@shoppersky.com.au</span>
               </div>
               <div className="flex items-center space-x-2 text-gray-400">
                 <Phone className="h-4 w-4" />
-                <span>+1 (555) 123-4567</span>
+                <span>+61430194569</span>
               </div>
               <div className="flex items-start space-x-2 text-gray-400">
                 <MapPin className="h-4 w-4 mt-1" />
-                <span>123 Commerce St, Business District, NY 10001</span>
+                <span> Australia </span>
               </div>
             </div>
-            <button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105 hover-glow animate-shimmer">
+            {/* <button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105 hover-glow animate-shimmer">
               Contact Support
-            </button>
+            </button> */}
           </div>
         </div>
 

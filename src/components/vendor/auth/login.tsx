@@ -1,6 +1,7 @@
 "use client";
 
 import { ShieldCheck, Gift, TrendingUp, Headphones, ShoppingCart } from "lucide-react";
+import Image from "next/image";
 
 export default function VendorLoginComponent() {
   return (
@@ -44,7 +45,7 @@ export default function VendorLoginComponent() {
           <div className="absolute top-3/4 right-1/4 w-24 h-24 bg-white/10 rounded-full animate-pulse delay-500"></div>
         </div>
 
-        <div className="flex flex-col items-center justify-center p-12 relative z-10 text-white">
+        {/* <div className="flex flex-col items-center justify-center p-12 relative z-10 text-white">
           <div className="text-center space-y-8 max-w-lg">
             <div className="space-y-4">
               <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 rounded-3xl backdrop-blur-sm">
@@ -59,7 +60,7 @@ export default function VendorLoginComponent() {
               </p>
             </div>
 
-            {/* Vendor Benefits */}
+            
             <div className="grid grid-cols-2 gap-6 pt-8">
               <div className="text-center space-y-2">
                 <div className="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-xl">
@@ -91,7 +92,7 @@ export default function VendorLoginComponent() {
               </div>
             </div>
 
-            {/* Callout */}
+            
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mt-8">
               <p className="text-blue-100 italic mb-3">
                 "Early vendors will get exclusive benefits and priority support."
@@ -99,6 +100,15 @@ export default function VendorLoginComponent() {
               <div className="font-semibold">Be part of the journey from Day 1 </div>
             </div>
           </div>
+        </div> */}
+        <div>
+          <Image
+            src="/images/koalalogo.png"
+            alt="Vendor Signup Illustration"
+            width={450}
+            height={450}
+            className="object-contain rounded-2xl drop-shadow-2xl mx-auto transform hover:scale-105 transition-transform duration-300"
+            />
         </div>
       </div>
     </>

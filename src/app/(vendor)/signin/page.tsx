@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { Eye, EyeOff, Store, TrendingUp } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +11,7 @@ import { toast } from "sonner";
 import axiosInstance from "@/lib/axiosInstance";
 import { useRouter } from "next/navigation";
 import useStore from "@/lib/Zustand";
+
 
 export default function VendorLogin() {
   const { login } = useStore();
@@ -114,9 +114,9 @@ export default function VendorLogin() {
 
         <div className="mx-auto w-full max-w-sm sm:max-w-md space-y-6 sm:space-y-8 relative z-10 px-2 sm:px-0">
           <div className="text-center space-y-3 sm:space-y-4">
-            <div className="inline-flex items-center justify-center w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-2xl mb-3 sm:mb-4 shadow-lg">
+            {/* <div className="inline-flex items-center justify-center w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-2xl mb-3 sm:mb-4 shadow-lg">
               <Store className="w-6 sm:w-8 h-6 sm:h-8 text-white" />
-            </div>
+            </div> */}
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
               Welcome Back!
             </h1>

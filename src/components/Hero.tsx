@@ -20,8 +20,7 @@ const Hero = () => {
           {/* Content */}
           <div className="space-y-8">
             <div className="inline-flex items-center gap-2  backdrop-blur-sm px-4 py-2 rounded-full border">
-              <Store className="h-4 w-4 text-white" />
-              <span className="text-sm bg text bg-gradient-to-r from-blue-500  to-purple-500 bg-clip-text text-transparent font-medium">Trusted by 10,000+ vendors</span>
+              <span className="text-sm bg text bg-gradient-to-r from-blue-500  to-purple-500 bg-clip-text text-transparent font-medium">Join ShopperSky</span>
             </div>
             
            <div className="space-y-6">
